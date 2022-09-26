@@ -6,10 +6,10 @@ class ThemeNotifier with ChangeNotifier {
   static List<ThemeData> themes = [
     ThemeData(
       brightness: Brightness.light,
-      primarySwatch: Colors.green[600],
+      primarySwatch: Colors.green[400],
       backgroundColor: Colors.white,
       appBarTheme: AppBarTheme(
-        color: Colors.green[600],
+        color: Colors.green[400],
         elevation: 0,
       ),
       fontFamily: 'Poppins',
