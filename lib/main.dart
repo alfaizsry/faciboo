@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:faciboo/screens/home.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
@@ -27,11 +28,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _connectivityPlus = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+    _connectivityPlus = Connectivity()
+        .onConnectivityChanged
+        .listen((ConnectivityResult result) {
       if (ConnectivityResult.none == result) {
         print('==== result no network');
         //TODO fixing alert dialog
-        
+
         // Helper(context: navigatorKey.currentContext)
         //     .alert(text: 'Please check your internet connection!');
       } else if (ConnectivityResult.mobile == result) {
@@ -48,6 +51,7 @@ class _MyAppState extends State<MyApp> {
     // '/splashScreen': (BuildContext context) => const SplashScreen(),
     // '/selesaiforgotPage': (BuildContext context) => new SelesaiforgotPage(),
     // '/onboarding': (BuildContext context) => const OnBoardingScreen(),
+    // '/onHome': (BuildContext context) => const Home(),
   };
 
   @override
@@ -67,7 +71,7 @@ class _MyAppState extends State<MyApp> {
         ),
         fontFamily: 'Poppins',
       ),
-      // initialRoute: '/splashScreen',
+      initialRoute: '/onHome',
       routes: routes,
     );
   }
