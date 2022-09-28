@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:faciboo/screens/all_facilities.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,13 +24,17 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    _callGetData();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  _callGetData() async {
     setState(() {
       userDetail = dummyApi.getuserdetail["data"];
       facilities = dummyApi.getfacilities["data"];
       facilitiesByCategory = dummyApi.getfacilitiesByCartegory["data"];
     });
-    // TODO: implement initState
-    super.initState();
   }
 
   @override
@@ -224,7 +229,14 @@ class _HomePageState extends State<HomePage> {
           child: _titleSeeMore(
             title: title,
             hasSeeMore: true,
-            onClickSeeMore: () {},
+            onClickSeeMore: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllFacilities(),
+                ),
+              ).then((value) => _callGetData());
+            },
           ),
         ),
         SizedBox(
@@ -342,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                           ["facilities"][i],
                     ),
                     SizedBox(
-                      width: 8,
+                      width: 12,
                     ),
                   ],
                 ),
