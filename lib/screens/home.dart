@@ -5,6 +5,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/home_page.dart';
+import 'package:faciboo/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -22,7 +23,7 @@ class _HomeState extends State<Home> {
     Container(),
     HomePage(),
     Container(),
-    Container(),
+    ProfilePage(),
   ];
 
   @override
