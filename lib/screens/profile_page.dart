@@ -17,6 +17,9 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isEditing = false;
 
   TextEditingController _name = TextEditingController();
+  TextEditingController _email = TextEditingController();
+  TextEditingController _phone = TextEditingController();
+  TextEditingController _location = TextEditingController();
 
   @override
   void initState() {
@@ -29,12 +32,15 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       userDetail = dummyApi.getuserdetail["data"];
     });
-    _setDataForm();
+    await _setDataForm();
   }
 
   _setDataForm() {
     setState(() {
       _name.text = userDetail["name"];
+      _email.text = userDetail["email"];
+      _phone.text = userDetail["phone"];
+      _location.text = userDetail["location"];
     });
   }
 
@@ -51,10 +57,29 @@ class _ProfilePageState extends State<ProfilePage> {
             height: 24,
           ),
           _buildUserDetailForm(),
+          if (_isEditing)
+            Column(
+              children: [
+                _buildButton(),
+                SizedBox(
+                  height: 32,
+                ),
+              ],
+            ),
           SizedBox(
-            height: 32,
+            height: 48,
           ),
-          if (_isEditing) _buildButton(),
+          Container(
+            margin: EdgeInsets.only(
+              left: 24,
+              right: 24,
+            ),
+            child: CustomButton(
+              textButton: "Sign Out",
+              onClick: () {},
+              colorButton: Colors.red[900],
+            ),
+          ),
         ],
       ),
     );
@@ -114,34 +139,127 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  // List<dynamic> userForm = [
-  //   {""},
-  // ];
-
   Widget _buildUserDetailForm() {
-    return Column(
-      children: [
-        Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: 24,
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Name",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-          child: _customTextInput(
-            hintText: "Name",
-            controller: _name,
-            isEnable: _isEditing,
-            prefixIcon: Container(
-              margin: EdgeInsets.only(
-                right: 10,
-              ),
-              child: Icon(
-                Icons.person,
-                size: 18,
-                color: Colors.black,
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Name",
+              controller: _name,
+              isEnable: _isEditing,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.person,
+                  size: 18,
+                  color: Colors.black,
+                ),
               ),
             ),
           ),
-        )
-      ],
+          Text(
+            "Email",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Email",
+              controller: _email,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.emailAddress,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.email,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          Text(
+            "Phone",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Phone",
+              controller: _phone,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.number,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.phone,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          Text(
+            "Location",
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Location",
+              controller: _location,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.multiline,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.share_location_rounded,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
