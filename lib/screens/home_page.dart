@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:faciboo/components/facility_banner.dart';
+import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var dummyApi = DummyApi();
   dynamic userDetail;
+
+  int selectedCategory = 0;
   //categori 1: sports, 2:entertainment, 3:workspace,
   List<dynamic> facilities = [];
   List<dynamic> facilitiesByCategory = [];
@@ -35,11 +38,31 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       body: ListView(
         children: [
+          SizedBox(
+            height: 48,
+          ),
           _buildUserBanner(),
           SizedBox(
-            height: 16,
+            height: 24,
           ),
-          _buildFacilitiesBanner(),
+          _buildFacilitiesBanner(
+            title: "New Facilities",
+            facilities: facilities,
+          ),
+          SizedBox(
+            height: 24,
+          ),
+          _buildCategory(),
+          SizedBox(
+            height: 24,
+          ),
+          _buildFacilitiesBanner(
+            title: "Popular",
+            facilities: facilities,
+          ),
+          SizedBox(
+            height: 32,
+          ),
         ],
       ),
     );
@@ -56,7 +79,6 @@ class _HomePageState extends State<HomePage> {
         bottom: 32,
       ),
       margin: EdgeInsets.only(
-        top: 48,
         left: 24,
         right: 24,
       ),
@@ -189,7 +211,10 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildFacilitiesBanner() {
+  Widget _buildFacilitiesBanner({
+    @required String title,
+    @required List<dynamic> facilities,
+  }) {
     return Column(
       children: [
         Container(
@@ -197,7 +222,7 @@ class _HomePageState extends State<HomePage> {
             horizontal: 24,
           ),
           child: _titleSeeMore(
-            title: "New Facilities",
+            title: title,
             hasSeeMore: true,
             onClickSeeMore: () {},
           ),
@@ -240,58 +265,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Widget _facilityBanner({
-  //   @required dynamic detailFacility,
-  // }) {
-  //   return Container(
-  //     alignment: Alignment.bottomLeft,
-  //     padding: EdgeInsets.only(
-  //       top: 80,
-  //       left: 20,
-  //       right: 20,
-  //       bottom: 24,
-  //     ),
-  //     width: MediaQuery.of(context).size.width - 48,
-  //     decoration: BoxDecoration(
-  //       image: DecorationImage(
-  //         colorFilter: new ColorFilter.mode(
-  //             Colors.black.withOpacity(0.3), BlendMode.darken),
-  //         image: NetworkImage(
-  //           detailFacility["image"],
-  //         ),
-  //         fit: BoxFit.cover,
-  //       ),
-  //       // border: Border.all(width: 2, color: Colors.black),
-  //       borderRadius: BorderRadius.all(
-  //         Radius.circular(25),
-  //       ),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Text(
-  //           detailFacility["name"],
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             fontWeight: FontWeight.w500,
-  //             fontSize: 16,
-  //           ),
-  //         ),
-  //         SizedBox(
-  //           height: 4,
-  //         ),
-  //         Text(
-  //           detailFacility["location"],
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             fontWeight: FontWeight.w300,
-  //           ),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _titleSeeMore({
     @required String title,
     bool hasSeeMore = false,
@@ -320,6 +293,95 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+      ],
+    );
+  }
+
+  Widget _buildCategory() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            SizedBox(
+              width: 24,
+            ),
+            _customTabBar(),
+          ],
+        ),
+        // Container(
+        //   margin: EdgeInsets.symmetric(
+        //     horizontal: 24,
+        //   ),
+        //   child: _titleSeeMore(
+        //     title: "${facilitiesByCategory[0]["category"]}",
+        //     hasSeeMore: true,
+        //     onClickSeeMore: () {},
+        //   ),
+        // ),
+        SizedBox(
+          height: 8,
+        ),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 24,
+              ),
+              for (var i = 0;
+                  i <
+                      facilitiesByCategory[selectedCategory]["facilities"]
+                          .length;
+                  i++)
+                Row(
+                  children: [
+                    FacilityCard(
+                      detailFacility: facilitiesByCategory[selectedCategory]
+                          ["facilities"][i],
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _customTabBar() {
+    return Row(
+      children: [
+        for (var i = 0; i < facilitiesByCategory.length; i++)
+          InkWell(
+            splashFactory: NoSplash.splashFactory,
+            onTap: () {
+              setState(() {
+                selectedCategory = i;
+              });
+            },
+            child: Row(
+              children: [
+                Text(
+                  facilitiesByCategory[i]["category"],
+                  style: TextStyle(
+                    fontWeight: (selectedCategory == i)
+                        ? FontWeight.w700
+                        : FontWeight.normal,
+                    fontSize: 18,
+                    color: (selectedCategory == i) ? Colors.black : Colors.grey,
+                  ),
+                ),
+                SizedBox(
+                  width: 24,
+                ),
+              ],
+            ),
+          )
       ],
     );
   }
