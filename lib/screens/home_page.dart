@@ -313,13 +313,16 @@ class _HomePageState extends State<HomePage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 24,
-            ),
-            _customTabBar(),
-          ],
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+              ),
+              _customTabBar(),
+            ],
+          ),
         ),
         // Container(
         //   margin: EdgeInsets.symmetric(
@@ -369,30 +372,53 @@ class _HomePageState extends State<HomePage> {
     return Row(
       children: [
         for (var i = 0; i < facilitiesByCategory.length; i++)
-          InkWell(
-            splashFactory: NoSplash.splashFactory,
-            onTap: () {
-              setState(() {
-                selectedCategory = i;
-              });
-            },
-            child: Row(
-              children: [
-                Text(
-                  facilitiesByCategory[i]["category"],
-                  style: TextStyle(
-                    fontWeight: (selectedCategory == i)
-                        ? FontWeight.w700
-                        : FontWeight.normal,
-                    fontSize: 18,
-                    color: (selectedCategory == i) ? Colors.black : Colors.grey,
-                  ),
+          Row(
+            children: [
+              InkWell(
+                splashFactory: NoSplash.splashFactory,
+                onTap: () {
+                  setState(() {
+                    selectedCategory = i;
+                  });
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      facilitiesByCategory[i]["category"],
+                      style: TextStyle(
+                        fontWeight: (selectedCategory == i)
+                            ? FontWeight.w700
+                            : FontWeight.normal,
+                        fontSize: 18,
+                        color: (selectedCategory == i)
+                            ? Colors.black
+                            : Colors.grey,
+                      ),
+                    ),
+                    if (selectedCategory == i)
+                      Container(
+                        margin: EdgeInsets.only(
+                          bottom: 8,
+                          top: 4,
+                        ),
+                        width: 10,
+                        height: 2.5,
+                        decoration: BoxDecoration(
+                          color: Colors.black,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(
+                              10,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
-                SizedBox(
-                  width: 24,
-                ),
-              ],
-            ),
+              ),
+              SizedBox(
+                width: 24,
+              ),
+            ],
           )
       ],
     );

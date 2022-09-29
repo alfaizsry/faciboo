@@ -5,6 +5,7 @@ class CustomButton extends StatefulWidget {
     Key key,
     @required this.textButton,
     @required this.onClick,
+    this.prefixIcon,
     this.colorButton = Colors.green,
     this.colorTextButton = Colors.white,
     this.textButtonSize = 14,
@@ -12,6 +13,7 @@ class CustomButton extends StatefulWidget {
 
   final String textButton;
   final double textButtonSize;
+  final Widget prefixIcon;
   final Color colorButton;
   final Color colorTextButton;
   final Function onClick;
@@ -36,18 +38,25 @@ class _CustomButtonState extends State<CustomButton> {
         alignment: Alignment.center,
         // width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-            color: widget.colorButton,
-            borderRadius: BorderRadius.all(
-              Radius.circular(
-                36,
-              ),
-            )),
-        child: Text(
-          widget.textButton,
-          style: TextStyle(
-            fontSize: widget.textButtonSize,
-            color: widget.colorTextButton,
+          color: widget.colorButton,
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              36,
+            ),
           ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (widget.prefixIcon != null) widget.prefixIcon,
+            Text(
+              widget.textButton,
+              style: TextStyle(
+                fontSize: widget.textButtonSize,
+                color: widget.colorTextButton,
+              ),
+            ),
+          ],
         ),
       ),
     );

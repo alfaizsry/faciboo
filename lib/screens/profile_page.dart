@@ -50,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: ListView(
         children: [
           SizedBox(
-            height: 30,
+            height: 48,
           ),
           _buildHeaderProfile(),
           SizedBox(
@@ -79,6 +79,9 @@ class _ProfilePageState extends State<ProfilePage> {
               onClick: () {},
               colorButton: Colors.red[900],
             ),
+          ),
+          SizedBox(
+            height: 48,
           ),
         ],
       ),
