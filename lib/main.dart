@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:faciboo/screens/home.dart';
+import 'package:faciboo/screens/splash-screen.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
@@ -51,7 +52,8 @@ class _MyAppState extends State<MyApp> {
     // '/splashScreen': (BuildContext context) => const SplashScreen(),
     // '/selesaiforgotPage': (BuildContext context) => new SelesaiforgotPage(),
     // '/onboarding': (BuildContext context) => const OnBoardingScreen(),
-    '/onHome': (BuildContext context) => const Home(),
+    // '/onHome': (BuildContext context) => const Home(),
+    '/onSplash': (BuildContext context) => SplashScreenPage(),
   };
 
   @override
@@ -71,7 +73,7 @@ class _MyAppState extends State<MyApp> {
         ),
         fontFamily: 'Poppins',
       ),
-      initialRoute: '/onHome',
+      initialRoute: '/onSplash',
       routes: routes,
     );
   }
