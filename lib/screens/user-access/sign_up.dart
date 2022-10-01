@@ -2,20 +2,21 @@ import 'dart:ui';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
-import 'package:faciboo/screens/home.dart';
-import 'package:faciboo/screens/user-access/sign_up.dart';
+import 'package:faciboo/screens/user-access/sign_in.dart';
 import 'package:flutter/material.dart';
 
-class SignInPage extends StatefulWidget {
-  SignInPage({Key key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  SignUpPage({Key key}) : super(key: key);
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
-  TextEditingController _username = TextEditingController();
+class _SignUpPageState extends State<SignUpPage> {
+  TextEditingController _fullName = TextEditingController();
+  TextEditingController _mobileNumber = TextEditingController();
   TextEditingController _password = TextEditingController();
+  TextEditingController _confirmPassword = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +64,7 @@ class _SignInPageState extends State<SignInPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Log In",
+            "Sign Up",
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 20,
@@ -78,8 +79,20 @@ class _SignInPageState extends State<SignInPage> {
               bottom: 16,
             ),
             child: _customTextInput(
-              hintText: "Username",
-              controller: _username,
+              hintText: "Full Name",
+              controller: _fullName,
+              isEnable: true,
+              keyboardType: TextInputType.text,
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Mobile Number",
+              controller: _mobileNumber,
               isEnable: true,
               keyboardType: TextInputType.text,
             ),
@@ -96,126 +109,82 @@ class _SignInPageState extends State<SignInPage> {
               keyboardType: TextInputType.text,
             ),
           ),
-          InkWell(
-            onTap: () {},
-            child: Text(
-              "Forgot Password?",
-              style: TextStyle(
-                color: Color(0xFF6B6B6B),
-                fontSize: 14,
-              ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Confirm Password",
+              controller: _confirmPassword,
+              isEnable: true,
+              keyboardType: TextInputType.text,
             ),
           ),
           SizedBox(
-            height: 32,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Color(0xFF24AB70),
-                    borderRadius: BorderRadius.circular(24),
-                  ),
-                  padding: EdgeInsets.symmetric(horizontal: 89, vertical: 10),
-                  child: Text(
-                    "SIGN IN",
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
             height: 18,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                child: Text(
-                  "or",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF6B6B6B),
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 18,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InkWell(
-                onTap: () {},
-                child: Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/googleLogo.png',
+              Flexible(
+                  flex: 7,
+                  child: InkWell(
+                    onTap: () {},
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFF24AB70),
+                        borderRadius: BorderRadius.circular(24),
                       ),
-                      SizedBox(
-                        width: 24,
-                      ),
-                      Text(
-                        "Login With Google",
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 69, vertical: 10),
+                      child: Text(
+                        "Sign Up",
                         style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  )),
+              Flexible(
+                  flex: 4,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Already have an",
+                        style: TextStyle(
+                          color: Color(0xFF9C9C9C),
                           fontSize: 14,
                         ),
                       ),
+                      Text(
+                        "account?",
+                        style: TextStyle(
+                          color: Color(0xFF9C9C9C),
+                          fontSize: 14,
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignInPage()),
+                          );
+                        },
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                              color: Color(0xFF004D34),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      )
                     ],
-                  ),
-                ),
-              )
-            ],
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                "Don't have an account?",
-                style: TextStyle(
-                  color: Color(0xFF9C9C9C),
-                  fontSize: 14,
-                ),
-              ),
-              SizedBox(
-                width: 21,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
-                  );
-                },
-                child: Text(
-                  "Sign Up",
-                  style: TextStyle(
-                      color: Color(0xFF004D34),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-              )
+                  )),
             ],
           )
         ],
