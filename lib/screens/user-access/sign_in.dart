@@ -17,6 +17,8 @@ class _SignInPageState extends State<SignInPage> {
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
 
+  bool _isObscure = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -89,7 +91,7 @@ class _SignInPageState extends State<SignInPage> {
               top: 4,
               bottom: 16,
             ),
-            child: _customTextInput(
+            child: _customTextInputPassword(
               hintText: "Password",
               controller: _password,
               isEnable: true,
@@ -282,6 +284,76 @@ class _SignInPageState extends State<SignInPage> {
           ),
         ),
         suffixIcon: suffixIcon,
+      ),
+    );
+  }
+
+  Widget _customTextInputPassword({
+    @required String hintText,
+    @required TextEditingController controller,
+    Widget prefixIcon,
+    Widget suffixIcon,
+    bool isEnable = true,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextFormField(
+      keyboardType: keyboardType,
+      controller: controller,
+      enabled: isEnable,
+      obscureText: _isObscure,
+      style: TextStyle(
+        fontSize: 14.0,
+        fontWeight: FontWeight.w500,
+        color: (isEnable) ? Colors.black : Colors.black54,
+      ),
+      decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        // isDense: true, //remove default padding/ activate bg color
+        // hintText: widget.hintText,
+        hintText: hintText,
+        hintStyle: TextStyle(
+          fontSize: 14.0,
+          color: Color(0xFFB4B4B4),
+        ),
+        prefix: prefixIcon,
+        prefixIconConstraints: BoxConstraints(maxWidth: 100),
+        suffixIcon: IconButton(
+            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
+            onPressed: () {
+              setState(() {
+                _isObscure = !_isObscure;
+              });
+            }),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Color(0xFF004D34),
+            width: 1,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Color(0xFF004D34),
+            width: 1,
+          ),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Colors.grey,
+            width: 0.5,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: BorderSide(
+            color: Color(0xFF004D34),
+            width: 0.8,
+          ),
+        ),
       ),
     );
   }
