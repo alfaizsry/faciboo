@@ -15,6 +15,15 @@ class FacilityBanner extends StatefulWidget {
 }
 
 class _FacilityBannerState extends State<FacilityBanner> {
+  List<String> bookStatusMsg = [
+    "On Pay",
+    "On Booking",
+  ];
+  List<Color> bookStatusColor = [
+    Colors.yellow,
+    Colors.green[200],
+  ];
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -22,12 +31,7 @@ class _FacilityBannerState extends State<FacilityBanner> {
       borderRadius: BorderRadius.circular(25),
       onTap: widget.onClick,
       child: Container(
-        padding: EdgeInsets.only(
-          top: 80,
-          left: 20,
-          right: 20,
-          bottom: 20,
-        ),
+        padding: EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width - 48,
         decoration: BoxDecoration(
           // gradient: LinearGradient(
@@ -54,28 +58,91 @@ class _FacilityBannerState extends State<FacilityBanner> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              widget.detailFacility["name"],
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 16,
-              ),
+            buttonBookmark(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.detailFacility["is_booking"]) statusBooking(),
+                Text(
+                  widget.detailFacility["name"],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 16,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  widget.detailFacility["location"],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300,
+                  ),
+                )
+              ],
             ),
-            SizedBox(
-              height: 4,
-            ),
-            Text(
-              widget.detailFacility["location"],
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-              ),
-            )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget statusBooking() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 8,
+      ),
+      margin: EdgeInsets.only(
+        bottom: 8,
+      ),
+      decoration: BoxDecoration(
+        color: bookStatusColor[
+            widget.detailFacility["booking_detail"]["book_status"] - 1],
+        borderRadius: BorderRadius.all(
+          Radius.circular(25),
+        ),
+      ),
+      child: Text(
+        bookStatusMsg[
+            widget.detailFacility["booking_detail"]["book_status"] - 1],
+        style: TextStyle(
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget rating() {
+    return Container();
+  }
+
+  Widget buttonBookmark() {
+    return Container(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.green[50],
+            shape: BoxShape.circle,
+          ),
+          padding: EdgeInsets.all(4),
+          child: widget.detailFacility["is_save"]
+              ? Icon(
+                  Icons.bookmark,
+                  color: Colors.red,
+                )
+              : Icon(
+                  Icons.bookmark_border_rounded,
+                  color: Colors.green[900],
+                ),
         ),
       ),
     );

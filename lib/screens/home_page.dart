@@ -247,7 +247,7 @@ class _HomePageState extends State<HomePage> {
               viewportFraction: 1.0,
               autoPlay: true,
               // height: 160,
-              aspectRatio: 26 / 10,
+              aspectRatio: 24 / 10,
               autoPlayInterval: Duration(seconds: 5),
               onPageChanged: (index, reason) {
                 // setState(() {

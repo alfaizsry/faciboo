@@ -15,6 +15,14 @@ class FacilityCard extends StatefulWidget {
 }
 
 class _FacilityCardState extends State<FacilityCard> {
+  List<String> bookStatusMsg = [
+    "On Pay",
+    "On Booking",
+  ];
+  List<Color> bookStatusColor = [
+    Colors.yellow,
+    Colors.green[200],
+  ];
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -22,14 +30,9 @@ class _FacilityCardState extends State<FacilityCard> {
       borderRadius: BorderRadius.circular(25),
       onTap: widget.onClick,
       child: Container(
-        padding: EdgeInsets.only(
-          top: 40,
-          left: 20,
-          right: 20,
-          bottom: 20,
-        ),
-        width: 150,
-        height: 150,
+        padding: EdgeInsets.all(20),
+        width: 175,
+        height: 175,
         decoration: BoxDecoration(
           image: DecorationImage(
             colorFilter: new ColorFilter.mode(
@@ -47,31 +50,90 @@ class _FacilityCardState extends State<FacilityCard> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              widget.detailFacility["name"],
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
+            buttonBookmark(),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (widget.detailFacility["is_booking"]) statusBooking(),
+                Text(
+                  widget.detailFacility["name"],
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+                SizedBox(
+                  height: 4,
+                ),
+                Text(
+                  widget.detailFacility["location"],
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w300,
+                    fontSize: 12,
+                  ),
+                )
+              ],
             ),
-            SizedBox(
-              height: 4,
-            ),
-            Text(
-              widget.detailFacility["location"],
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w300,
-                fontSize: 12,
-              ),
-            )
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget statusBooking() {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 8,
+      ),
+      margin: EdgeInsets.only(
+        bottom: 8,
+      ),
+      decoration: BoxDecoration(
+        color: bookStatusColor[
+            widget.detailFacility["booking_detail"]["book_status"] - 1],
+        borderRadius: BorderRadius.all(
+          Radius.circular(25),
+        ),
+      ),
+      child: Text(
+        bookStatusMsg[
+            widget.detailFacility["booking_detail"]["book_status"] - 1],
+        style: TextStyle(
+          fontSize: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget buttonBookmark() {
+    return Container(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        splashFactory: NoSplash.splashFactory,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.green[50],
+            shape: BoxShape.circle,
+          ),
+          padding: EdgeInsets.all(4),
+          child: widget.detailFacility["is_save"]
+              ? Icon(
+                  Icons.bookmark,
+                  color: Colors.red,
+                )
+              : Icon(
+                  Icons.bookmark_border_rounded,
+                  color: Colors.green[900],
+                ),
         ),
       ),
     );
