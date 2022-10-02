@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/screens/home.dart';
+import 'package:faciboo/screens/user-access/forgot_password.dart';
 import 'package:faciboo/screens/user-access/sign_up.dart';
 import 'package:flutter/material.dart';
 
@@ -99,7 +100,12 @@ class _SignInPageState extends State<SignInPage> {
             ),
           ),
           InkWell(
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+              );
+            },
             child: Text(
               "Forgot Password?",
               style: TextStyle(
