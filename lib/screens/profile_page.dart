@@ -76,7 +76,9 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             child: CustomButton(
               textButton: "Sign Out",
-              onClick: () {},
+              onClick: () {
+                Navigator.pushReplacementNamed(context, '/loginPage');
+              },
               colorButton: Colors.red[900],
             ),
           ),
