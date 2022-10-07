@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:faciboo/screens/create_facilities.dart';
 import 'package:flutter/material.dart';
 
 class MyFacilitiesPage extends StatefulWidget {
@@ -118,7 +119,14 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                   ),
                   colorButton: Colors.white,
                   colorTextButton: Colors.green[900],
-                  onClick: () {},
+                  onClick: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CreateFacilities(),
+                      ),
+                    ).then((value) => _callGetData());
+                  },
                 ),
               ],
             ),
