@@ -4,6 +4,7 @@ import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/all_facilities.dart';
+import 'package:faciboo/screens/detail_facility.dart';
 import 'package:faciboo/screens/schedule_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -263,10 +264,11 @@ class _HomePageState extends State<HomePage> {
                     detailFacility: facility,
                     onClick: () {
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SchedulePickerPage(),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailFacility(),
+                        ),
+                      );
                     },
                   ),
                 );
@@ -352,11 +354,16 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 width: 24,
               ),
-              for (var i = 0; i < facilitiesByCategory[selectedCategory]["facilities"].length; i++)
+              for (var i = 0;
+                  i <
+                      facilitiesByCategory[selectedCategory]["facilities"]
+                          .length;
+                  i++)
                 Row(
                   children: [
                     FacilityCard(
-                      detailFacility: facilitiesByCategory[selectedCategory]["facilities"][i],
+                      detailFacility: facilitiesByCategory[selectedCategory]
+                          ["facilities"][i],
                     ),
                     SizedBox(
                       width: 12,
@@ -388,9 +395,13 @@ class _HomePageState extends State<HomePage> {
                     Text(
                       facilitiesByCategory[i]["category"],
                       style: TextStyle(
-                        fontWeight: (selectedCategory == i) ? FontWeight.w700 : FontWeight.normal,
+                        fontWeight: (selectedCategory == i)
+                            ? FontWeight.w700
+                            : FontWeight.normal,
                         fontSize: 18,
-                        color: (selectedCategory == i) ? Colors.black : Colors.grey,
+                        color: (selectedCategory == i)
+                            ? Colors.black
+                            : Colors.grey,
                       ),
                     ),
                     if (selectedCategory == i)
