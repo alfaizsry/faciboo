@@ -6,9 +6,10 @@ class CustomButton extends StatefulWidget {
     @required this.textButton,
     @required this.onClick,
     this.prefixIcon,
-    this.colorButton = Colors.green,
+    this.colorButton,
     this.colorTextButton = Colors.white,
     this.textButtonSize = 14,
+    this.padding,
   }) : super(key: key);
 
   final String textButton;
@@ -17,6 +18,7 @@ class CustomButton extends StatefulWidget {
   final Color colorButton;
   final Color colorTextButton;
   final Function onClick;
+  final EdgeInsets padding;
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -31,14 +33,16 @@ class _CustomButtonState extends State<CustomButton> {
         borderRadius: BorderRadius.circular(36),
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: 24,
-          vertical: 12,
-        ),
+        padding: (widget.padding != null)
+            ? widget.padding
+            : EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 12,
+              ),
         alignment: Alignment.center,
         // width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          color: widget.colorButton,
+          color: widget.colorButton ?? Color(0xFF24AB70),
           borderRadius: BorderRadius.all(
             Radius.circular(
               36,
