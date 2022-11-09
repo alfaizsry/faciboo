@@ -617,4 +617,26 @@ class DummyApi {
       },
     ]
   };
+  dynamic getCategoryList = {
+    "success": true,
+    "msg": "ok",
+    "data": [
+      {
+        "id_category": 0,
+        "category": "All",
+      },
+      {
+        "id_category": 1,
+        "category": "Sports",
+      },
+      {
+        "id_category": 2,
+        "category": "Entertainment",
+      },
+      {
+        "id_category": 3,
+        "category": "Workspace",
+      },
+    ]
+  };
 }

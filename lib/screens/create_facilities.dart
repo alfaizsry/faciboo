@@ -1,4 +1,6 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
+import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
 class CreateFacilities extends StatefulWidget {
@@ -13,11 +15,31 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   TextEditingController _desc = TextEditingController();
   TextEditingController _address = TextEditingController();
   TextEditingController _price = TextEditingController();
+  TextEditingController _bookingHours = TextEditingController();
+
+  var dummyApi = DummyApi();
+  List categoryList = [];
+
+  int selectedCategory = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _callGetData();
+    super.initState();
+  }
+
+  _callGetData() async {
+    setState(() {
+      categoryList = dummyApi.getCategoryList["data"];
+    });
+  }
 
   //HALAMAN INI MASIH SEBAGIAN (ONPROGRESS)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // bottomNavigationBar: _buildBottomBar(),
       body: ListView(
         children: [
           SizedBox(
@@ -41,10 +63,52 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
           ),
           _buildHeader(),
           SizedBox(
+            height: 32,
+          ),
+          _buildCategoryPicker(),
+          SizedBox(
             height: 20,
           ),
           _buildFacilityForm(),
+          SizedBox(
+            height: 32,
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: 24,
+            ),
+            child: CustomButton(
+              textButton: "Create",
+              onClick: () {},
+            ),
+          ),
+          SizedBox(
+            height: 48,
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return Container(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: 32,
+      ),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(
+            width: 0.8,
+            color: Colors.grey,
+          ),
+        ),
+      ),
+      child: CustomButton(
+        onClick: () {},
+        textButton: "Create",
       ),
     );
   }
@@ -53,18 +117,104 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
     List<String> formTitle = ["Name", "Description", "Address", "Price/Book"];
     List<TextEditingController> controller = [_name, _desc, _address, _price];
 
-    return Column(
-      children: [
-        for (var i = 0; i < formTitle.length; i++)
-          Container(
+    return Container(
+      margin: EdgeInsets.only(
+        left: 24,
+        right: 24,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          for (var i = 0; i < formTitle.length; i++)
+            Container(
               margin: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                bottom: 12,
+                bottom: 16,
               ),
               child: _customTextInput(
-                  hintText: formTitle[i], controller: controller[i]))
-      ],
+                hintText: formTitle[i],
+                controller: controller[i],
+              ),
+            ),
+          _customTextInput(
+            hintText: "Booking Hours",
+            controller: _bookingHours,
+          ),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+            ),
+            child: Text(
+              "Notes : separate booking time with commas",
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCategoryPicker() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Select Category",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          SingleChildScrollView(
+            physics: ScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                for (var i = 0; i < categoryList.length; i++)
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 12,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = categoryList[i]["id_category"];
+                        });
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color:
+                              categoryList[i]["id_category"] == selectedCategory
+                                  ? Colors.green
+                                  : Colors.grey[350],
+                        ),
+                        child: Text(
+                          categoryList[i]["category"],
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -88,13 +238,15 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
     @required TextEditingController controller,
     Widget prefixIcon,
     Widget suffixIcon,
-    bool isEnable = false,
+    bool isEnable = true,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
       controller: controller,
       enabled: isEnable,
+      minLines: 1,
+      maxLines: 5,
       style: TextStyle(
         fontSize: 14.0,
         fontWeight: FontWeight.w500,

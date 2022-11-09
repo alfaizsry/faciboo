@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePickerPage extends StatefulWidget {
-  const SchedulePickerPage({Key key, @required this.dataSubFacility, @required this.dataUser})
+  const SchedulePickerPage(
+      {Key key, @required this.dataSubFacility, @required this.dataUser})
       : super(key: key);
 
   final dynamic dataSubFacility;
@@ -75,7 +76,8 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
     return Row(
       children: [
         IconButton(
-            icon: const Icon(Icons.chevron_left_sharp, size: 36, color: Colors.black),
+            icon: const Icon(Icons.chevron_left_sharp,
+                size: 36, color: Colors.black),
             onPressed: () {
               Navigator.of(context).pop();
             }),
@@ -103,7 +105,9 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
     final DateTime now = DateTime.now();
     DateFormat df = DateFormat('dd MMMM yyyy');
     final String formatted = formatter.format(now);
-    List<Event> events = [Event(DateTime.parse(formatted), "Pemilihan Pertama")];
+    List<Event> events = [
+      Event(DateTime.parse(formatted), "Pemilihan Pertama")
+    ];
     return Container(
       width: width,
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -154,12 +158,12 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
     if (_listTimePicker.isNotEmpty && !isLoading) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         height: height * 0.25,
         child: ListView(
+          physics: NeverScrollableScrollPhysics(),
           children: [
             Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
               alignment: Alignment.centerLeft,
               child: const Text(
                 "Select Time",
@@ -174,11 +178,14 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
                       primary: false,
                       shrinkWrap: true,
                       itemCount: _listTimePicker.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2, crossAxisSpacing: 8, childAspectRatio: 4 / 1),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 8,
+                              childAspectRatio: 4 / 1),
                       itemBuilder: (BuildContext context, int i) {
-                        int idxOf =
-                            _listSelectedScheduleId.indexOf(_listTimePicker[i]['schedule_id']);
+                        int idxOf = _listSelectedScheduleId
+                            .indexOf(_listTimePicker[i]['schedule_id']);
                         bool isSelected = idxOf != -1;
 
                         return Container(
@@ -189,9 +196,10 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
                                 if (isSelected) {
                                   _listSelectedScheduleId.removeAt(idxOf);
                                 } else {
-                                  if (_listSelectedScheduleId.length == _listTimePicker.length)
-                                    return;
-                                  _listSelectedScheduleId.add(_listTimePicker[i]['schedule_id']);
+                                  if (_listSelectedScheduleId.length ==
+                                      _listTimePicker.length) return;
+                                  _listSelectedScheduleId
+                                      .add(_listTimePicker[i]['schedule_id']);
                                 }
                               });
                             },
@@ -199,16 +207,22 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
                               width: double.infinity,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: isSelected ? Colors.green[600] : Colors.white,
+                                  color: isSelected
+                                      ? Colors.green[600]
+                                      : Colors.white,
                                   border: Border.all(
-                                      color: isSelected ? Colors.blueGrey[300] : Colors.black26),
+                                      color: isSelected
+                                          ? Colors.blueGrey[300]
+                                          : Colors.black26),
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Center(
                                   child: Text(_listTimePicker[i]['time'],
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: isSelected == true ? Colors.white : Colors.black,
+                                        color: isSelected == true
+                                            ? Colors.white
+                                            : Colors.black,
                                         fontWeight: FontWeight.w500,
                                       ),
                                       textAlign: TextAlign.center),
@@ -268,7 +282,12 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        children: [_buildHeader(), _datePicker(), _timePicker(), _continueButton()],
+        children: [
+          _buildHeader(),
+          _datePicker(),
+          _timePicker(),
+          _continueButton()
+        ],
       ),
     );
   }
