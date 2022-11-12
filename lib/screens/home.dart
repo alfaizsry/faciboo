@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:faciboo/components/facility_banner.dart';
@@ -22,10 +21,10 @@ class _HomeState extends State<Home> {
   int _page = 1;
 
   List pages = [
-    MyFacilitiesPage(),
-    HomePage(),
-    MyBookedPage(),
-    ProfilePage(),
+    const MyFacilitiesPage(),
+    const HomePage(),
+    const MyBookedPage(),
+    const ProfilePage(),
   ];
 
   @override
@@ -39,7 +38,7 @@ class _HomeState extends State<Home> {
 
   Widget buildBottomNavigationBar() {
     return CurvedNavigationBar(
-      animationDuration: Duration(
+      animationDuration: const Duration(
         milliseconds: 200,
       ),
       animationCurve: Curves.bounceInOut,

@@ -15,12 +15,12 @@ class _CustomArrowBackState extends State<CustomArrowBack> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: new CircleBorder(),
+      customBorder: const CircleBorder(),
       splashFactory: NoSplash.splashFactory,
       onTap: widget.onClick,
       child: Container(
         alignment: Alignment.center,
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
             // color: Colors.orange,
             shape: BoxShape.circle,
@@ -29,7 +29,7 @@ class _CustomArrowBackState extends State<CustomArrowBack> {
               color: Colors.grey,
             ),
             color: Colors.white),
-        child: Icon(
+        child: const Icon(
           Icons.arrow_back_ios_new_rounded,
           // size: 15,
         ),

@@ -33,26 +33,24 @@ class _DetailFacilityState extends State<DetailFacility> {
         SizedBox(
           height: MediaQuery.of(context).size.height / 6,
         ),
-        Flexible(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            // height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25),
-                topRight: Radius.circular(25),
-              ),
+        Container(
+          width: MediaQuery.of(context).size.width,
+          // height: MediaQuery.of(context).size.height,
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
             ),
-            child: SingleChildScrollView(
-              // physics: ScrollPhysics(),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildHeader(),
-                  _buildDetails(),
-                ],
-              ),
+          ),
+          child: SingleChildScrollView(
+            // physics: ScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildHeader(),
+                _buildDetails(),
+              ],
             ),
           ),
         ),
@@ -70,7 +68,7 @@ class _DetailFacilityState extends State<DetailFacility> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Swimming Pool",
             style: TextStyle(
               fontSize: 20,
@@ -90,7 +88,7 @@ class _DetailFacilityState extends State<DetailFacility> {
             children: [
               CustomButton(
                 textButton: "Check Availability",
-                padding: EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 16,
                   vertical: 8,
                 ),
@@ -98,7 +96,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => SchedulePickerPage(),
+                      builder: (context) => const SchedulePickerPage(),
                     ),
                   );
                   // .then((value) => _callGetData());
@@ -122,40 +120,40 @@ class _DetailFacilityState extends State<DetailFacility> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitleContent(title: "Description"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
-          Text(
+          const Text(
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam maximus sollicitudin dui eget commodo. Praesent vel placerat lorem. Integer lacinia in massa porta sodales. Maecenas maximus mauris id turpis posuere, a posuere ipsum varius. Etiam id lacinia felis. Duis ut tristique quam. Maecenas consequat felis ut ullamcorper mollis. Fusce vulputate convallis erat, in fringilla purus blandit vel. \n\nNunc id finibus nunc. Nulla auctor et diam at congue. Quisque varius pellentesque risus quis hendrerit. Maecenas neque odio, hendrerit in enim sed, elementum ullamcorper dui. Ut aliquam elementum ornare. Fusce posuere nec enim a vehicula.",
             style: TextStyle(
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Photos"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildPhotosHorizontal(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Location"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildLocationCard(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Price"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildPriceCard(),
-          SizedBox(
+          const SizedBox(
             height: 36,
           ),
         ],
@@ -176,7 +174,7 @@ class _DetailFacilityState extends State<DetailFacility> {
               child: Container(
                 width: MediaQuery.of(context).size.width / 3,
                 height: MediaQuery.of(context).size.width / 3,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(
                     Radius.circular(10),
                   ),
@@ -200,30 +198,30 @@ class _DetailFacilityState extends State<DetailFacility> {
       height: MediaQuery.of(context).size.height / 5,
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/maps_image.png'),
+          image: const AssetImage('assets/images/maps_image.png'),
           fit: BoxFit.cover,
           colorFilter: ColorFilter.mode(
             Colors.black.withOpacity(0.4),
             BlendMode.darken,
           ),
         ),
-        borderRadius: BorderRadius.all(
+        borderRadius: const  BorderRadius.all(
           Radius.circular(25),
         ),
       ),
       alignment: Alignment.center,
       child: Container(
-        padding: EdgeInsets.symmetric(
+        padding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 6,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(25),
           ),
           border: Border.all(width: 1, color: Colors.white),
         ),
-        child: Text(
+        child: const Text(
           "Show Location",
           style: TextStyle(
             color: Colors.white,
@@ -236,12 +234,12 @@ class _DetailFacilityState extends State<DetailFacility> {
   Widget _buildPriceCard() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 20,
         vertical: 16,
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
         color: Colors.lightGreen[50],
@@ -252,7 +250,7 @@ class _DetailFacilityState extends State<DetailFacility> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "Total Cost",
                 style: TextStyle(
                   color: Colors.black,
@@ -260,10 +258,10 @@ class _DetailFacilityState extends State<DetailFacility> {
                   fontWeight: FontWeight.w300,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 4,
               ),
-              Text(
+              const Text(
                 "Rp. 250.000/ hour",
                 style: TextStyle(
                   color: Colors.black,
@@ -276,7 +274,7 @@ class _DetailFacilityState extends State<DetailFacility> {
           CustomButton(
             textButton: "Book Now",
             onClick: () {},
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 8,
             ),
@@ -289,7 +287,7 @@ class _DetailFacilityState extends State<DetailFacility> {
   Widget _buildTitleContent({String title}) {
     return Text(
       title,
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.w600,
       ),
@@ -300,7 +298,7 @@ class _DetailFacilityState extends State<DetailFacility> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height / 3.2,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: NetworkImage(
             "https://www.bhg.com/thmb/297Jr2SVie5oHqkVlwtkR0t9foo=/1572x1244/filters:fill(auto,1)/home-pool-deck-ETQanX7FqE9Bc4s4W5s13r-4d7f47bf12e34d6aa5291c7ef93a7641.jpg",
@@ -313,11 +311,11 @@ class _DetailFacilityState extends State<DetailFacility> {
 
   Widget _buildAppbar() {
     return AppBar(
-        iconTheme: IconThemeData(
+        iconTheme: const IconThemeData(
           color: Colors.black,
         ),
         backgroundColor: Colors.transparent,
-        title: Text(
+        title: const Text(
           "Details",
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -325,7 +323,7 @@ class _DetailFacilityState extends State<DetailFacility> {
           ),
         ),
         leading: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           child: CustomArrowBack(
             onClick: () {
               Navigator.pop(context);

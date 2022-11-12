@@ -35,19 +35,17 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        children: [
-          SizedBox(
-            height: 48,
-          ),
-          _buildCardProfile(),
-          SizedBox(
-            height: 20,
-          ),
-          _buildCategory(),
-        ],
-      ),
+    return ListView(
+      children: [
+        const SizedBox(
+          height: 48,
+        ),
+        _buildCardProfile(),
+        const SizedBox(
+          height: 16,
+        ),
+        _buildCategory(),
+      ],
     );
   }
 
@@ -57,15 +55,15 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
       borderRadius: BorderRadius.circular(25),
       onTap: () {},
       child: Container(
-        margin: EdgeInsets.symmetric(
+        margin: const EdgeInsets.symmetric(
           horizontal: 24,
         ),
-        padding: EdgeInsets.all(20),
-        width: MediaQuery.of(context).size.width - 48,
+        padding: const EdgeInsets.all(16),
+        width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.green[50],
           // border: Border.all(width: 2, color: Colors.black),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(25),
           ),
         ),
@@ -86,7 +84,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
             Column(
@@ -95,19 +93,19 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
               children: [
                 Text(
                   userDetail["name"],
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   "${myFacilitiesByCategory[0].length} Facilities",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 CustomButton(
@@ -144,7 +142,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 24,
               ),
               _customTabBar(),
@@ -161,7 +159,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
         //     onClickSeeMore: () {},
         //   ),
         // ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         SingleChildScrollView(
@@ -169,7 +167,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 24,
               ),
               for (var i = 0;
@@ -183,7 +181,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                       detailFacility: myFacilitiesByCategory[selectedCategory]
                           ["facilities"][i],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 12,
                     ),
                   ],
@@ -224,13 +222,13 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                     ),
                     if (selectedCategory == i)
                       Container(
-                        margin: EdgeInsets.only(
+                        margin: const EdgeInsets.only(
                           bottom: 8,
                           top: 4,
                         ),
                         width: 10,
                         height: 2.5,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.black,
                           borderRadius: BorderRadius.all(
                             Radius.circular(
@@ -242,7 +240,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                   ],
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 24,
               ),
             ],
