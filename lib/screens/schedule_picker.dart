@@ -19,41 +19,41 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
   bool isLoadingDatePicker = true;
   List _listDatePicker = [];
   List _listDummyDatePicker = [
-    {'date': '2022-11-02'},
-    {'date': '2022-11-03'},
-    {'date': '2022-11-04'},
-    {'date': '2022-11-05'},
-    {'date': '2022-11-06'},
-    {'date': '2022-11-07'},
-    {'date': '2022-11-08'},
-    {'date': '2022-11-09'},
-    {'date': '2022-11-11'},
-    {'date': '2022-11-11'},
-    {'date': '2022-11-12'},
+    {'date': '2022-11-23'},
+    {'date': '2022-11-24'},
+    {'date': '2022-11-25'},
+    {'date': '2022-11-26'},
+    {'date': '2022-11-27'},
+    {'date': '2022-11-28'},
+    {'date': '2022-11-29'},
+    {'date': '2022-11-30'},
+    {'date': '2022-12-01'},
+    {'date': '2022-12-02'},
+    {'date': '2022-12-03'},
   ];
   List _listTimePicker = [
     {
-      'date': '2022-11-12',
+      'date': '2022-11-23',
       'time': '08.00 - 09.30',
       'schedule_id': 1,
     },
     {
-      'date': '2022-11-12',
+      'date': '2022-11-23',
       'time': '11.00 - 12.30',
       'schedule_id': 2,
     },
     {
-      'date': '2022-11-12',
+      'date': '2022-11-23',
       'time': '13.00 - 14.30',
       'schedule_id': 3,
     },
     {
-      'date': '2022-11-12',
+      'date': '2022-11-23',
       'time': '15.00 - 16.30',
       'schedule_id': 4,
     },
     {
-      'date': '2022-11-12',
+      'date': '2022-11-23',
       'time': '17.00 - 18.30',
       'schedule_id': 5,
     },
