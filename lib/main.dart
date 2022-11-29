@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:faciboo/screens/home.dart';
-import 'package:faciboo/screens/splash-screen.dart';
+import 'package:faciboo/screens/splash_screen.dart';
 import 'package:faciboo/screens/user-access/sign_in.dart';
 import 'package:flutter/material.dart';
 
@@ -49,11 +49,11 @@ class _MyAppState extends State<MyApp> {
 
   final routes = {
     // '/': (BuildContext context) => new NoPage(),
-    '/loginPage': (BuildContext context) => SignInPage(),
+    '/loginPage': (BuildContext context) => const SignInPage(),
     // '/splashScreen': (BuildContext context) => const SplashScreen(),
     // '/selesaiforgotPage': (BuildContext context) => new SelesaiforgotPage(),
     // '/onboarding': (BuildContext context) => const OnBoardingScreen(),
-    // '/onHome': (BuildContext context) => const Home(),
+    '/home': (BuildContext context) => const Home(),
     '/onSplash': (BuildContext context) => SplashScreenPage(),
   };
 

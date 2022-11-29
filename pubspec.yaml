@@ -40,6 +40,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   carousel_slider: ^4.1.1
   flutter_date_pickers: ^0.4.0
+  loading_overlay: ^0.3.0
 
 dev_dependencies:
   flutter_lints: ^1.0.0

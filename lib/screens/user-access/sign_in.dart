@@ -1,38 +1,97 @@
-import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
+import 'package:faciboo/components/shared_preferences.dart';
 import 'package:faciboo/screens/home.dart';
 import 'package:faciboo/screens/user-access/forgot_password.dart';
 import 'package:faciboo/screens/user-access/sign_up.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
 
 class SignInPage extends StatefulWidget {
-  SignInPage({Key key}) : super(key: key);
+  const SignInPage({Key key}) : super(key: key);
 
   @override
   State<SignInPage> createState() => _SignInPageState();
 }
 
 class _SignInPageState extends State<SignInPage> {
-  TextEditingController _username = TextEditingController();
-  TextEditingController _password = TextEditingController();
+  HttpService http = HttpService();
+  bool isLoading = false;
+  final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+  final LocalStorage storage = LocalStorage('faciboo');
+
+  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController password = TextEditingController();
 
   bool _isObscure = true;
 
+  _callPostApi() {
+    setState(() {
+      isLoading = true;
+    });
+
+    Map body = {"phoneNumber": phoneNumber.text, "password": password.text};
+
+    http.post('user/login', body: body).then((res) {
+      print("BODY $body");
+      if (res['success']) {
+        print("RES LOGIN $res");
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: 'Login Success',
+          duration: const Duration(seconds: 3),
+        ).show(context);
+        String dataAuth = res['token'].toString();
+        setState(() {
+          isLoading = false;
+          storage.setItem("authKey", dataAuth);
+          setInstanceString("authKey", dataAuth);
+        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Home()),
+        );
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: res['msg'],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+    }).catchError((onError) {
+      Flushbar(
+        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        flushbarPosition: FlushbarPosition.TOP,
+        // borderRadius: BorderRadius.circular(8),
+        backgroundColor: Colors.green[600],
+        message: onError.toString(),
+        duration: const Duration(seconds: 3),
+      ).show(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        child: ListView(
+    return LoadingFallback(
+      isLoading: isLoading,
+      child: Scaffold(
+        key: _key,
+        backgroundColor: Colors.white,
+        body: ListView(
           children: [
             _buildCover(),
-            SizedBox(
+            const SizedBox(
               height: 25,
             ),
             _buildContent(),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
           ],
@@ -45,12 +104,12 @@ class _SignInPageState extends State<SignInPage> {
     var height = MediaQuery.of(context).size.height;
 
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Color(0xFFF0FFF9),
       ),
       height: height * 0.4,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 24, horizontal: 64),
+        margin: const EdgeInsets.symmetric(vertical: 24, horizontal: 64),
         child: Image.asset(
           'assets/images/coverSign.png',
           fit: BoxFit.fill,
@@ -61,40 +120,40 @@ class _SignInPageState extends State<SignInPage> {
 
   Widget _buildContent() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Log In",
             style: TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 20,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
             child: _customTextInput(
-              hintText: "Username",
-              controller: _username,
+              hintText: "Phone Number",
+              controller: phoneNumber,
               isEnable: true,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.phone,
             ),
           ),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
             child: _customTextInputPassword(
               hintText: "Password",
-              controller: _password,
+              controller: password,
               isEnable: true,
               keyboardType: TextInputType.text,
             ),
@@ -106,7 +165,7 @@ class _SignInPageState extends State<SignInPage> {
                 MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
               );
             },
-            child: Text(
+            child: const Text(
               "Forgot Password?",
               style: TextStyle(
                 color: Color(0xFF6B6B6B),
@@ -114,7 +173,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 32,
           ),
           Row(
@@ -122,18 +181,15 @@ class _SignInPageState extends State<SignInPage> {
             children: [
               InkWell(
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Home()),
-                  );
+                  _callPostApi();
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color(0xFF24AB70),
+                    color: const Color(0xFF24AB70),
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 89, vertical: 10),
-                  child: Text(
+                  padding: const EdgeInsets.symmetric(horizontal: 89, vertical: 10),
+                  child: const Text(
                     "SIGN IN",
                     style: TextStyle(
                       fontSize: 18,
@@ -144,14 +200,14 @@ class _SignInPageState extends State<SignInPage> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 18,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                child: Text(
+                child: const Text(
                   "or",
                   style: TextStyle(
                     fontSize: 14,
@@ -161,7 +217,7 @@ class _SignInPageState extends State<SignInPage> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 18,
           ),
           Row(
@@ -177,12 +233,12 @@ class _SignInPageState extends State<SignInPage> {
                       Image.asset(
                         'assets/images/googleLogo.png',
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 24,
                       ),
-                      Text(
+                      const Text(
                         "Login With Google",
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14,
                         ),
                       ),
@@ -192,21 +248,21 @@ class _SignInPageState extends State<SignInPage> {
               )
             ],
           ),
-          SizedBox(
+          const SizedBox(
             height: 40,
           ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Don't have an account?",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xFF9C9C9C),
                   fontSize: 14,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 21,
               ),
               InkWell(
@@ -216,12 +272,10 @@ class _SignInPageState extends State<SignInPage> {
                     MaterialPageRoute(builder: (context) => SignUpPage()),
                   );
                 },
-                child: Text(
+                child: const Text(
                   "Sign Up",
-                  style: TextStyle(
-                      color: Color(0xFF004D34),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      color: Color(0xFF004D34), fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               )
             ],
@@ -249,42 +303,42 @@ class _SignInPageState extends State<SignInPage> {
         color: (isEnable) ? Colors.black : Colors.black54,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 24,
         ),
         // isDense: true, //remove default padding/ activate bg color
         // hintText: widget.hintText,
         hintText: hintText,
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           fontSize: 14.0,
-          color: Color(0xFFB4B4B4),
+          color: const Color(0xFFB4B4B4),
         ),
         prefix: prefixIcon,
-        prefixIconConstraints: BoxConstraints(maxWidth: 100),
+        prefixIconConstraints: const BoxConstraints(maxWidth: 100),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Color(0xFF004D34),
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Color(0xFF004D34),
+          borderSide: const BorderSide(
+            color: const Color(0xFF004D34),
             width: 1,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.grey,
             width: 0.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Color(0xFF004D34),
             width: 0.8,
           ),
@@ -313,18 +367,18 @@ class _SignInPageState extends State<SignInPage> {
         color: (isEnable) ? Colors.black : Colors.black54,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 24,
         ),
         // isDense: true, //remove default padding/ activate bg color
         // hintText: widget.hintText,
         hintText: hintText,
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           fontSize: 14.0,
-          color: Color(0xFFB4B4B4),
+          color: const Color(0xFFB4B4B4),
         ),
         prefix: prefixIcon,
-        prefixIconConstraints: BoxConstraints(maxWidth: 100),
+        prefixIconConstraints: const BoxConstraints(maxWidth: 100),
         suffixIcon: IconButton(
             icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
             onPressed: () {
@@ -334,29 +388,29 @@ class _SignInPageState extends State<SignInPage> {
             }),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Color(0xFF004D34),
+          borderSide: const BorderSide(
+            color: const Color(0xFF004D34),
             width: 1,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Color(0xFF004D34),
             width: 1,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.grey,
             width: 0.5,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: BorderSide(
-            color: Color(0xFF004D34),
+          borderSide: const BorderSide(
+            color: const Color(0xFF004D34),
             width: 0.8,
           ),
         ),
