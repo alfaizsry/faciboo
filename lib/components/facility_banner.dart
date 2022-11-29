@@ -31,7 +31,7 @@ class _FacilityBannerState extends State<FacilityBanner> {
       borderRadius: BorderRadius.circular(25),
       onTap: widget.onClick,
       child: Container(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         width: MediaQuery.of(context).size.width - 48,
         decoration: BoxDecoration(
           // gradient: LinearGradient(
@@ -43,7 +43,7 @@ class _FacilityBannerState extends State<FacilityBanner> {
           //   ],
           // ),
           image: DecorationImage(
-            colorFilter: new ColorFilter.mode(
+            colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.4),
               BlendMode.darken,
             ),
@@ -53,7 +53,7 @@ class _FacilityBannerState extends State<FacilityBanner> {
             fit: BoxFit.cover,
           ),
           // border: Border.all(width: 2, color: Colors.black),
-          borderRadius: BorderRadius.all(
+          borderRadius: const BorderRadius.all(
             Radius.circular(25),
           ),
         ),
@@ -69,18 +69,18 @@ class _FacilityBannerState extends State<FacilityBanner> {
                 if (widget.detailFacility["is_booking"]) statusBooking(),
                 Text(
                   widget.detailFacility["name"],
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 4,
                 ),
                 Text(
                   widget.detailFacility["location"],
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w300,
                   ),
@@ -95,24 +95,24 @@ class _FacilityBannerState extends State<FacilityBanner> {
 
   Widget statusBooking() {
     return Container(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 4,
         horizontal: 8,
       ),
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         bottom: 8,
       ),
       decoration: BoxDecoration(
         color: bookStatusColor[
             widget.detailFacility["booking_detail"]["book_status"] - 1],
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
       ),
       child: Text(
         bookStatusMsg[
             widget.detailFacility["booking_detail"]["book_status"] - 1],
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 10,
         ),
       ),
@@ -133,9 +133,9 @@ class _FacilityBannerState extends State<FacilityBanner> {
             color: Colors.green[50],
             shape: BoxShape.circle,
           ),
-          padding: EdgeInsets.all(4),
+          padding: const EdgeInsets.all(4),
           child: widget.detailFacility["is_save"]
-              ? Icon(
+              ? const Icon(
                   Icons.bookmark,
                   color: Colors.red,
                 )

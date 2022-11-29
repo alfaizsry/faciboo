@@ -27,7 +27,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
               children: [
                 Text(
                   widget.category[i]["category"],
-                  style: TextStyle(
+                  style: const TextStyle(
                     // fontWeight:
                     // (selectedCategory == i)
                     //     ? FontWeight.w700
@@ -36,7 +36,7 @@ class _CustomTabBarState extends State<CustomTabBar> {
                     // color: (selectedCategory == i) ? Colors.black : Colors.grey,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 24,
                 ),
               ],

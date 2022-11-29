@@ -38,11 +38,11 @@ class _AllFacilitiesState extends State<AllFacilities> {
       body: ListView(
         children: [
           _buildAppbar(),
-          SizedBox(
+          const SizedBox(
             height: 30,
           ),
           _buildHeader(),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           _buildListFacilities(),
@@ -53,7 +53,7 @@ class _AllFacilitiesState extends State<AllFacilities> {
 
   Widget _buildAppbar() {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         top: 32,
         left: 24,
         right: 24,
@@ -87,7 +87,7 @@ class _AllFacilitiesState extends State<AllFacilities> {
 
   Widget _buildHeader() {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 24,
         left: 24,
       ),
@@ -98,19 +98,19 @@ class _AllFacilitiesState extends State<AllFacilities> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
+              const Text(
                 "All Facility",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8,
               ),
               Text(
                 "Result Found (${facilities.length})",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 16,
                 ),
               ),
@@ -118,16 +118,16 @@ class _AllFacilitiesState extends State<AllFacilities> {
           ),
           Row(
             children: [
-              Text(
+              const Text(
                 "Sort By",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
-              Icon(
+              const Icon(
                 Icons.filter_list_rounded,
               )
             ],
@@ -139,20 +139,20 @@ class _AllFacilitiesState extends State<AllFacilities> {
 
   Widget _buildListFacilities() {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 24,
         left: 24,
       ),
       child: SingleChildScrollView(
         child: ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: facilities.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   FacilityBanner(detailFacility: facilities[index]),
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
                 ],

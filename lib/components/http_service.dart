@@ -1,11 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:localstorage/localstorage.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 class HttpService {
   static HttpService instance = HttpService.internal();
@@ -14,7 +11,7 @@ class HttpService {
 
   final LocalStorage storage = LocalStorage('faciboo');
   Map<String, String> headers = {};
-  final JsonDecoder _decoder = JsonDecoder();
+  final JsonDecoder _decoder = const JsonDecoder();
   static const _baseUrl = 'http://103.23.199.203:3000/';
 
   Future<dynamic> post(String desturl, {Map<String, String> headers, body, encoding}) {
