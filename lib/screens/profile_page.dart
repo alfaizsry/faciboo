@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
@@ -11,15 +12,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  HttpService http = HttpService();
   var dummyApi = DummyApi();
-  dynamic userDetail;
+  dynamic userDetail = {};
 
   bool _isEditing = false;
+  bool _isObsPassword = true;
 
   TextEditingController _name = TextEditingController();
+  TextEditingController _newPassword = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _phone = TextEditingController();
   TextEditingController _location = TextEditingController();
+  TextEditingController _bankName = TextEditingController();
+  TextEditingController _bankAccountName = TextEditingController();
+  TextEditingController _bankAccountNumber = TextEditingController();
 
   @override
   void initState() {
@@ -29,18 +36,57 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _callGetData() async {
-    setState(() {
-      userDetail = dummyApi.getuserdetail["data"];
+    // setState(() {
+    //   userDetail = dummyApi.getuserdetail["data"];
+    // });
+    _getProfile();
+  }
+
+  _getProfile() async {
+    await http.post('profile/get-profile').then((res) {
+      if (res["success"]) {
+        setState(() {
+          userDetail = res["data"];
+          _setDataForm();
+        });
+        print("================USERDETAIL $userDetail");
+      }
+    }).catchError((err) {
+      print("ERROR get-profile $err");
     });
-    await _setDataForm();
+  }
+
+  _editProfile() async {
+    Map body = {
+      "name": _name.text,
+      "password": _newPassword.text,
+      "nameBank": _bankName.text,
+      "nomorRekening": _bankAccountNumber.text,
+      "nameAccountBank": _bankAccountName.text,
+    };
+    await http.post('profile/edit-profile', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          _newPassword.text = "";
+          _isEditing = false;
+          _isObsPassword = true;
+        });
+        _getProfile();
+      }
+    }).catchError((err) {
+      print("ERROR edit-profile $err");
+    });
   }
 
   _setDataForm() {
     setState(() {
-      _name.text = userDetail["name"];
-      _email.text = userDetail["email"];
-      _phone.text = userDetail["phone"];
-      _location.text = userDetail["location"];
+      _name.text = userDetail["name"] ?? "";
+      _email.text = userDetail["email"] ?? "";
+      _phone.text = userDetail["phoneNumber"] ?? "";
+      _location.text = "userDetail['location']" ?? "";
+      _bankAccountName.text = userDetail["nameAccountBank"] ?? "";
+      _bankAccountNumber.text = userDetail["nomorRekening"] ?? "";
+      _bankName.text = userDetail["nameBank"] ?? "";
     });
   }
 
@@ -94,7 +140,8 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: [
         CachedNetworkImage(
-          imageUrl: userDetail["image"],
+          imageUrl: userDetail["image"] ??
+              "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
           imageBuilder: (context, imageProvider) => Container(
             width: 144.0,
             height: 144.0,
@@ -106,6 +153,9 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
+          errorWidget: (context, url, error) {
+            return Icon(Icons.error_outline_rounded);
+          },
         ),
         Container(
           margin: EdgeInsets.only(
@@ -115,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                userDetail["name"],
+                "${userDetail["name"]}",
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
@@ -144,6 +194,15 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _buildSubtitle({@required String subtitle}) {
+    return Text(
+      "$subtitle",
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+      ),
+    );
+  }
+
   Widget _buildUserDetailForm() {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -152,12 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Name",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildSubtitle(subtitle: "Name"),
           Container(
             margin: EdgeInsets.only(
               top: 4,
@@ -179,12 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          Text(
-            "Email",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildSubtitle(subtitle: "Email"),
           Container(
             margin: EdgeInsets.only(
               top: 4,
@@ -207,12 +256,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          Text(
-            "Phone",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildSubtitle(subtitle: "Phone"),
           Container(
             margin: EdgeInsets.only(
               top: 4,
@@ -235,28 +279,130 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          Text(
-            "Location",
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildSubtitle(subtitle: "New Password"),
           Container(
             margin: EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
             child: _customTextInput(
-              hintText: "Location",
-              controller: _location,
+              hintText: "New Password",
+              controller: _newPassword,
+              isPassword: _isObsPassword,
               isEnable: _isEditing,
-              keyboardType: TextInputType.multiline,
+              keyboardType: TextInputType.text,
+              suffixIcon: Container(
+                margin: EdgeInsets.only(right: 8),
+                child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        _isObsPassword = !_isObsPassword;
+                      });
+                    },
+                    icon: Icon(
+                      _isObsPassword
+                          ? Icons.visibility_off_rounded
+                          : Icons.remove_red_eye_rounded,
+                    )),
+              ),
               prefixIcon: Container(
                 margin: EdgeInsets.only(
                   right: 10,
                 ),
                 child: Icon(
-                  Icons.share_location_rounded,
+                  Icons.password_rounded,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          // _buildSubtitle(subtitle: "Location"),
+          // Container(
+          //   margin: EdgeInsets.only(
+          //     top: 4,
+          //     bottom: 16,
+          //   ),
+          //   child: _customTextInput(
+          //     hintText: "Location",
+          //     controller: _location,
+          //     isEnable: _isEditing,
+          //     keyboardType: TextInputType.multiline,
+          //     prefixIcon: Container(
+          //       margin: EdgeInsets.only(
+          //         right: 10,
+          //       ),
+          //       child: Icon(
+          //         Icons.share_location_rounded,
+          //         size: 18,
+          //         color: Colors.black,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          _buildSubtitle(subtitle: "Bank Name"),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Bank Name",
+              controller: _bankName,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.text,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.money,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          _buildSubtitle(subtitle: "Bank Account Name"),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Bank Account Name",
+              controller: _bankAccountName,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.text,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.attach_money_rounded,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
+          _buildSubtitle(subtitle: "Bank Account Number"),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Bank Account Number",
+              controller: _bankAccountNumber,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.text,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.attach_money_rounded,
                   size: 18,
                   color: Colors.black,
                 ),
@@ -277,7 +423,9 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           CustomButton(
             textButton: "Save",
-            onClick: () {},
+            onClick: () {
+              _editProfile();
+            },
           ),
           SizedBox(
             width: 12,
@@ -302,12 +450,14 @@ class _ProfilePageState extends State<ProfilePage> {
     @required TextEditingController controller,
     Widget prefixIcon,
     Widget suffixIcon,
+    bool isPassword = false,
     bool isEnable = false,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
       controller: controller,
+      obscureText: isPassword,
       enabled: isEnable,
       style: TextStyle(
         fontSize: 14.0,

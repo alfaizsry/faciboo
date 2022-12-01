@@ -14,17 +14,20 @@ class HttpService {
   final JsonDecoder _decoder = const JsonDecoder();
   static const _baseUrl = 'http://103.23.199.203:3000/';
 
-  Future<dynamic> post(String desturl, {Map<String, String> headers, body, encoding}) {
+  Future<dynamic> post(String desturl,
+      {Map<String, String> headers, body, encoding}) {
     body ??= {};
 
     Map<String, String> requestHeaders = {
       "Content-type": "application/json; charset=UTF-8",
       "Accept": "application/json",
-      "X-Auth-Token": storage.getItem("authKey")
+      "auth-token": storage.getItem("authKey")
     };
     return http
         .post(Uri.parse(_baseUrl + desturl),
-            body: json.encode(body), headers: requestHeaders, encoding: encoding)
+            body: json.encode(body),
+            headers: requestHeaders,
+            encoding: encoding)
         .then((http.Response response) {
       log("res ==============> $desturl == ${response.body}");
       final int statusCode = response.statusCode;

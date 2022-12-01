@@ -64,6 +64,9 @@ class _SignInPageState extends State<SignInPage> {
           message: res['msg'],
           duration: const Duration(seconds: 3),
         ).show(context);
+        setState(() {
+          isLoading = false;
+        });
       }
     }).catchError((onError) {
       Flushbar(
@@ -74,6 +77,9 @@ class _SignInPageState extends State<SignInPage> {
         message: onError.toString(),
         duration: const Duration(seconds: 3),
       ).show(context);
+      setState(() {
+        isLoading = false;
+      });
     });
   }
 
@@ -188,7 +194,8 @@ class _SignInPageState extends State<SignInPage> {
                     color: const Color(0xFF24AB70),
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 89, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 89, vertical: 10),
                   child: const Text(
                     "SIGN IN",
                     style: TextStyle(
@@ -275,7 +282,9 @@ class _SignInPageState extends State<SignInPage> {
                 child: const Text(
                   "Sign Up",
                   style: const TextStyle(
-                      color: Color(0xFF004D34), fontSize: 16, fontWeight: FontWeight.bold),
+                      color: Color(0xFF004D34),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
                 ),
               )
             ],
