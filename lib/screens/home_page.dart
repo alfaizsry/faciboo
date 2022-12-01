@@ -32,13 +32,12 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _callGetData();
-    // TODO: implement initState
     super.initState();
   }
 
   _callGetData() async {
-    _getProfile();
-    _getFacilities();
+    await _getProfile();
+    await _getFacilities();
     _getCategories();
   }
 
@@ -74,8 +73,7 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           categories = res["data"];
           print(categories);
-          selectedCategory = categories[0]["_id"];
-          _getFacilitiesByCategory();
+          _getFacilitiesByCategory(categories[0]["_id"]);
         });
         print("================CATEGORY $categories");
       }
@@ -84,13 +82,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  _getFacilitiesByCategory() async {
+  _getFacilitiesByCategory(String id) async {
     Map body = {
-      "id": selectedCategory,
+      "id": id,
     };
     await http.post('category/facility-by-category', body: body).then((res) {
       if (res["success"]) {
         setState(() {
+          selectedCategory = id;
           facilitiesByCategory = res["data"];
         });
         print("================FACILITIES BY CATEGORY $facilitiesByCategory");
@@ -454,10 +453,7 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   splashFactory: NoSplash.splashFactory,
                   onTap: () {
-                    setState(() {
-                      selectedCategory = categories[i]["_id"];
-                    });
-                    _getFacilitiesByCategory();
+                    _getFacilitiesByCategory(categories[i]["_id"]);
                   },
                   child: Column(
                     children: [
