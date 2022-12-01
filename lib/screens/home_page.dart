@@ -37,11 +37,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   _callGetData() async {
-    setState(() {
-      userDetail = dummyApi.getuserdetail["data"];
-      facilities = dummyApi.getfacilities["data"];
-      facilitiesByCategory = dummyApi.getfacilitiesByCartegory["data"];
-    });
     _getProfile();
     _getFacilities();
     _getCategories();
@@ -78,6 +73,7 @@ class _HomePageState extends State<HomePage> {
       if (res["success"]) {
         setState(() {
           categories = res["data"];
+          print(categories);
           selectedCategory = categories[0]["_id"];
           _getFacilitiesByCategory();
         });
@@ -110,29 +106,29 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.white,
       body: ListView(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 48,
           ),
           _buildUserBanner(),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           _buildFacilitiesBanner(
             title: "New Facilities",
             facilities: facilities,
           ),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           _buildCategory(),
-          SizedBox(
+          const SizedBox(
             height: 24,
           ),
           _buildFacilitiesBanner(
             title: "Popular",
             facilities: facilities,
           ),
-          SizedBox(
+          const SizedBox(
             height: 32,
           ),
         ],
@@ -141,20 +137,21 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildUserBanner() {
+    final double width = MediaQuery.of(context).size.width;
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: width,
       // height: MediaQuery.of(context).size.height / 4.5,
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         left: 24,
         right: 24,
         top: 32,
         bottom: 32,
       ),
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         left: 24,
         right: 24,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/map_unsplash.png'),
           fit: BoxFit.cover,
@@ -173,31 +170,36 @@ class _HomePageState extends State<HomePage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Welcome, ${userDetail["name"]}",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                  SizedBox(
+                    width: width * 0.6,
+                    child: Text(
+                      userDetail != null ? "Welcome, ${userDetail["name"]}" : "Loading...",
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       top: 4,
                     ),
                     child: Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.person_pin_circle_outlined,
                           color: Colors.white,
                         ),
                         Container(
-                          margin: EdgeInsets.only(
+                          margin: const EdgeInsets.only(
                             left: 4,
                           ),
                           child: Text(
                             "${userDetail['location']}",
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
                               fontSize: 16,
@@ -224,13 +226,13 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 errorWidget: (context, url, error) {
-                  return Icon(Icons.error_outline_rounded);
+                  return const Icon(Icons.error_outline_rounded);
                 },
               ),
             ],
           ),
-          SizedBox(
-            height: 50,
+          const SizedBox(
+            height: 24,
           ),
           _searchBar(),
         ],
@@ -240,11 +242,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _searchBar() {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         right: 24,
       ),
       decoration: BoxDecoration(
-        image: DecorationImage(
+        image: const DecorationImage(
           image: AssetImage('assets/images/map_unsplash.png'),
           fit: BoxFit.cover,
         ),
@@ -252,7 +254,7 @@ class _HomePageState extends State<HomePage> {
           width: 1,
           color: Colors.white,
         ),
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
       ),
@@ -265,11 +267,11 @@ class _HomePageState extends State<HomePage> {
         onChanged: (value) {
           // _getSearchResult();
         },
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white,
         ),
         // autofocus: true,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           // contentPadding: EdgeInsets.all(8),
           prefixIcon: Icon(
             Icons.search_rounded,
@@ -294,7 +296,7 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.symmetric(
+          margin: const EdgeInsets.symmetric(
             horizontal: 24,
           ),
           child: _titleSeeMore(
@@ -304,53 +306,53 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AllFacilities(),
+                  builder: (context) => const AllFacilities(),
                 ),
               ).then((value) => _callGetData());
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
-        CarouselSlider(
-          options: CarouselOptions(
-              viewportFraction: 1.0,
-              autoPlay: true,
-              // height: 160,
-              aspectRatio: 24 / 10,
-              autoPlayInterval: Duration(seconds: 5),
-              onPageChanged: (index, reason) {
-                // setState(() {
-                //   _current = index;
-                // });
-              }),
-          items: facilities.map((facility) {
-            return Builder(
-              builder: (BuildContext context) {
-                return IntrinsicHeight(
-                  child: FacilityBanner(
-                    detailFacility: facility,
-                    onClick: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailFacility(),
-                        ),
-                      );
-                    },
-                  ),
-                );
-                // GestureDetector(
-                //   onTap: () async {
-                //     print("===========facility $facility");
-                //   },
-                //   child: _facilityBanner(detailFacility: facility),
-                // );
-              },
-            );
-          }).toList(),
-        ),
+        if (facilities.isNotEmpty)
+          CarouselSlider(
+            options: CarouselOptions(
+                viewportFraction: 1.0,
+                autoPlay: true,
+                aspectRatio: 24 / 10,
+                autoPlayInterval: const Duration(seconds: 5),
+                onPageChanged: (index, reason) {
+                  // setState(() {
+                  //   _current = index;
+                  // });
+                }),
+            items: facilities.map((facility) {
+              return Builder(
+                builder: (BuildContext context) {
+                  return IntrinsicHeight(
+                    child: FacilityBanner(
+                      detailFacility: facility,
+                      onClick: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const DetailFacility(),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                  // GestureDetector(
+                  //   onTap: () async {
+                  //     print("===========facility $facility");
+                  //   },
+                  //   child: _facilityBanner(detailFacility: facility),
+                  // );
+                },
+              );
+            }).toList(),
+          ),
       ],
     );
   }
@@ -365,7 +367,7 @@ class _HomePageState extends State<HomePage> {
       children: [
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -395,7 +397,7 @@ class _HomePageState extends State<HomePage> {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 24,
               ),
               _customTabBar(),
@@ -412,7 +414,7 @@ class _HomePageState extends State<HomePage> {
         //     onClickSeeMore: () {},
         //   ),
         // ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         SingleChildScrollView(
@@ -420,20 +422,21 @@ class _HomePageState extends State<HomePage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 24,
               ),
-              for (var i = 0; i < facilitiesByCategory.length; i++)
-                Row(
-                  children: [
-                    FacilityCard(
-                      detailFacility: facilitiesByCategory[i],
-                    ),
-                    SizedBox(
-                      width: 12,
-                    ),
-                  ],
-                ),
+              if (facilitiesByCategory.isNotEmpty)
+                for (var i = 0; i < facilitiesByCategory.length; i++)
+                  Row(
+                    children: [
+                      FacilityCard(
+                        detailFacility: facilitiesByCategory[i],
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                    ],
+                  ),
             ],
           ),
         ),
@@ -444,56 +447,57 @@ class _HomePageState extends State<HomePage> {
   Widget _customTabBar() {
     return Row(
       children: [
-        for (var i = 0; i < categories.length; i++)
-          Row(
-            children: [
-              InkWell(
-                splashFactory: NoSplash.splashFactory,
-                onTap: () {
-                  setState(() {
-                    selectedCategory = categories[i]["_id"];
-                  });
-                  _getFacilitiesByCategory();
-                },
-                child: Column(
-                  children: [
-                    Text(
-                      categories[i]["name"],
-                      style: TextStyle(
-                        fontWeight: (selectedCategory == categories[i]["_id"])
-                            ? FontWeight.w700
-                            : FontWeight.normal,
-                        fontSize: 18,
-                        color: (selectedCategory == categories[i]["_id"])
-                            ? Colors.black
-                            : Colors.grey,
-                      ),
-                    ),
-                    if (selectedCategory == categories[i]["_id"])
-                      Container(
-                        margin: EdgeInsets.only(
-                          bottom: 8,
-                          top: 4,
+        if (categories.isNotEmpty)
+          for (var i = 0; i < categories.length; i++)
+            Row(
+              children: [
+                InkWell(
+                  splashFactory: NoSplash.splashFactory,
+                  onTap: () {
+                    setState(() {
+                      selectedCategory = categories[i]["_id"];
+                    });
+                    _getFacilitiesByCategory();
+                  },
+                  child: Column(
+                    children: [
+                      Text(
+                        categories[i]["name"],
+                        style: TextStyle(
+                          fontWeight: (selectedCategory == categories[i]["_id"])
+                              ? FontWeight.w700
+                              : FontWeight.normal,
+                          fontSize: 18,
+                          color: (selectedCategory == categories[i]["_id"])
+                              ? Colors.black
+                              : Colors.grey,
                         ),
-                        width: 10,
-                        height: 2.5,
-                        decoration: BoxDecoration(
-                          color: Colors.black,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(
-                              10,
+                      ),
+                      if (selectedCategory == categories[i]["_id"])
+                        Container(
+                          margin: const EdgeInsets.only(
+                            bottom: 8,
+                            top: 4,
+                          ),
+                          width: 10,
+                          height: 2.5,
+                          decoration: const BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(
+                                10,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 24,
-              ),
-            ],
-          )
+                const SizedBox(
+                  width: 24,
+                ),
+              ],
+            )
       ],
     );
   }
