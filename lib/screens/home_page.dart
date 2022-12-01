@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/all_facilities.dart';
 import 'package:faciboo/screens/detail_facility.dart';
@@ -16,13 +17,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  HttpService http = HttpService();
   var dummyApi = DummyApi();
-  dynamic userDetail;
 
-  int selectedCategory = 0;
-  //categori 1: sports, 2:entertainment, 3:workspace,
+  // int selectedCategory = 0;
+  // //categori 1: sports, 2:entertainment, 3:workspace,
+  String selectedCategory = "6384dc208821ee9c3d4c96f8";
+  dynamic userDetail = {};
+
   List<dynamic> facilities = [];
   List<dynamic> facilitiesByCategory = [];
+  List<dynamic> categories = [];
 
   @override
   void initState() {
@@ -36,6 +41,66 @@ class _HomePageState extends State<HomePage> {
       userDetail = dummyApi.getuserdetail["data"];
       facilities = dummyApi.getfacilities["data"];
       facilitiesByCategory = dummyApi.getfacilitiesByCartegory["data"];
+    });
+    _getProfile();
+    _getFacilities();
+    _getCategories();
+  }
+
+  _getProfile() async {
+    await http.post('profile/get-profile').then((res) {
+      if (res["success"]) {
+        setState(() {
+          userDetail = res["data"];
+        });
+        print("================USERDETAIL $userDetail");
+      }
+    }).catchError((err) {
+      print("ERROR get-profile $err");
+    });
+  }
+
+  _getFacilities() async {
+    await http.post('facility/get-facility').then((res) {
+      if (res["success"]) {
+        setState(() {
+          facilities = res["data"];
+        });
+        print("================FACILITIES $facilities");
+      }
+    }).catchError((err) {
+      print("ERROR get-facility $err");
+    });
+  }
+
+  _getCategories() async {
+    await http.post('category/get-category').then((res) {
+      if (res["success"]) {
+        setState(() {
+          categories = res["data"];
+          selectedCategory = categories[0]["_id"];
+          _getFacilitiesByCategory();
+        });
+        print("================CATEGORY $categories");
+      }
+    }).catchError((err) {
+      print("ERROR get-category $err");
+    });
+  }
+
+  _getFacilitiesByCategory() async {
+    Map body = {
+      "id": selectedCategory,
+    };
+    await http.post('category/facility-by-category', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          facilitiesByCategory = res["data"];
+        });
+        print("================FACILITIES BY CATEGORY $facilitiesByCategory");
+      }
+    }).catchError((err) {
+      print("ERROR get-facility $err");
     });
   }
 
@@ -145,7 +210,8 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               CachedNetworkImage(
-                imageUrl: userDetail["image"],
+                imageUrl: userDetail["image"] ??
+                    "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
                 imageBuilder: (context, imageProvider) => Container(
                   width: 50.0,
                   height: 50.0,
@@ -157,6 +223,9 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                 ),
+                errorWidget: (context, url, error) {
+                  return Icon(Icons.error_outline_rounded);
+                },
               ),
             ],
           ),
@@ -354,16 +423,11 @@ class _HomePageState extends State<HomePage> {
               SizedBox(
                 width: 24,
               ),
-              for (var i = 0;
-                  i <
-                      facilitiesByCategory[selectedCategory]["facilities"]
-                          .length;
-                  i++)
+              for (var i = 0; i < facilitiesByCategory.length; i++)
                 Row(
                   children: [
                     FacilityCard(
-                      detailFacility: facilitiesByCategory[selectedCategory]
-                          ["facilities"][i],
+                      detailFacility: facilitiesByCategory[i],
                     ),
                     SizedBox(
                       width: 12,
@@ -380,31 +444,32 @@ class _HomePageState extends State<HomePage> {
   Widget _customTabBar() {
     return Row(
       children: [
-        for (var i = 0; i < facilitiesByCategory.length; i++)
+        for (var i = 0; i < categories.length; i++)
           Row(
             children: [
               InkWell(
                 splashFactory: NoSplash.splashFactory,
                 onTap: () {
                   setState(() {
-                    selectedCategory = i;
+                    selectedCategory = categories[i]["_id"];
                   });
+                  _getFacilitiesByCategory();
                 },
                 child: Column(
                   children: [
                     Text(
-                      facilitiesByCategory[i]["category"],
+                      categories[i]["name"],
                       style: TextStyle(
-                        fontWeight: (selectedCategory == i)
+                        fontWeight: (selectedCategory == categories[i]["_id"])
                             ? FontWeight.w700
                             : FontWeight.normal,
                         fontSize: 18,
-                        color: (selectedCategory == i)
+                        color: (selectedCategory == categories[i]["_id"])
                             ? Colors.black
                             : Colors.grey,
                       ),
                     ),
-                    if (selectedCategory == i)
+                    if (selectedCategory == categories[i]["_id"])
                       Container(
                         margin: EdgeInsets.only(
                           bottom: 8,

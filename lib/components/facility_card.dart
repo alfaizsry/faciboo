@@ -33,6 +33,7 @@ class _FacilityCardState extends State<FacilityCard> {
         padding: const EdgeInsets.all(20),
         width: 175,
         height: 175,
+        // color: Colors.black,
         decoration: BoxDecoration(
           image: DecorationImage(
             colorFilter: ColorFilter.mode(
@@ -40,7 +41,8 @@ class _FacilityCardState extends State<FacilityCard> {
               BlendMode.darken,
             ),
             image: NetworkImage(
-              widget.detailFacility["image"],
+              widget.detailFacility["imageId"][0] ??
+                  "https://media.istockphoto.com/id/1357365823/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?b=1&s=170667a&w=0&k=20&c=LEhQ7Gji4-gllQqp80hLpQsLHlHLw61DoiVf7XJsSx0=",
             ),
             fit: BoxFit.cover,
           ),
@@ -50,17 +52,17 @@ class _FacilityCardState extends State<FacilityCard> {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            buttonBookmark(),
+            if (widget.detailFacility["is_save"] != null) buttonBookmark(),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.detailFacility["is_booking"]) statusBooking(),
+                // if (widget.detailFacility["is_booking"]) statusBooking(),
                 Text(
-                  widget.detailFacility["name"],
+                  widget.detailFacility["name"] ?? "",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
@@ -71,7 +73,7 @@ class _FacilityCardState extends State<FacilityCard> {
                   height: 4,
                 ),
                 Text(
-                  widget.detailFacility["location"],
+                  widget.detailFacility["address"] ?? "-",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: const TextStyle(

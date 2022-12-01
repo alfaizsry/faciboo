@@ -48,7 +48,8 @@ class _FacilityBannerState extends State<FacilityBanner> {
               BlendMode.darken,
             ),
             image: NetworkImage(
-              widget.detailFacility["image"],
+              widget.detailFacility["image"][0] ??
+                  "https://media.istockphoto.com/id/1357365823/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?b=1&s=170667a&w=0&k=20&c=LEhQ7Gji4-gllQqp80hLpQsLHlHLw61DoiVf7XJsSx0=",
             ),
             fit: BoxFit.cover,
           ),
@@ -59,16 +60,18 @@ class _FacilityBannerState extends State<FacilityBanner> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            buttonBookmark(),
+            if (widget.detailFacility["is_save"] != null) buttonBookmark(),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (widget.detailFacility["is_booking"]) statusBooking(),
+                if (widget.detailFacility["is_booking"] != null &&
+                    widget.detailFacility["is_booking"])
+                  statusBooking(),
                 Text(
-                  widget.detailFacility["name"],
+                  widget.detailFacility["name"] ?? "",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
@@ -79,7 +82,7 @@ class _FacilityBannerState extends State<FacilityBanner> {
                   height: 4,
                 ),
                 Text(
-                  widget.detailFacility["location"],
+                  widget.detailFacility["address"] ?? "-",
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w300,
