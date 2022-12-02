@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/all_facilities.dart';
 import 'package:faciboo/screens/detail_facility.dart';
@@ -25,6 +28,8 @@ class _HomePageState extends State<HomePage> {
   String selectedCategory = "6384dc208821ee9c3d4c96f8";
   dynamic userDetail = {};
 
+  bool _isLoading = false;
+
   List<dynamic> facilities = [];
   List<dynamic> facilitiesByCategory = [];
   List<dynamic> categories = [];
@@ -42,6 +47,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   _getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('profile/get-profile').then((res) {
       if (res["success"]) {
         setState(() {
@@ -49,12 +57,22 @@ class _HomePageState extends State<HomePage> {
         });
         print("================USERDETAIL $userDetail");
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-profile $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   _getFacilities() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('facility/get-facility').then((res) {
       if (res["success"]) {
         setState(() {
@@ -62,23 +80,39 @@ class _HomePageState extends State<HomePage> {
         });
         print("================FACILITIES $facilities");
       }
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   _getCategories() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('category/get-category').then((res) {
       if (res["success"]) {
         setState(() {
           categories = res["data"];
+          selectedCategory = categories[0]["_id"];
           print(categories);
           _getFacilitiesByCategory(categories[0]["_id"]);
         });
         print("================CATEGORY $categories");
       }
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-category $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -102,34 +136,37 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: ListView(
-        children: [
-          const SizedBox(
-            height: 48,
-          ),
-          _buildUserBanner(),
-          const SizedBox(
-            height: 24,
-          ),
-          _buildFacilitiesBanner(
-            title: "New Facilities",
-            facilities: facilities,
-          ),
-          const SizedBox(
-            height: 24,
-          ),
-          _buildCategory(),
-          const SizedBox(
-            height: 24,
-          ),
-          _buildFacilitiesBanner(
-            title: "Popular",
-            facilities: facilities,
-          ),
-          const SizedBox(
-            height: 32,
-          ),
-        ],
+      body: LoadingFallback(
+        isLoading: _isLoading,
+        child: ListView(
+          children: [
+            const SizedBox(
+              height: 48,
+            ),
+            _buildUserBanner(),
+            const SizedBox(
+              height: 24,
+            ),
+            _buildFacilitiesBanner(
+              title: "New Facilities",
+              facilities: facilities,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            _buildCategory(),
+            const SizedBox(
+              height: 24,
+            ),
+            _buildFacilitiesBanner(
+              title: "Popular",
+              facilities: facilities,
+            ),
+            const SizedBox(
+              height: 32,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -212,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               CachedNetworkImage(
-                imageUrl: userDetail["image"] ??
+                imageUrl: userDetail["imageUrl"] ??
                     "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
                 imageBuilder: (context, imageProvider) => Container(
                   width: 50.0,
@@ -226,7 +263,22 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 errorWidget: (context, url, error) {
-                  return const Icon(Icons.error_outline_rounded);
+                  return Container(
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade100,
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.red,
+                      ),
+                    ),
+                    child: Icon(
+                      Icons.error_outline_rounded,
+                      color: Colors.red,
+                    ),
+                  );
                 },
               ),
             ],
@@ -337,7 +389,9 @@ class _HomePageState extends State<HomePage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const DetailFacility(),
+                            builder: (context) => const DetailFacility(
+                              idFacility: 'facility["id"]',
+                            ),
                           ),
                         );
                       },
@@ -458,10 +512,13 @@ class _HomePageState extends State<HomePage> {
               color: Colors.grey.shade400,
               size: 50,
             ),
+            SizedBox(
+              height: 8,
+            ),
             Text(
-              "Tidak ada",
+              "There are no facilities",
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 15,
                 fontWeight: FontWeight.w600,
                 color: Colors.grey.shade400,
               ),

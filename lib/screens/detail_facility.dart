@@ -6,7 +6,12 @@ import 'package:faciboo/screens/schedule_picker.dart';
 import 'package:flutter/material.dart';
 
 class DetailFacility extends StatefulWidget {
-  const DetailFacility({Key key}) : super(key: key);
+  const DetailFacility({
+    Key key,
+    @required this.idFacility,
+  }) : super(key: key);
+
+  final String idFacility;
 
   @override
   State<DetailFacility> createState() => _DetailFacilityState();
@@ -205,7 +210,7 @@ class _DetailFacilityState extends State<DetailFacility> {
             BlendMode.darken,
           ),
         ),
-        borderRadius: const  BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
       ),

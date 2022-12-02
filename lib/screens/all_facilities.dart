@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
@@ -16,8 +17,11 @@ class AllFacilities extends StatefulWidget {
 
 class _AllFacilitiesState extends State<AllFacilities> {
   HttpService http = HttpService();
+
+  bool _isLoading = false;
+
   var dummyApi = DummyApi();
-  dynamic userDetail;
+  dynamic userDetail = {};
   List<dynamic> facilities = [];
 
   @override
@@ -37,6 +41,9 @@ class _AllFacilitiesState extends State<AllFacilities> {
   }
 
   _getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('profile/get-profile').then((res) {
       if (res["success"]) {
         setState(() {
@@ -44,12 +51,22 @@ class _AllFacilitiesState extends State<AllFacilities> {
         });
         print("================USERDETAIL $userDetail");
       }
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-profile $err");
+
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   _getFacilities() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('facility/get-facility').then((res) {
       if (res["success"]) {
         setState(() {
@@ -57,26 +74,37 @@ class _AllFacilitiesState extends State<AllFacilities> {
         });
         print("================FACILITIES $facilities");
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-facility $err");
+
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          _buildAppbar(),
-          const SizedBox(
-            height: 30,
-          ),
-          _buildHeader(),
-          const SizedBox(
-            height: 16,
-          ),
-          _buildListFacilities(),
-        ],
+      body: LoadingFallback(
+        isLoading: _isLoading,
+        child: ListView(
+          children: [
+            _buildAppbar(),
+            const SizedBox(
+              height: 30,
+            ),
+            _buildHeader(),
+            const SizedBox(
+              height: 16,
+            ),
+            _buildListFacilities(),
+          ],
+        ),
       ),
     );
   }
@@ -97,7 +125,7 @@ class _AllFacilitiesState extends State<AllFacilities> {
             },
           ),
           CachedNetworkImage(
-            imageUrl: userDetail["image"] ??
+            imageUrl: userDetail["imageUrl"] ??
                 "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
@@ -110,6 +138,24 @@ class _AllFacilitiesState extends State<AllFacilities> {
                 ),
               ),
             ),
+            errorWidget: (context, url, error) {
+              return Container(
+                width: 50.0,
+                height: 50.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 1,
+                    color: Colors.red,
+                  ),
+                ),
+                child: Icon(
+                  Icons.error_outline_rounded,
+                  color: Colors.red,
+                ),
+              );
+            },
           ),
         ],
       ),

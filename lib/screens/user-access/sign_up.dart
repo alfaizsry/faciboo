@@ -48,6 +48,9 @@ class _SignUpPageState extends State<SignUpPage> {
           message: 'Registration Success',
           duration: const Duration(seconds: 3),
         ).show(context);
+        setState(() {
+          isLoading = false;
+        });
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SignInPage()),
         );
@@ -60,8 +63,15 @@ class _SignUpPageState extends State<SignUpPage> {
           message: res['msg'],
           duration: const Duration(seconds: 3),
         ).show(context);
+        setState(() {
+          isLoading = false;
+        });
       }
-    }).catchError((onError) {});
+    }).catchError((onError) {
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   @override
@@ -198,7 +208,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: const Color(0xFF24AB70),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 69, vertical: 10),
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(
@@ -232,13 +243,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => SignInPage()),
+                            MaterialPageRoute(
+                                builder: (context) => SignInPage()),
                           );
                         },
                         child: const Text(
                           "Login",
                           style: TextStyle(
-                              color: Color(0xFF004D34), fontSize: 14, fontWeight: FontWeight.bold),
+                              color: Color(0xFF004D34),
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold),
                         ),
                       )
                     ],

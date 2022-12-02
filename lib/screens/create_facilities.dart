@@ -1,5 +1,6 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +12,7 @@ class CreateFacilities extends StatefulWidget {
 }
 
 class _CreateFacilitiesState extends State<CreateFacilities> {
+  HttpService http = HttpService();
   TextEditingController _name = TextEditingController();
   TextEditingController _desc = TextEditingController();
   TextEditingController _address = TextEditingController();
@@ -18,9 +20,9 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   TextEditingController _bookingHours = TextEditingController();
 
   var dummyApi = DummyApi();
-  List categoryList = [];
+  List categories = [];
 
-  int selectedCategory = 0;
+  String selectedCategory = "";
 
   @override
   void initState() {
@@ -31,7 +33,22 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
 
   _callGetData() async {
     setState(() {
-      categoryList = dummyApi.getCategoryList["data"];
+      categories = dummyApi.getCategoryList["data"];
+    });
+    _getCategories();
+  }
+
+  _getCategories() async {
+    await http.post('category/get-category').then((res) {
+      if (res["success"]) {
+        setState(() {
+          categories = res["data"];
+          selectedCategory = categories[0]["_id"];
+        });
+        print("================CATEGORY $categories");
+      }
+    }).catchError((err) {
+      print("ERROR get-category $err");
     });
   }
 
@@ -177,7 +194,7 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                for (var i = 0; i < categoryList.length; i++)
+                for (var i = 0; i < categories.length; i++)
                   Container(
                     margin: EdgeInsets.only(
                       right: 12,
@@ -185,7 +202,7 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          selectedCategory = categoryList[i]["id_category"];
+                          selectedCategory = categories[i]["_id"];
                         });
                       },
                       child: Container(
@@ -195,13 +212,12 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(10)),
-                          color:
-                              categoryList[i]["id_category"] == selectedCategory
-                                  ? Colors.green
-                                  : Colors.grey[350],
+                          color: categories[i]["_id"] == selectedCategory
+                              ? Colors.green
+                              : Colors.grey[350],
                         ),
                         child: Text(
-                          categoryList[i]["category"],
+                          categories[i]["name"] ?? "",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 14,

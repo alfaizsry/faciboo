@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/facility_card.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/create_facilities.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,10 @@ class MyFacilitiesPage extends StatefulWidget {
 }
 
 class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
+  HttpService http = HttpService();
   var dummyApi = DummyApi();
-  dynamic userDetail;
+  dynamic userDetail = {};
+  List<dynamic> myFacilities = [];
   List<dynamic> myFacilitiesByCategory = [];
 
   int selectedCategory = 0;
@@ -28,8 +31,36 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
 
   _callGetData() async {
     setState(() {
-      userDetail = dummyApi.getuserdetail["data"];
+      // userDetail = dummyApi.getuserdetail["data"];
       myFacilitiesByCategory = dummyApi.getMyFacilitiesByCategory["data"];
+    });
+    await _getProfile();
+    await _getMyFacilities();
+  }
+
+  _getProfile() async {
+    await http.post('profile/get-profile').then((res) {
+      if (res["success"]) {
+        setState(() {
+          userDetail = res["data"];
+        });
+        print("================USERDETAIL $userDetail");
+      }
+    }).catchError((err) {
+      print("ERROR get-profile $err");
+    });
+  }
+
+  _getMyFacilities() async {
+    await http.post('facility/get-my-facility').then((res) {
+      if (res["success"]) {
+        setState(() {
+          myFacilities = res["data"];
+        });
+        print("================MYFACILITIES $myFacilities");
+      }
+    }).catchError((err) {
+      print("ERROR get-my-facility $err");
     });
   }
 
@@ -45,7 +76,81 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           height: 16,
         ),
         _buildCategory(),
+        _buildMyFacilities(),
       ],
+    );
+  }
+
+  Widget _buildEmptyWidget() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 175,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.hourglass_empty_rounded,
+              color: Colors.grey.shade400,
+              size: 50,
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Text(
+              "There are no facilities",
+              style: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMyFacilities() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildTitle(title: "All My Facility"),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 16),
+          child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
+              // primary: false,
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: 7,
+              itemBuilder: (context, index) {
+                return Container(
+                  margin: EdgeInsets.all(8),
+                  color: Colors.green,
+                  width: 10,
+                  height: 10,
+                );
+              }),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTitle({@required String title}) {
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 24,
+      ),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
     );
   }
 
@@ -71,7 +176,8 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CachedNetworkImage(
-              imageUrl: userDetail["image"],
+              imageUrl: userDetail["imageUrl"] ??
+                  "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
               imageBuilder: (context, imageProvider) => Container(
                 width: MediaQuery.of(context).size.width * 0.25,
                 height: MediaQuery.of(context).size.width * 0.25,
@@ -83,6 +189,24 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                   ),
                 ),
               ),
+              errorWidget: (context, url, error) {
+                return Container(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  height: MediaQuery.of(context).size.width * 0.25,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 1,
+                      color: Colors.red,
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.error_outline_rounded,
+                    color: Colors.red,
+                  ),
+                );
+              },
             ),
             const SizedBox(
               width: 20,
@@ -92,7 +216,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
-                  userDetail["name"],
+                  userDetail["name"] ?? "",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,

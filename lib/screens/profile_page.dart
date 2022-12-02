@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
   var dummyApi = DummyApi();
   dynamic userDetail = {};
 
+  bool _isLoading = false;
   bool _isEditing = false;
   bool _isObsPassword = true;
 
@@ -43,6 +46,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   _getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('profile/get-profile').then((res) {
       if (res["success"]) {
         setState(() {
@@ -51,12 +57,23 @@ class _ProfilePageState extends State<ProfilePage> {
         });
         print("================USERDETAIL $userDetail");
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-profile $err");
+
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   _editProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     Map body = {
       "name": _name.text,
       "password": _newPassword.text,
@@ -71,10 +88,26 @@ class _ProfilePageState extends State<ProfilePage> {
           _isEditing = false;
           _isObsPassword = true;
         });
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
         _getProfile();
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR edit-profile $err");
+
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -92,46 +125,49 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: ListView(
-        children: [
-          SizedBox(
-            height: 48,
-          ),
-          _buildHeaderProfile(),
-          SizedBox(
-            height: 24,
-          ),
-          _buildUserDetailForm(),
-          if (_isEditing)
-            Column(
-              children: [
-                _buildButton(),
-                SizedBox(
-                  height: 32,
-                ),
-              ],
+    return LoadingFallback(
+      isLoading: _isLoading,
+      child: Container(
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 48,
             ),
-          SizedBox(
-            height: 48,
-          ),
-          Container(
-            margin: EdgeInsets.only(
-              left: 24,
-              right: 24,
+            _buildHeaderProfile(),
+            SizedBox(
+              height: 24,
             ),
-            child: CustomButton(
-              textButton: "Sign Out",
-              onClick: () {
-                Navigator.pushReplacementNamed(context, '/loginPage');
-              },
-              colorButton: Colors.red[900],
+            _buildUserDetailForm(),
+            if (_isEditing)
+              Column(
+                children: [
+                  _buildButton(),
+                  SizedBox(
+                    height: 32,
+                  ),
+                ],
+              ),
+            SizedBox(
+              height: 48,
             ),
-          ),
-          SizedBox(
-            height: 48,
-          ),
-        ],
+            Container(
+              margin: EdgeInsets.only(
+                left: 24,
+                right: 24,
+              ),
+              child: CustomButton(
+                textButton: "Sign Out",
+                onClick: () {
+                  Navigator.pushReplacementNamed(context, '/loginPage');
+                },
+                colorButton: Colors.red[900],
+              ),
+            ),
+            SizedBox(
+              height: 48,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -140,7 +176,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: [
         CachedNetworkImage(
-          imageUrl: userDetail["image"] ??
+          imageUrl: userDetail["imageUrl"] ??
               "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
           imageBuilder: (context, imageProvider) => Container(
             width: 144.0,
@@ -154,7 +190,22 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
           errorWidget: (context, url, error) {
-            return Icon(Icons.error_outline_rounded);
+            return Container(
+              width: 144.0,
+              height: 144.0,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 1,
+                  color: Colors.red,
+                ),
+              ),
+              child: Icon(
+                Icons.error_outline_rounded,
+                color: Colors.red,
+              ),
+            );
           },
         ),
         Container(
