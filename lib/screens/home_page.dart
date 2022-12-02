@@ -89,7 +89,6 @@ class _HomePageState extends State<HomePage> {
     await http.post('category/facility-by-category', body: body).then((res) {
       if (res["success"]) {
         setState(() {
-          selectedCategory = id;
           facilitiesByCategory = res["data"];
         });
         print("================FACILITIES BY CATEGORY $facilitiesByCategory");
@@ -172,7 +171,9 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     width: width * 0.6,
                     child: Text(
-                      userDetail != null ? "Welcome, ${userDetail["name"]}" : "Loading...",
+                      userDetail != null
+                          ? "Welcome, ${userDetail["name"]}"
+                          : "Loading...",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -416,30 +417,58 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 8,
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(
-                width: 24,
-              ),
-              if (facilitiesByCategory.isNotEmpty)
-                for (var i = 0; i < facilitiesByCategory.length; i++)
-                  Row(
-                    children: [
-                      FacilityCard(
-                        detailFacility: facilitiesByCategory[i],
+        (facilitiesByCategory.isNotEmpty)
+            ? SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    for (var i = 0; i < facilitiesByCategory.length; i++)
+                      Row(
+                        children: [
+                          FacilityCard(
+                            detailFacility: facilitiesByCategory[i],
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                    ],
-                  ),
-            ],
-          ),
-        ),
+                  ],
+                ),
+              )
+            : _buildEmptyWidget(),
       ],
+    );
+  }
+
+  Widget _buildEmptyWidget() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 175,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.hourglass_empty_rounded,
+              color: Colors.grey.shade400,
+              size: 50,
+            ),
+            Text(
+              "Tidak ada",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade400,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -453,6 +482,10 @@ class _HomePageState extends State<HomePage> {
                 InkWell(
                   splashFactory: NoSplash.splashFactory,
                   onTap: () {
+                    setState(() {
+                      selectedCategory = categories[i]["_id"];
+                    });
+
                     _getFacilitiesByCategory(categories[i]["_id"]);
                   },
                   child: Column(

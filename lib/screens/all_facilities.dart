@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/facility_banner.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class AllFacilities extends StatefulWidget {
 }
 
 class _AllFacilitiesState extends State<AllFacilities> {
+  HttpService http = HttpService();
   var dummyApi = DummyApi();
   dynamic userDetail;
   List<dynamic> facilities = [];
@@ -26,9 +28,37 @@ class _AllFacilitiesState extends State<AllFacilities> {
   }
 
   _callGetData() async {
-    setState(() {
-      userDetail = dummyApi.getuserdetail["data"];
-      facilities = dummyApi.getfacilities["data"];
+    // setState(() {
+    //   userDetail = dummyApi.getuserdetail["data"];
+    //   facilities = dummyApi.getfacilities["data"];
+    // });
+    await _getProfile();
+    await _getFacilities();
+  }
+
+  _getProfile() async {
+    await http.post('profile/get-profile').then((res) {
+      if (res["success"]) {
+        setState(() {
+          userDetail = res["data"];
+        });
+        print("================USERDETAIL $userDetail");
+      }
+    }).catchError((err) {
+      print("ERROR get-profile $err");
+    });
+  }
+
+  _getFacilities() async {
+    await http.post('facility/get-facility').then((res) {
+      if (res["success"]) {
+        setState(() {
+          facilities = res["data"];
+        });
+        print("================FACILITIES $facilities");
+      }
+    }).catchError((err) {
+      print("ERROR get-facility $err");
     });
   }
 
@@ -67,7 +97,8 @@ class _AllFacilitiesState extends State<AllFacilities> {
             },
           ),
           CachedNetworkImage(
-            imageUrl: userDetail["image"],
+            imageUrl: userDetail["image"] ??
+                "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
             imageBuilder: (context, imageProvider) => Container(
               width: 50.0,
               height: 50.0,
