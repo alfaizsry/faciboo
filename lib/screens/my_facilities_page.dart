@@ -96,9 +96,9 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           ),
           _buildCardProfile(),
           const SizedBox(
-            height: 16,
+            height: 32,
           ),
-          _buildCategory(),
+          // _buildCategory(),
           _buildMyFacilities(),
         ],
       ),
@@ -151,8 +151,11 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
               shrinkWrap: true,
               itemCount: myFacilities.length,
               itemBuilder: (context, index) {
-                return FacilityCard(
-                  detailFacility: myFacilities[index],
+                return Container(
+                  margin: EdgeInsets.all(8),
+                  child: FacilityCard(
+                    detailFacility: myFacilities[index],
+                  ),
                 );
               }),
         ),
