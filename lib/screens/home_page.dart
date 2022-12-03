@@ -581,7 +581,9 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailFacility(
-                                    idFacility: facilitiesByCategory[i]["_id"],
+                                    idFacility: facilitiesByCategory[i]
+                                            ["_id"] ??
+                                        facilitiesByCategory[i]["id"],
                                   ),
                                 ),
                               );

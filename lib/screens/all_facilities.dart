@@ -229,18 +229,21 @@ class _AllFacilitiesState extends State<AllFacilities> {
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  FacilityBanner(
-                    detailFacility: facilities[index],
-                    onClick: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => DetailFacility(
-                            idFacility: facilities[index]["_id"],
+                  Container(
+                    height: 175,
+                    child: FacilityBanner(
+                      detailFacility: facilities[index],
+                      onClick: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailFacility(
+                              idFacility: facilities[index]["_id"],
+                            ),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
                   const SizedBox(
                     height: 12,

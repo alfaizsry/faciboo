@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/image_item.dart';
+import 'package:faciboo/components/image_picker_handler.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flushbar/flushbar.dart';
@@ -13,7 +19,8 @@ class ProfilePage extends StatefulWidget {
   State<ProfilePage> createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage>
+    with TickerProviderStateMixin, ImagePickerListener {
   HttpService http = HttpService();
   var dummyApi = DummyApi();
   dynamic userDetail = {};
@@ -31,11 +38,47 @@ class _ProfilePageState extends State<ProfilePage> {
   TextEditingController _bankAccountName = TextEditingController();
   TextEditingController _bankAccountNumber = TextEditingController();
 
+  AnimationController _controller;
+  ImagePickerHandler imagePicker;
+
+  ImageItem newPhotoProfile;
+
   @override
   void initState() {
     _callGetData();
     // TODO: implement initState
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    imagePicker = new ImagePickerHandler(this, _controller);
+    imagePicker.init();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  userImage(File _image, int type) {
+    setState(
+      () {
+        print("=============MASOKKKK");
+        String base64Image =
+            _image != null ? base64Encode(_image.readAsBytesSync()) : '';
+        String fileName = _image != null ? _image.path.split("/").last : '';
+        Uint8List byestsImg = Base64Decoder().convert(base64Image);
+
+        newPhotoProfile = ImageItem(
+          file: _image,
+          base64Image: base64Image,
+          byestsImg: byestsImg,
+        );
+      },
+    );
   }
 
   _callGetData() async {
@@ -81,6 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
       "nameBank": _bankName.text,
       "nomorRekening": _bankAccountNumber.text,
       "nameAccountBank": _bankAccountName.text,
+      "image": newPhotoProfile.base64Image,
     };
     await http.post('profile/edit-profile', body: body).then((res) {
       if (res["success"]) {
@@ -176,38 +220,91 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget _buildHeaderProfile() {
     return Column(
       children: [
-        CachedNetworkImage(
-          imageUrl: userDetail["imageUrl"] ??
-              "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
-          imageBuilder: (context, imageProvider) => Container(
-            width: 144.0,
-            height: 144.0,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          errorWidget: (context, url, error) {
-            return Container(
-              width: 144.0,
-              height: 144.0,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 1,
-                  color: Colors.red,
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            newPhotoProfile != null
+                ? Container(
+                    width: 144.0,
+                    height: 144.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: MemoryImage(newPhotoProfile.byestsImg),
+                        fit: BoxFit.cover,
+                      ),
+                      shape: BoxShape.circle,
+                    ),
+                  )
+                : CachedNetworkImage(
+                    imageUrl: userDetail["imageUrl"] ??
+                        "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
+                    imageBuilder: (context, imageProvider) => Container(
+                      width: 144.0,
+                      height: 144.0,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: imageProvider,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    errorWidget: (context, url, error) {
+                      return Container(
+                        width: 144.0,
+                        height: 144.0,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            width: 1,
+                            color: Colors.red,
+                          ),
+                        ),
+                        child: Icon(
+                          Icons.error_outline_rounded,
+                          color: Colors.red,
+                        ),
+                      );
+                    },
+                  ),
+            if (_isEditing)
+              Container(
+                width: 144.0,
+                height: 144.0,
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.4),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: InkWell(
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  onTap: () {
+                    imagePicker.showDialog(context);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.white),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      // color: Colors.blue.withOpacity(0.4),
+                    ),
+                    child: Text(
+                      "Change Photo",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              child: Icon(
-                Icons.error_outline_rounded,
-                color: Colors.red,
-              ),
-            );
-          },
+          ],
         ),
         Container(
           margin: EdgeInsets.only(
@@ -488,6 +585,7 @@ class _ProfilePageState extends State<ProfilePage> {
             onClick: () {
               setState(() {
                 _isEditing = false;
+                newPhotoProfile = null;
               });
               _setDataForm();
             },
