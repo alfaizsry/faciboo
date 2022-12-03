@@ -2,6 +2,7 @@ import 'dart:ffi';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
@@ -367,46 +368,47 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(
           height: 8,
         ),
-        if (facilities.isNotEmpty)
-          CarouselSlider(
-            options: CarouselOptions(
-                viewportFraction: 1.0,
-                autoPlay: true,
-                aspectRatio: 24 / 10,
-                autoPlayInterval: const Duration(seconds: 5),
-                onPageChanged: (index, reason) {
-                  // setState(() {
-                  //   _current = index;
-                  // });
-                }),
-            items: facilities.map((facility) {
-              return Builder(
-                builder: (BuildContext context) {
-                  return IntrinsicHeight(
-                    child: FacilityBanner(
-                      detailFacility: facility,
-                      onClick: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DetailFacility(
-                              idFacility: 'facility["id"]',
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+        (facilities.isNotEmpty)
+            ? CarouselSlider(
+                options: CarouselOptions(
+                    viewportFraction: 1.0,
+                    autoPlay: true,
+                    aspectRatio: 24 / 10,
+                    autoPlayInterval: const Duration(seconds: 5),
+                    onPageChanged: (index, reason) {
+                      // setState(() {
+                      //   _current = index;
+                      // });
+                    }),
+                items: facilities.map((facility) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return IntrinsicHeight(
+                        child: FacilityBanner(
+                          detailFacility: facility,
+                          onClick: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailFacility(
+                                  idFacility: facility["_id"],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                      // GestureDetector(
+                      //   onTap: () async {
+                      //     print("===========facility $facility");
+                      //   },
+                      //   child: _facilityBanner(detailFacility: facility),
+                      // );
+                    },
                   );
-                  // GestureDetector(
-                  //   onTap: () async {
-                  //     print("===========facility $facility");
-                  //   },
-                  //   child: _facilityBanner(detailFacility: facility),
-                  // );
-                },
-              );
-            }).toList(),
-          ),
+                }).toList(),
+              )
+            : EmptyFacilities(),
       ],
     );
   }
@@ -494,38 +496,8 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               )
-            : _buildEmptyWidget(),
+            : EmptyFacilities(),
       ],
-    );
-  }
-
-  Widget _buildEmptyWidget() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 175,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.hourglass_empty_rounded,
-              color: Colors.grey.shade400,
-              size: 50,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              "There are no facilities",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade400,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

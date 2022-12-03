@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
@@ -105,60 +106,32 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
     );
   }
 
-  Widget _buildEmptyWidget() {
-    return Container(
-      width: MediaQuery.of(context).size.width,
-      height: 175,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.hourglass_empty_rounded,
-              color: Colors.grey.shade400,
-              size: 50,
-            ),
-            SizedBox(
-              height: 8,
-            ),
-            Text(
-              "There are no facilities",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Colors.grey.shade400,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildMyFacilities() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildTitle(title: "All My Facility"),
-        Container(
-          margin: EdgeInsets.symmetric(horizontal: 16),
-          child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              // primary: false,
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: myFacilities.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.all(8),
-                  child: FacilityCard(
-                    detailFacility: myFacilities[index],
-                  ),
-                );
-              }),
-        ),
+        (myFacilities.isNotEmpty)
+            ? Container(
+                margin: EdgeInsets.symmetric(horizontal: 16),
+                child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                    ),
+                    // primary: false,
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: myFacilities.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.all(8),
+                        child: FacilityCard(
+                          detailFacility: myFacilities[index],
+                        ),
+                      );
+                    }),
+              )
+            : EmptyFacilities(),
       ],
     );
   }

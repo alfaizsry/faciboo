@@ -84,6 +84,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
           ),
         );
         print("=================ITEMITEMLIST $imageItemList");
+        print("=================UINT8LIST $byestsImg");
       },
     );
   }
