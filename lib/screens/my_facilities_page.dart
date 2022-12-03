@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/create_facilities.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,8 @@ class MyFacilitiesPage extends StatefulWidget {
 
 class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   HttpService http = HttpService();
+  bool _isLoading = false;
+
   var dummyApi = DummyApi();
   dynamic userDetail = {};
   List<dynamic> myFacilities = [];
@@ -39,6 +42,9 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   }
 
   _getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('profile/get-profile').then((res) {
       if (res["success"]) {
         setState(() {
@@ -46,12 +52,21 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
         });
         print("================USERDETAIL $userDetail");
       }
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-profile $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   _getMyFacilities() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('facility/get-my-facility').then((res) {
       if (res["success"]) {
         setState(() {
@@ -59,25 +74,34 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
         });
         print("================MYFACILITIES $myFacilities");
       }
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-my-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(
-          height: 48,
-        ),
-        _buildCardProfile(),
-        const SizedBox(
-          height: 16,
-        ),
-        _buildCategory(),
-        _buildMyFacilities(),
-      ],
+    return LoadingFallback(
+      isLoading: _isLoading,
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 48,
+          ),
+          _buildCardProfile(),
+          const SizedBox(
+            height: 16,
+          ),
+          _buildCategory(),
+          _buildMyFacilities(),
+        ],
+      ),
     );
   }
 
@@ -125,13 +149,10 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
               // primary: false,
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: 7,
+              itemCount: myFacilities.length,
               itemBuilder: (context, index) {
-                return Container(
-                  margin: EdgeInsets.all(8),
-                  color: Colors.green,
-                  width: 10,
-                  height: 10,
+                return FacilityCard(
+                  detailFacility: myFacilities[index],
                 );
               }),
         ),

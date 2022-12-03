@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> {
               height: 24,
             ),
             _buildFacilitiesBanner(
-              title: "Popular",
+              title: "All Facilities",
               facilities: facilities,
             ),
             const SizedBox(
