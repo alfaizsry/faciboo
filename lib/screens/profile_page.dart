@@ -76,6 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
     });
     Map body = {
       "name": _name.text,
+      "address": _location.text,
       "password": _newPassword.text,
       "nameBank": _bankName.text,
       "nomorRekening": _bankAccountNumber.text,
@@ -316,7 +317,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: _customTextInput(
               hintText: "Phone",
               controller: _phone,
-              isEnable: _isEditing,
+              isEnable: false,
               keyboardType: TextInputType.number,
               prefixIcon: Container(
                 margin: EdgeInsets.only(
@@ -526,7 +527,7 @@ class _ProfilePageState extends State<ProfilePage> {
         hintText: hintText,
         hintStyle: TextStyle(
           fontSize: 14.0,
-          color: isEnable ? Colors.black : Colors.black54,
+          color: isEnable ? Colors.blue : Colors.black54,
         ),
         prefix: prefixIcon,
         prefixIconConstraints: BoxConstraints(maxWidth: 100),

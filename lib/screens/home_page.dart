@@ -33,7 +33,10 @@ class _HomePageState extends State<HomePage> {
 
   List<dynamic> facilities = [];
   List<dynamic> facilitiesByCategory = [];
+  List<dynamic> searchResult = [];
   List<dynamic> categories = [];
+
+  TextEditingController _filter = TextEditingController();
 
   @override
   void initState() {
@@ -86,6 +89,31 @@ class _HomePageState extends State<HomePage> {
       });
     }).catchError((err) {
       print("ERROR get-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _getSearchResult() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "search": _filter.text,
+    };
+    await http.post('facility/search-facility', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          searchResult = res["data"];
+        });
+        print("================Searhced FACILITIES $facilities");
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR search-facility $err");
       setState(() {
         _isLoading = false;
       });
@@ -148,6 +176,7 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(
               height: 24,
             ),
+            if (searchResult.isNotEmpty) _buildSearchResult(),
             _buildFacilitiesBanner(
               title: "New Facilities",
               facilities: facilities,
@@ -172,6 +201,46 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildSearchResult() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _titleSeeMore(title: "Search Results", hasSeeMore: false),
+          SizedBox(height: 8),
+          ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: searchResult.length,
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(bottom: 12),
+                height: 175,
+                child: FacilityBanner(
+                  detailFacility: searchResult[index],
+                  onClick: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailFacility(
+                          idFacility: searchResult[index]["_id"],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+          SizedBox(
+            height: 16,
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildUserBanner() {
     final double width = MediaQuery.of(context).size.width;
     return Container(
@@ -187,10 +256,12 @@ class _HomePageState extends State<HomePage> {
         left: 24,
         right: 24,
       ),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('assets/images/map_unsplash.png'),
           fit: BoxFit.cover,
+          colorFilter:
+              ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
         ),
         borderRadius: BorderRadius.all(
           Radius.circular(25),
@@ -313,23 +384,41 @@ class _HomePageState extends State<HomePage> {
       ),
       child: TextFormField(
         // readOnly: '',
-        // controller: _filter,
+        controller: _filter,
         // onTap: () {
         //   onTap();
         // },
         onChanged: (value) {
-          // _getSearchResult();
+          if (_filter.text != "")
+            _getSearchResult();
+          else {
+            setState(() {
+              searchResult = [];
+            });
+          }
         },
         style: const TextStyle(
           color: Colors.white,
         ),
         // autofocus: true,
-        decoration: const InputDecoration(
+        decoration: InputDecoration(
           // contentPadding: EdgeInsets.all(8),
           prefixIcon: Icon(
             Icons.search_rounded,
             color: Colors.white,
             // size: 16,
+          ),
+          suffixIcon: InkWell(
+            onTap: () {
+              setState(() {
+                _filter.text = "";
+                searchResult = [];
+              });
+            },
+            child: Icon(
+              Icons.clear_rounded,
+              color: Colors.white,
+            ),
           ),
           hintText: 'Where are you going?',
           hintStyle: TextStyle(

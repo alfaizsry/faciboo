@@ -48,8 +48,10 @@ class _FacilityBannerState extends State<FacilityBanner> {
               BlendMode.darken,
             ),
             image: NetworkImage(
-              widget.detailFacility["image"][0] ??
-                  "https://media.istockphoto.com/id/1357365823/vector/default-image-icon-vector-missing-picture-page-for-website-design-or-mobile-app-no-photo.jpg?b=1&s=170667a&w=0&k=20&c=LEhQ7Gji4-gllQqp80hLpQsLHlHLw61DoiVf7XJsSx0=",
+              widget.detailFacility["image"] != null
+                  ? widget.detailFacility["image"][0] ??
+                      "https://images.unsplash.com/photo-1564352969906-8b7f46ba4b8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80"
+                  : "https://images.unsplash.com/photo-1564352969906-8b7f46ba4b8b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80",
             ),
             fit: BoxFit.cover,
           ),

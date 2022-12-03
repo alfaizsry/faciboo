@@ -64,9 +64,11 @@ class _DetailFacilityState extends State<DetailFacility> {
   }
 
   Future<void> _launchUrl(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw 'Could not launch $url';
-    }
+    // if (!await launchUrl(Uri.parse(url))) {
+    //   throw 'Could not launch $url';
+    // }
+    await launchUrl(Uri.parse(url));
+    // await launch(url);
   }
 
   @override
