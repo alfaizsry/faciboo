@@ -7,6 +7,8 @@ import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/create_facilities.dart';
 import 'package:faciboo/screens/detail_facility.dart';
+import 'package:faciboo/screens/edit_facilities.dart';
+import 'package:faciboo/screens/owner_request_booking.dart';
 import 'package:flutter/material.dart';
 
 class MyFacilitiesPage extends StatefulWidget {
@@ -25,6 +27,8 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   List<dynamic> myFacilities = [];
   List<dynamic> myFacilitiesByCategory = [];
 
+  List<dynamic> requestBookingList = [];
+
   int selectedCategory = 0;
 
   @override
@@ -35,12 +39,35 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   }
 
   _callGetData() async {
-    setState(() {
-      // userDetail = dummyApi.getuserdetail["data"];
-      myFacilitiesByCategory = dummyApi.getMyFacilitiesByCategory["data"];
-    });
+    // setState(() {
+    // userDetail = dummyApi.getuserdetail["data"];
+    // myFacilitiesByCategory = dummyApi.getMyFacilitiesByCategory["data"];
+    // });
     await _getProfile();
     await _getMyFacilities();
+    await _getRequestBooking();
+  }
+
+  _getRequestBooking() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await http.post('booking/get-merchant-booking').then((res) {
+      if (res["success"]) {
+        setState(() {
+          requestBookingList = res["data"];
+        });
+        print("================REQUESTBOOKING $requestBookingList");
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-merchant-booking $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   _getProfile() async {
@@ -138,6 +165,17 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                               ),
                             );
                           },
+                          isMyFacility: true,
+                          onClickEdit: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditFacilities(
+                                  idFacility: myFacilities[index]["_id"],
+                                ),
+                              ),
+                            ).then((value) => _callGetData());
+                          },
                         ),
                       );
                     }),
@@ -219,49 +257,102 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
             const SizedBox(
               width: 20,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  userDetail["name"] ?? "",
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  "${myFacilitiesByCategory[0].length} Facilities",
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                CustomButton(
-                  textButton: "Add New Facilities",
-                  prefixIcon: Icon(
-                    Icons.add,
-                    size: 20,
-                    color: Colors.green[900],
-                  ),
-                  colorButton: Colors.white,
-                  colorTextButton: Colors.green[900],
-                  onClick: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CreateFacilities(),
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            userDetail["name"] ?? "",
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            "${myFacilities.length} Facilities",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
-                    ).then((value) => _callGetData());
-                  },
-                ),
-              ],
+                      buttonRequestBooking(),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  CustomButton(
+                    textButton: "Add New Facilities",
+                    prefixIcon: Icon(
+                      Icons.add,
+                      size: 20,
+                      color: Colors.green[900],
+                    ),
+                    colorButton: Colors.white,
+                    colorTextButton: Colors.green[900],
+                    onClick: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CreateFacilities(),
+                        ),
+                      ).then((value) => _callGetData());
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buttonRequestBooking() {
+    return InkWell(
+      customBorder: CircleBorder(),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OwnerRequestBooking(),
+          ),
+        );
+      },
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          Icon(
+            Icons.move_to_inbox_rounded,
+            size: 42,
+            color: Colors.green.shade900,
+          ),
+          if (requestBookingList.isNotEmpty)
+            Container(
+              padding: EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red,
+              ),
+              child: Text(
+                "${requestBookingList.length}",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                ),
+              ),
+            )
+        ],
       ),
     );
   }

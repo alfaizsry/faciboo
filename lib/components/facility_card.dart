@@ -4,11 +4,15 @@ class FacilityCard extends StatefulWidget {
   const FacilityCard({
     Key key,
     @required this.detailFacility,
-    this.onClick,
+    @required this.onClick,
+    this.isMyFacility = false,
+    this.onClickEdit,
   }) : super(key: key);
 
   final dynamic detailFacility;
   final Function onClick;
+  final Function onClickEdit;
+  final bool isMyFacility;
 
   @override
   State<FacilityCard> createState() => _FacilityCardState();
@@ -53,9 +57,12 @@ class _FacilityCardState extends State<FacilityCard> {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: (widget.isMyFacility)
+              ? MainAxisAlignment.spaceBetween
+              : MainAxisAlignment.end,
           children: [
-            if (widget.detailFacility["is_save"] != null) buttonBookmark(),
+            // if (widget.detailFacility["is_save"] != null) buttonBookmark(),
+            if (widget.isMyFacility) buttonEdit(),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,6 +118,29 @@ class _FacilityCardState extends State<FacilityCard> {
             widget.detailFacility["booking_detail"]["book_status"] - 1],
         style: const TextStyle(
           fontSize: 10,
+        ),
+      ),
+    );
+  }
+
+  Widget buttonEdit() {
+    return Container(
+      alignment: Alignment.topRight,
+      child: InkWell(
+        onTap: widget.onClickEdit,
+        customBorder: CircleBorder(),
+        splashFactory: NoSplash.splashFactory,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.green[100],
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(6),
+          child: Icon(
+            Icons.mode_edit_outline_rounded,
+            color: Colors.green.shade900,
+            size: 20,
+          ),
         ),
       ),
     );

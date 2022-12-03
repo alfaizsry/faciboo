@@ -13,14 +13,19 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class CreateFacilities extends StatefulWidget {
-  const CreateFacilities({Key key}) : super(key: key);
+class EditFacilities extends StatefulWidget {
+  const EditFacilities({
+    Key key,
+    @required this.idFacility,
+  }) : super(key: key);
+
+  final String idFacility;
 
   @override
-  State<CreateFacilities> createState() => _CreateFacilitiesState();
+  State<EditFacilities> createState() => _EditFacilitiesState();
 }
 
-class _CreateFacilitiesState extends State<CreateFacilities>
+class _EditFacilitiesState extends State<EditFacilities>
     with TickerProviderStateMixin, ImagePickerListener {
   HttpService http = HttpService();
   TextEditingController _name = TextEditingController();
@@ -29,6 +34,9 @@ class _CreateFacilitiesState extends State<CreateFacilities>
   TextEditingController _price = TextEditingController();
   TextEditingController _urlMaps = TextEditingController();
   TextEditingController _bookingHours = TextEditingController();
+
+  List<dynamic> imageLoadLinkList = [];
+  List<String> removedImageIdLoad = [];
 
   List<ImageItem> imageItemList = [];
   List<String> imageArrBase64List = [];
@@ -42,6 +50,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
   bool _isLoading = false;
 
   String selectedCategory = "";
+  dynamic detailFacility = {};
 
   @override
   void initState() {
@@ -93,10 +102,11 @@ class _CreateFacilitiesState extends State<CreateFacilities>
   }
 
   _callGetData() async {
-    setState(() {
-      categories = dummyApi.getCategoryList["data"];
-    });
+    // setState(() {
+    //   categories = dummyApi.getCategoryList["data"];
+    // });
     _getCategories();
+    _getDetailFacility();
   }
 
   _getCategories() async {
@@ -124,7 +134,55 @@ class _CreateFacilitiesState extends State<CreateFacilities>
     });
   }
 
-  _postCreateFacility() async {
+  _getDetailFacility() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "id": widget.idFacility,
+    };
+    await http.post('facility/get-detail-facility', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          detailFacility = res["data"];
+        });
+        print("================DETAIL FACILITY $detailFacility");
+        _setDataForm();
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR detail-facility $err");
+
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _setDataForm() {
+    String hoursAvailable = "";
+
+    for (var i = 0; i < detailFacility["hourAvailable"].length; i++) {
+      if (i > 0) hoursAvailable += ",";
+      hoursAvailable += detailFacility["hourAvailable"][i];
+    }
+
+    setState(() {
+      imageLoadLinkList = detailFacility["image"];
+      selectedCategory = detailFacility["categoryId"];
+      _name.text = detailFacility["name"];
+      _desc.text = detailFacility["description"];
+      _address.text = detailFacility["address"];
+      _price.text = detailFacility["price"].toString();
+      _urlMaps.text = detailFacility["urlMaps"];
+      _bookingHours.text = hoursAvailable;
+    });
+  }
+
+  _postEditFacility() async {
     setState(() {
       _isLoading = true;
     });
@@ -142,7 +200,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       "hourAvailable": bookingHoursList,
     };
     print("============BODY$body");
-    await http.post('facility/add-facility', body: body).then((res) {
+    await http.post('facility/edit-facility', body: body).then((res) {
       if (res["success"]) {
         setState(() {
           Navigator.pop(context);
@@ -170,7 +228,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
         _isLoading = false;
       });
     }).catchError((err) {
-      print("ERROR get-category $err");
+      print("ERROR edit-facility $err");
       setState(() {
         _isLoading = false;
       });
@@ -222,9 +280,9 @@ class _CreateFacilitiesState extends State<CreateFacilities>
                 horizontal: 24,
               ),
               child: CustomButton(
-                textButton: "Create",
+                textButton: "Edit",
                 onClick: () {
-                  _postCreateFacility();
+                  _postEditFacility();
                 },
               ),
             ),
@@ -317,7 +375,8 @@ class _CreateFacilitiesState extends State<CreateFacilities>
           SizedBox(
             height: 16,
           ),
-          if (imageItemList.isNotEmpty) _buildListImageCard(),
+          if (imageLoadLinkList.isNotEmpty || imageItemList.isNotEmpty)
+            _buildListImageCard(),
         ],
       ),
     );
@@ -328,6 +387,8 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       scrollDirection: Axis.horizontal,
       child: Row(
         children: [
+          for (var i = 0; i < imageLoadLinkList.length; i++)
+            _imageCard(index: i, image: imageLoadLinkList[i], type: "url"),
           for (var i = 0; i < imageItemList.length; i++)
             _imageCard(index: i, image: imageItemList[i].byestsImg)
         ],
@@ -352,7 +413,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       decoration: BoxDecoration(
         image: (type == "uint8list")
             ? DecorationImage(image: MemoryImage(image), fit: BoxFit.cover)
-            : NetworkImage(image),
+            : DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
         borderRadius: BorderRadius.circular(10),
       ),
       child: InkWell(
@@ -362,6 +423,9 @@ class _CreateFacilitiesState extends State<CreateFacilities>
               imageItemList.removeAt(index);
               imageFileList.removeAt(index);
               imageArrBase64List.removeAt(index);
+            } else {
+              imageLoadLinkList.removeAt(index);
+              // removedImageIdLoad.add(value);
             }
           });
         },
@@ -495,7 +559,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
         horizontal: 24,
       ),
       child: Text(
-        "Create Facilty",
+        "Edit Facilty",
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w600,

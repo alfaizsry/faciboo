@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
 
   bool _isLoading = false;
 
+  List<dynamic> latestFacilities = [];
   List<dynamic> facilities = [];
   List<dynamic> facilitiesByCategory = [];
   List<dynamic> searchResult = [];
@@ -47,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   _callGetData() async {
     await _getProfile();
     await _getFacilities();
+    await _getLatestFacilities();
     _getCategories();
   }
 
@@ -89,6 +91,28 @@ class _HomePageState extends State<HomePage> {
       });
     }).catchError((err) {
       print("ERROR get-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _getLatestFacilities() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await http.post('facility/get-latest-facility').then((res) {
+      if (res["success"]) {
+        setState(() {
+          latestFacilities = res["data"];
+        });
+        print("================LATEST FACILITIES $latestFacilities");
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-latest-facility $err");
       setState(() {
         _isLoading = false;
       });
@@ -179,7 +203,8 @@ class _HomePageState extends State<HomePage> {
             if (searchResult.isNotEmpty) _buildSearchResult(),
             _buildFacilitiesBanner(
               title: "New Facilities",
-              facilities: facilities,
+              facilities: latestFacilities,
+              hasMore: false,
             ),
             const SizedBox(
               height: 24,
@@ -191,6 +216,7 @@ class _HomePageState extends State<HomePage> {
             _buildFacilitiesBanner(
               title: "All Facilities",
               facilities: facilities,
+              hasMore: true,
             ),
             const SizedBox(
               height: 32,
@@ -434,6 +460,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildFacilitiesBanner({
     @required String title,
     @required List<dynamic> facilities,
+    @required bool hasMore,
   }) {
     return Column(
       children: [
@@ -443,7 +470,7 @@ class _HomePageState extends State<HomePage> {
           ),
           child: _titleSeeMore(
             title: title,
-            hasSeeMore: true,
+            hasSeeMore: hasMore,
             onClickSeeMore: () {
               Navigator.push(
                 context,

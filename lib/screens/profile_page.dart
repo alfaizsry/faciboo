@@ -117,15 +117,26 @@ class _ProfilePageState extends State<ProfilePage>
     setState(() {
       _isLoading = true;
     });
-    Map body = {
-      "name": _name.text,
-      "address": _location.text,
-      "password": _newPassword.text,
-      "nameBank": _bankName.text,
-      "nomorRekening": _bankAccountNumber.text,
-      "nameAccountBank": _bankAccountName.text,
-      "image": newPhotoProfile.base64Image,
-    };
+    Map body = (_newPassword.text != "")
+        ? {
+            "name": _name.text,
+            "address": _location.text,
+            "password": _newPassword.text,
+            "nameBank": _bankName.text,
+            "nomorRekening": _bankAccountNumber.text,
+            "nameAccountBank": _bankAccountName.text,
+            "image":
+                newPhotoProfile != null ? newPhotoProfile.base64Image : null,
+          }
+        : {
+            "name": _name.text,
+            "address": _location.text,
+            "nameBank": _bankName.text,
+            "nomorRekening": _bankAccountNumber.text,
+            "nameAccountBank": _bankAccountName.text,
+            "image":
+                newPhotoProfile != null ? newPhotoProfile.base64Image : null,
+          };
     await http.post('profile/edit-profile', body: body).then((res) {
       if (res["success"]) {
         setState(() {
