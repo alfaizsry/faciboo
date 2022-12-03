@@ -31,6 +31,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
   TextEditingController _bookingHours = TextEditingController();
 
   List<ImageItem> imageItemList = [];
+  List<String> imageArrBase64List = [];
   List<File> imageFileList = [];
   List categories = [];
 
@@ -75,6 +76,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
 
         // arrBase64.add(base64Image);
         // arrFileName.add(fileName);
+        imageArrBase64List.add(base64Image);
         imageFileList.add(_image);
         imageItemList.add(
           ImageItem(
@@ -136,7 +138,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       "price": int.parse(_price.text),
       "urlMaps": _urlMaps.text,
       "categoryId": selectedCategory,
-      "image": imageFileList,
+      "image": imageArrBase64List,
       "hourAvailable": bookingHoursList,
     };
     print("============BODY$body");
@@ -356,8 +358,11 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       child: InkWell(
         onTap: () {
           setState(() {
-            if (type == "uint8list") imageFileList.removeAt(index);
-            if (type == "uint8list") imageItemList.removeAt(index);
+            if (type == "uint8list") {
+              imageItemList.removeAt(index);
+              imageFileList.removeAt(index);
+              imageArrBase64List.removeAt(index);
+            }
           });
         },
         child: Icon(
