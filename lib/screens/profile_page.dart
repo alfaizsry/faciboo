@@ -116,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _name.text = userDetail["name"] ?? "";
       _email.text = userDetail["email"] ?? "";
       _phone.text = userDetail["phoneNumber"] ?? "";
-      _location.text = "userDetail['location']" ?? "";
+      _location.text = userDetail['address'] ?? "";
       _bankAccountName.text = userDetail["nameAccountBank"] ?? "";
       _bankAccountNumber.text = userDetail["nomorRekening"] ?? "";
       _bankName.text = userDetail["nameBank"] ?? "";
@@ -368,29 +368,29 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          // _buildSubtitle(subtitle: "Location"),
-          // Container(
-          //   margin: EdgeInsets.only(
-          //     top: 4,
-          //     bottom: 16,
-          //   ),
-          //   child: _customTextInput(
-          //     hintText: "Location",
-          //     controller: _location,
-          //     isEnable: _isEditing,
-          //     keyboardType: TextInputType.multiline,
-          //     prefixIcon: Container(
-          //       margin: EdgeInsets.only(
-          //         right: 10,
-          //       ),
-          //       child: Icon(
-          //         Icons.share_location_rounded,
-          //         size: 18,
-          //         color: Colors.black,
-          //       ),
-          //     ),
-          //   ),
-          // ),
+          _buildSubtitle(subtitle: "Location"),
+          Container(
+            margin: EdgeInsets.only(
+              top: 4,
+              bottom: 16,
+            ),
+            child: _customTextInput(
+              hintText: "Location",
+              controller: _location,
+              isEnable: _isEditing,
+              keyboardType: TextInputType.multiline,
+              prefixIcon: Container(
+                margin: EdgeInsets.only(
+                  right: 10,
+                ),
+                child: Icon(
+                  Icons.share_location_rounded,
+                  size: 18,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+          ),
           _buildSubtitle(subtitle: "Bank Name"),
           Container(
             margin: EdgeInsets.only(

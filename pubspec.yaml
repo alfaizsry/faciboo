@@ -41,6 +41,9 @@ dependencies:
   carousel_slider: ^4.1.1
   flutter_date_pickers: ^0.4.0
   loading_overlay: ^0.3.0
+  image_picker: ^0.8.5+3
+  image_cropper: ^1.5.1
+  dotted_border: ^2.0.0+3
 
 dev_dependencies:
   flutter_lints: ^1.0.0

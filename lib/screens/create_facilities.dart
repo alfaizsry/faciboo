@@ -1,8 +1,17 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/image_item.dart';
+import 'package:faciboo/components/image_picker_handler.dart';
+import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class CreateFacilities extends StatefulWidget {
   const CreateFacilities({Key key}) : super(key: key);
@@ -11,16 +20,25 @@ class CreateFacilities extends StatefulWidget {
   State<CreateFacilities> createState() => _CreateFacilitiesState();
 }
 
-class _CreateFacilitiesState extends State<CreateFacilities> {
+class _CreateFacilitiesState extends State<CreateFacilities>
+    with TickerProviderStateMixin, ImagePickerListener {
   HttpService http = HttpService();
   TextEditingController _name = TextEditingController();
   TextEditingController _desc = TextEditingController();
   TextEditingController _address = TextEditingController();
   TextEditingController _price = TextEditingController();
+  TextEditingController _urlMaps = TextEditingController();
   TextEditingController _bookingHours = TextEditingController();
 
-  var dummyApi = DummyApi();
+  List<ImageItem> imageItemList = [];
+  List<File> imageFileList = [];
   List categories = [];
+
+  AnimationController _controller;
+  ImagePickerHandler imagePicker;
+
+  var dummyApi = DummyApi();
+  bool _isLoading = false;
 
   String selectedCategory = "";
 
@@ -28,7 +46,46 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   void initState() {
     // TODO: implement initState
     _callGetData();
+
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    imagePicker = new ImagePickerHandler(this, _controller);
+    imagePicker.init();
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  userImage(File _image, int type) {
+    setState(
+      () {
+        print("=============MASOKKKK");
+        String base64Image =
+            _image != null ? base64Encode(_image.readAsBytesSync()) : '';
+        String fileName = _image != null ? _image.path.split("/").last : '';
+        Uint8List byestsImg = Base64Decoder().convert(base64Image);
+
+        // arrBase64.add(base64Image);
+        // arrFileName.add(fileName);
+        imageFileList.add(_image);
+        imageItemList.add(
+          ImageItem(
+            file: _image,
+            base64Image: base64Image,
+            byestsImg: byestsImg,
+          ),
+        );
+        print("=================ITEMITEMLIST $imageItemList");
+      },
+    );
   }
 
   _callGetData() async {
@@ -39,6 +96,9 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   }
 
   _getCategories() async {
+    setState(() {
+      _isLoading = true;
+    });
     await http.post('category/get-category').then((res) {
       if (res["success"]) {
         setState(() {
@@ -47,8 +107,69 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
         });
         print("================CATEGORY $categories");
       }
+
+      setState(() {
+        _isLoading = false;
+      });
     }).catchError((err) {
       print("ERROR get-category $err");
+
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _postCreateFacility() async {
+    setState(() {
+      _isLoading = true;
+    });
+    List<String> bookingHoursList = _bookingHours.text.split(",");
+    print("============IMAGEFILELIST$imageFileList");
+    print("============BOOKINGHOURSLIST$bookingHoursList");
+    Map body = {
+      "name": _name.text,
+      "address": _address.text,
+      "description": _desc.text,
+      "price": int.parse(_price.text),
+      "urlMaps": _urlMaps.text,
+      "categoryId": selectedCategory,
+      "image": imageFileList,
+      "hourAvailable": bookingHoursList,
+    };
+    print("============BODY$body");
+    await http.post('facility/add-facility', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          Navigator.pop(context);
+          Flushbar(
+            margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            flushbarPosition: FlushbarPosition.TOP,
+            // borderRadius: BorderRadius.circular(8),
+            backgroundColor: Colors.green[600],
+            message: res["msg"],
+            duration: const Duration(seconds: 3),
+          ).show(context);
+        });
+        print("================CATEGORY $categories");
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.red,
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-category $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
@@ -57,52 +178,57 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   Widget build(BuildContext context) {
     return Scaffold(
       // bottomNavigationBar: _buildBottomBar(),
-      body: ListView(
-        children: [
-          SizedBox(
-            height: 48,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.only(left: 24),
-                child: CustomArrowBack(
-                  onClick: () {
-                    Navigator.of(context).pop();
-                  },
+      body: LoadingFallback(
+        isLoading: _isLoading,
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 48,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(left: 24),
+                  child: CustomArrowBack(
+                    onClick: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
                 ),
+              ],
+            ),
+            SizedBox(
+              height: 24,
+            ),
+            _buildHeader(),
+            SizedBox(
+              height: 32,
+            ),
+            _buildCategoryPicker(),
+            SizedBox(
+              height: 20,
+            ),
+            _buildFacilityForm(),
+            SizedBox(
+              height: 32,
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: 24,
               ),
-            ],
-          ),
-          SizedBox(
-            height: 24,
-          ),
-          _buildHeader(),
-          SizedBox(
-            height: 32,
-          ),
-          _buildCategoryPicker(),
-          SizedBox(
-            height: 20,
-          ),
-          _buildFacilityForm(),
-          SizedBox(
-            height: 32,
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: 24,
+              child: CustomButton(
+                textButton: "Create",
+                onClick: () {
+                  _postCreateFacility();
+                },
+              ),
             ),
-            child: CustomButton(
-              textButton: "Create",
-              onClick: () {},
+            SizedBox(
+              height: 48,
             ),
-          ),
-          SizedBox(
-            height: 48,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -131,8 +257,20 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
   }
 
   Widget _buildFacilityForm() {
-    List<String> formTitle = ["Name", "Description", "Address", "Price/Book"];
-    List<TextEditingController> controller = [_name, _desc, _address, _price];
+    List<String> formTitle = [
+      "Name",
+      "Description",
+      "Address",
+      "Price/Book",
+      "Maps Links",
+    ];
+    List<TextEditingController> controller = [
+      _name,
+      _desc,
+      _address,
+      _price,
+      _urlMaps,
+    ];
 
     return Container(
       margin: EdgeInsets.only(
@@ -167,8 +305,118 @@ class _CreateFacilitiesState extends State<CreateFacilities> {
                 color: Colors.grey,
               ),
             ),
-          )
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          _buildEmptyImageList(),
+          SizedBox(
+            height: 16,
+          ),
+          if (imageItemList.isNotEmpty) _buildListImageCard(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildListImageCard() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var i = 0; i < imageItemList.length; i++)
+            _imageCard(index: i, image: imageItemList[i].byestsImg)
+        ],
+      ),
+    );
+  }
+
+  Widget _imageCard({
+    @required int index,
+    @required dynamic image,
+    String type = "uint8list",
+    //type uint8list & url
+  }) {
+    return Container(
+      margin: EdgeInsets.only(
+        right: 12,
+      ),
+      alignment: Alignment.topRight,
+      padding: EdgeInsets.all(6),
+      height: 120,
+      width: 120,
+      decoration: BoxDecoration(
+        image: (type == "uint8list")
+            ? DecorationImage(image: MemoryImage(image), fit: BoxFit.cover)
+            : NetworkImage(image),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            if (type == "uint8list") imageFileList.removeAt(index);
+            if (type == "uint8list") imageItemList.removeAt(index);
+          });
+        },
+        child: Icon(
+          Icons.cancel,
+          color: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyImageList() {
+    return InkWell(
+      onTap: () {
+        imagePicker.showDialog(context);
+        // imagePicker.openCamera();
+      },
+      child: Container(
+        // margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
+        decoration: BoxDecoration(
+          color: Colors.lightGreen.shade50,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: DottedBorder(
+          padding: EdgeInsets.symmetric(
+            vertical: 20,
+            horizontal: 24,
+          ),
+          color: Colors.blue,
+          borderType: BorderType.RRect,
+          radius: Radius.circular(10),
+          child: Container(
+            alignment: Alignment.center,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.add_a_photo_rounded),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "Facility Photos",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                Text(
+                  "Insert photos of facility",
+                  style: TextStyle(
+                    color: Colors.grey[400],
+                    fontSize: 11,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

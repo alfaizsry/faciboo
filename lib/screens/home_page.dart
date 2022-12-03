@@ -235,7 +235,7 @@ class _HomePageState extends State<HomePage> {
                             left: 4,
                           ),
                           child: Text(
-                            "${userDetail['location']}",
+                            "${userDetail['address']}",
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
