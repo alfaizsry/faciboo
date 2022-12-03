@@ -6,6 +6,7 @@ import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/create_facilities.dart';
+import 'package:faciboo/screens/detail_facility.dart';
 import 'package:flutter/material.dart';
 
 class MyFacilitiesPage extends StatefulWidget {
@@ -127,6 +128,16 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                         margin: EdgeInsets.all(8),
                         child: FacilityCard(
                           detailFacility: myFacilities[index],
+                          onClick: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailFacility(
+                                  idFacility: myFacilities[index]["_id"],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       );
                     }),
@@ -301,6 +312,18 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                     FacilityCard(
                       detailFacility: myFacilitiesByCategory[selectedCategory]
                           ["facilities"][i],
+                      onClick: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DetailFacility(
+                              idFacility:
+                                  myFacilitiesByCategory[selectedCategory]
+                                      ["facilities"][i]["_id"],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(
                       width: 12,

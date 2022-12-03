@@ -487,6 +487,16 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           FacilityCard(
                             detailFacility: facilitiesByCategory[i],
+                            onClick: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailFacility(
+                                    idFacility: facilitiesByCategory[i]["_id"],
+                                  ),
+                                ),
+                              );
+                            },
                           ),
                           const SizedBox(
                             width: 12,

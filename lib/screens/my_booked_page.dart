@@ -1,5 +1,6 @@
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:faciboo/screens/detail_facility.dart';
 import 'package:flutter/material.dart';
 
 class MyBookedPage extends StatefulWidget {
@@ -197,7 +198,19 @@ class _MyBookedPageState extends State<MyBookedPage>
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  FacilityBanner(detailFacility: facilities[index]),
+                  FacilityBanner(
+                    detailFacility: facilities[index],
+                    onClick: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailFacility(
+                            idFacility: facilities[index]["_id"],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   SizedBox(
                     height: 12,
                   ),

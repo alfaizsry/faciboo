@@ -4,6 +4,7 @@ import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
+import 'package:faciboo/screens/detail_facility.dart';
 import 'package:flutter/material.dart';
 
 class AllFacilities extends StatefulWidget {
@@ -228,7 +229,19 @@ class _AllFacilitiesState extends State<AllFacilities> {
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  FacilityBanner(detailFacility: facilities[index]),
+                  FacilityBanner(
+                    detailFacility: facilities[index],
+                    onClick: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailFacility(
+                            idFacility: facilities[index]["_id"],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   const SizedBox(
                     height: 12,
                   ),
