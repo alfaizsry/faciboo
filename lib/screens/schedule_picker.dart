@@ -1,75 +1,110 @@
 import 'package:faciboo/components/custom_calender/event.dart';
 import 'package:faciboo/components/daypicker_custom.dart';
+import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/screens/confirmation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SchedulePickerPage extends StatefulWidget {
-  const SchedulePickerPage({Key key, @required this.dataSubFacility, @required this.dataUser})
-      : super(key: key);
+  const SchedulePickerPage(this.dataFacility, {Key key}) : super(key: key);
 
-  final dynamic dataSubFacility;
-  final dynamic dataUser;
+  final dynamic dataFacility;
   @override
   State<SchedulePickerPage> createState() => _SchedulePickerPageState();
 }
 
 class _SchedulePickerPageState extends State<SchedulePickerPage> {
+  HttpService http = HttpService();
+  
   bool isLoading = false;
   bool isLoadingDatePicker = true;
-  List _listDatePicker = [];
-  List _listDummyDatePicker = [
-    {'date': '2022-11-23'},
-    {'date': '2022-11-24'},
-    {'date': '2022-11-25'},
-    {'date': '2022-11-26'},
-    {'date': '2022-11-27'},
-    {'date': '2022-11-28'},
-    {'date': '2022-11-29'},
-    {'date': '2022-11-30'},
-    {'date': '2022-12-01'},
-    {'date': '2022-12-02'},
-    {'date': '2022-12-03'},
-  ];
-  List _listTimePicker = [
-    {
-      'date': '2022-11-23',
-      'time': '08.00 - 09.30',
-      'schedule_id': 1,
-    },
-    {
-      'date': '2022-11-23',
-      'time': '11.00 - 12.30',
-      'schedule_id': 2,
-    },
-    {
-      'date': '2022-11-23',
-      'time': '13.00 - 14.30',
-      'schedule_id': 3,
-    },
-    {
-      'date': '2022-11-23',
-      'time': '15.00 - 16.30',
-      'schedule_id': 4,
-    },
-    {
-      'date': '2022-11-23',
-      'time': '17.00 - 18.30',
-      'schedule_id': 5,
-    },
-  ];
-  List _listSelectedScheduleId = [];
+
+  List listDatePicker = [];
+  List<DateTime> listDate = [];
+  List listTimePicker = [];
+  List<String> listSelectedHour = [];
+
   DateTime selectedDate;
   String selectTimeMsg = 'Please select your desired date first!';
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
 
+  String dateParser(int date) {
+    if (date < 10) {
+      return '0$date';
+    } else {
+      return '$date';
+    }
+  }
+
+  List dateAndTimeListParser(List data) {
+    List parsingResult = [];
+    for (var item in data) {
+      String tempDate = dateParser(item['date']);
+      parsingResult.add({
+        'date': '${item['year']}-${item['month']}-$tempDate',
+        'available_hour': item['availableHour']
+      });
+    }
+    return parsingResult;
+  }
+
+  List<DateTime> dateListParser(List data) {
+    List<DateTime> parsingResult = [];
+    for (var item in data) {
+      parsingResult.add(DateTime.parse(item['date']));
+    }
+    return parsingResult;
+  }
+
+  void onSelectDatePicker(DateTime selected) {
+    int idxOf = listDate.indexOf(selected);
+    setState(() {
+      selectedDate = selected;
+      listSelectedHour.clear();
+      listTimePicker = listDatePicker[idxOf]['available_hour'];
+      isLoading = false;
+    });
+  }
+
+  void onSelectTimePicker(bool isSelected, int idxOf, String hourAdded) {
+    setState(() {
+      if (isSelected) {
+        listSelectedHour.removeAt(idxOf);
+      } else {
+        if (listSelectedHour.length == listTimePicker.length) return;
+        listSelectedHour.add(hourAdded);
+      }
+    });
+  }
+
+  void getCallData() {
+    setState(() {
+      isLoading = true;
+    });
+    Map body = {"id": widget.dataFacility["_id"]};
+    // print("BODY REQUEST AVAILABLE DATE ====> $body");
+    http.post('facility/get-available-date', body: body).then((res) async {
+      if (res['success']) {
+        setState(() {
+          listDatePicker = dateAndTimeListParser(res['data']);
+          listDate = dateListParser(listDatePicker);
+          selectedDate = listDate[0];
+          isLoading = false;
+          listTimePicker = listDatePicker[0]['available_hour'];
+        });
+      }
+    }).catchError((onError) {
+      print(onError);
+      setState(() {
+        isLoading = false;
+      });
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    for (var item in _listDummyDatePicker) {
-      _listDatePicker.add(DateTime.parse(item['date']));
-    }
-    selectedDate = DateTime.parse(_listDummyDatePicker[0]['date']);
+    getCallData();
   }
 
   Widget _buildHeader() {
@@ -100,33 +135,28 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
 
   Widget _datePicker() {
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     final DateTime now = DateTime.now();
-    DateFormat df = DateFormat('dd MMMM yyyy');
     final String formatted = formatter.format(now);
     List<Event> events = [Event(DateTime.parse(formatted), "Pemilihan Pertama")];
-    return Container(
-      width: width,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: DayPickerCustom(
-          events: events,
-          listEnableDate: _listDatePicker,
-          initialSelect: selectedDate.toString(),
-          onSelectDate: (DateTime selected) async {
-            setState(() {
-              selectedDate = selected;
-              _listSelectedScheduleId = [];
-              _listTimePicker = [];
-              //TODO ubah jadi true pas dah ada API
-              isLoading = false;
-            });
-          },
+    if (listDate.isNotEmpty && !isLoading) {
+      return Container(
+        width: width,
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: DayPickerCustom(
+            events: events,
+            listEnableDate: listDate,
+            initialSelect: selectedDate.toString(),
+            onSelectDate: (DateTime selected) async {
+              onSelectDatePicker(selected);
+            },
+          ),
         ),
-      ),
-    );
+      );
+    }
+    return Container();
   }
 
   Widget _timePicker() {
@@ -141,7 +171,7 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
       );
     }
 
-    if (_listTimePicker.isEmpty && !isLoading) {
+    if (listTimePicker.isEmpty && !isLoading) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -152,7 +182,7 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
       );
     }
 
-    if (_listTimePicker.isNotEmpty && !isLoading) {
+    if (listTimePicker.isNotEmpty && !isLoading) {
       return Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -174,27 +204,18 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
                   subtitle: GridView.builder(
                       primary: false,
                       shrinkWrap: true,
-                      itemCount: _listTimePicker.length,
+                      itemCount: listTimePicker.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2, crossAxisSpacing: 8, childAspectRatio: 4 / 1),
                       itemBuilder: (BuildContext context, int i) {
-                        int idxOf =
-                            _listSelectedScheduleId.indexOf(_listTimePicker[i]['schedule_id']);
+                        int idxOf = listSelectedHour.indexOf(listTimePicker[i]);
                         bool isSelected = idxOf != -1;
 
                         return Container(
                           margin: const EdgeInsets.only(top: 8),
                           child: InkWell(
                             onTap: () {
-                              setState(() {
-                                if (isSelected) {
-                                  _listSelectedScheduleId.removeAt(idxOf);
-                                } else {
-                                  if (_listSelectedScheduleId.length == _listTimePicker.length)
-                                    return;
-                                  _listSelectedScheduleId.add(_listTimePicker[i]['schedule_id']);
-                                }
-                              });
+                              onSelectTimePicker(isSelected, idxOf, listTimePicker[i]);
                             },
                             child: SizedBox(
                               width: double.infinity,
@@ -206,7 +227,7 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
                                   borderRadius: BorderRadius.circular(16),
                                 ),
                                 child: Center(
-                                  child: Text(_listTimePicker[i]['time'],
+                                  child: Text(listTimePicker[i],
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: isSelected == true ? Colors.white : Colors.black,
@@ -248,7 +269,7 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24),
-              color: isLoading || _listTimePicker.isEmpty ? Colors.grey : Colors.green[600],
+              color: isLoading || listTimePicker.isEmpty ? Colors.grey : Colors.green[600],
               border: Border.all(color: Colors.green[600]),
             ),
             child: const Text('Continue',

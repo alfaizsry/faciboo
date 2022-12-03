@@ -17,9 +17,9 @@ class DayPickerCustom extends StatefulWidget {
 }
 
 class _DayPickerCustomState extends State<DayPickerCustom> {
-  DateTime _selectedDate = DateTime.now();
+  DateTime _selectedDate;
 
-  Color selectedDateStyleColor = Colors.black;
+  Color selectedDateStyleColor = Colors.white;
   Color selectedSingleDateDecorationColor = Colors.green[600];
 
   bool _decideWhichDayToEnable(DateTime day) {
@@ -37,11 +37,12 @@ class _DayPickerCustomState extends State<DayPickerCustom> {
     initDate();
   }
 
-  void initDate() async {
-    widget.initialSelect != null ??
-        setState(() {
-          _selectedDate = DateTime.parse(widget.initialSelect);
-        });
+  void initDate() {
+    if (widget.initialSelect != null) {
+      setState(() {
+        _selectedDate = DateTime.parse(widget.initialSelect);
+      });
+    }
   }
 
   // @override

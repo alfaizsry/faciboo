@@ -203,19 +203,19 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildSearchResult() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _titleSeeMore(title: "Search Results", hasSeeMore: false),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: searchResult.length,
             itemBuilder: (context, index) {
               return Container(
-                margin: EdgeInsets.only(bottom: 12),
+                margin: const EdgeInsets.only(bottom: 12),
                 height: 175,
                 child: FacilityBanner(
                   detailFacility: searchResult[index],
@@ -233,7 +233,7 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
         ],
@@ -258,12 +258,12 @@ class _HomePageState extends State<HomePage> {
       ),
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/map_unsplash.png'),
+          image: const AssetImage('assets/images/map_unsplash.png'),
           fit: BoxFit.cover,
           colorFilter:
               ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
         ),
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(25),
         ),
       ),
@@ -346,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.red,
                       ),
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.error_outline_rounded,
                       color: Colors.red,
                     ),
@@ -403,7 +403,7 @@ class _HomePageState extends State<HomePage> {
         // autofocus: true,
         decoration: InputDecoration(
           // contentPadding: EdgeInsets.all(8),
-          prefixIcon: Icon(
+          prefixIcon: const Icon(
             Icons.search_rounded,
             color: Colors.white,
             // size: 16,
@@ -415,13 +415,13 @@ class _HomePageState extends State<HomePage> {
                 searchResult = [];
               });
             },
-            child: Icon(
+            child: const Icon(
               Icons.clear_rounded,
               color: Colors.white,
             ),
           ),
           hintText: 'Where are you going?',
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             color: Colors.white,
             // fontSize: 12,
           ),
@@ -497,7 +497,7 @@ class _HomePageState extends State<HomePage> {
                   );
                 }).toList(),
               )
-            : EmptyFacilities(),
+            : const EmptyFacilities(),
       ],
     );
   }
@@ -595,7 +595,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               )
-            : EmptyFacilities(),
+            : const EmptyFacilities(),
       ],
     );
   }

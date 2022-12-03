@@ -27,7 +27,6 @@ class _DetailFacilityState extends State<DetailFacility> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _callGetData();
     super.initState();
   }
@@ -131,7 +130,7 @@ class _DetailFacilityState extends State<DetailFacility> {
         children: [
           Text(
             detailFacility["name"] ?? "",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
               color: Colors.black,
@@ -157,7 +156,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const SchedulePickerPage(),
+                      builder: (context) => SchedulePickerPage(detailFacility),
                     ),
                   );
                   // .then((value) => _callGetData());
@@ -181,40 +180,40 @@ class _DetailFacilityState extends State<DetailFacility> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildTitleContent(title: "Description"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           Text(
             detailFacility["description"] ?? "",
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.w300,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Photos"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildPhotosHorizontal(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Location"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildLocationCard(),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildTitleContent(title: "Price"),
-          SizedBox(
+          const SizedBox(
             height: 12,
           ),
           _buildPriceCard(),
-          SizedBox(
+          const SizedBox(
             height: 36,
           ),
         ],
@@ -230,15 +229,15 @@ class _DetailFacilityState extends State<DetailFacility> {
           if (detailFacility["image"] != null)
             for (var i = 0; i < detailFacility["image"].length; i++)
               Padding(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   right: 16,
                 ),
                 child: Container(
                   width: MediaQuery.of(context).size.width / 3,
                   height: MediaQuery.of(context).size.width / 3,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(10),
                     ),
                     image: DecorationImage(
                       image: NetworkImage(
@@ -330,7 +329,7 @@ class _DetailFacilityState extends State<DetailFacility> {
               ),
               Text(
                 "${detailFacility["price"]}/time",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
