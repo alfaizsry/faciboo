@@ -1,8 +1,12 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
+import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/screens/detail_request_booking.dart';
 import 'package:faciboo/screens/payment_confirmation.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ConfirmationScreen extends StatefulWidget {
   const ConfirmationScreen(this.data, {Key key}) : super(key: key);
@@ -22,7 +26,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   bool isLoading = false;
 
   String priceParser(dynamic initial) {
-    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
+    String result =
+        NumberFormat().format(initial).toString().replaceAll(',', '.');
     return 'Rp. $result';
   }
 
@@ -50,8 +55,77 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         };
         data.addAll(res['data']);
         //TODO
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => PaymentConfirmationScreen(data)));
+
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => DetailRequestBooking(
+            idBooking: data["_id"],
+            onPop: () {
+              Alert(
+                style: AlertStyle(
+                  isCloseButton: false,
+                ),
+                context: context,
+                //type: AlertType.,
+                title: "Waiting for Payment!",
+                content: Column(
+                  children: [
+                    Text(
+                      "Are you sure you want to exit the payment page? You can continue payment through the booking page",
+                      style: TextStyle(fontSize: 18),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "Pay Later",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    onPressed: () {
+                      // Navigator.of(context).pushReplacementNamed("/home");
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                    },
+                    color: Colors.green,
+                  ),
+                  DialogButton(
+                    child: Text(
+                      "Return",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    color: Colors.white,
+                    border: Border.all(width: 1, color: Colors.red),
+                  ),
+                ],
+              ).show();
+            },
+          ),
+        ));
+
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.red,
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
       }
     }).catchError((onError) {});
   }
@@ -60,7 +134,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   void initState() {
     super.initState();
     basePrice = priceParser(widget.data['base_price']);
-    totalPrice = priceParser(widget.data['base_price'] * widget.data['hour'].length);
+    totalPrice =
+        priceParser(widget.data['base_price'] * widget.data['hour'].length);
     showDateTime = dateTimeToString(widget.data['date_time']);
     // print(widget.data);
   }
@@ -120,7 +195,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   showDateTime,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -176,11 +252,13 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               children: [
                 Text(
                   'x${widget.data['hour'].length}',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 Text(
                   basePrice,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -202,7 +280,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   totalPrice,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -247,8 +326,22 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: ListView(
-        children: [_buildHeader(), _buildBodyDetailsConfirmation(), _continueButton()],
+        children: [
+          _buildHeader(),
+          _buildBodyDetailsConfirmation(),
+          // _continueButton(),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            child: CustomButton(
+              textButton: "Confirm & Continue Payment",
+              onClick: () {
+                confirmBooking();
+              },
+            ),
+          )
+        ],
       ),
     );
   }

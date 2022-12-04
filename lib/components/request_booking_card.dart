@@ -77,9 +77,6 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Container(
-                  //   decoration: BoxDecoration(borderRadius: BorderRadius),
-                  // ),
                   Text(
                     widget.facilityName,
                     style: TextStyle(
@@ -132,7 +129,10 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded),
+            Icon(
+              Icons.arrow_forward_ios_rounded,
+              color: Colors.green.shade900,
+            ),
           ],
         ),
       ),

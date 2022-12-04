@@ -4,7 +4,7 @@ import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/components/request_booking_card.dart';
-import 'package:faciboo/screens/detail_owner_request_booking.dart';
+import 'package:faciboo/screens/detail_request_booking.dart';
 import 'package:flutter/material.dart';
 
 class OwnerRequestBooking extends StatefulWidget {
@@ -103,8 +103,12 @@ class _OwnerRequestBookingState extends State<OwnerRequestBooking> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => DetailOwnerRequestBooking(
+                          builder: (context) => DetailRequestBooking(
                             idBooking: item["booking"]["_id"],
+                            isOwner: true,
+                            onPop: () {
+                              Navigator.pop(context);
+                            },
                           ),
                         ),
                       ).then((value) => _callGetData());

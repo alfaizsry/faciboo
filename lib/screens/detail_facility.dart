@@ -2,6 +2,7 @@ import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
+import 'package:faciboo/components/view_photo.dart';
 import 'package:faciboo/screens/schedule_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -228,22 +229,37 @@ class _DetailFacilityState extends State<DetailFacility> {
         children: [
           if (detailFacility["image"] != null)
             for (var i = 0; i < detailFacility["image"].length; i++)
-              Padding(
-                padding: const EdgeInsets.only(
+              Container(
+                margin: const EdgeInsets.only(
                   right: 16,
                 ),
-                child: Container(
-                  width: MediaQuery.of(context).size.width / 3,
-                  height: MediaQuery.of(context).size.width / 3,
-                  decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(10),
-                    ),
-                    image: DecorationImage(
-                      image: NetworkImage(
-                        detailFacility["image"][i],
+                child: InkWell(
+                  customBorder: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ViewPhoto(
+                          url: detailFacility["image"][i],
+                        ),
                       ),
-                      fit: BoxFit.cover,
+                    );
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    height: MediaQuery.of(context).size.width / 3,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10),
+                      ),
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          detailFacility["image"][i],
+                        ),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),

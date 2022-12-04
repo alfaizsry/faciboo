@@ -5,7 +5,7 @@ import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/components/request_booking_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/detail_facility.dart';
-import 'package:faciboo/screens/detail_owner_request_booking.dart';
+import 'package:faciboo/screens/detail_request_booking.dart';
 import 'package:flutter/material.dart';
 
 class MyBookedPage extends StatefulWidget {
@@ -212,7 +212,19 @@ class _MyBookedPageState extends State<MyBookedPage>
                             (item["booking"]["bookingMonth"].toString()) +
                             "/" +
                             (item["booking"]["bookingYear"].toString()),
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DetailRequestBooking(
+                                idBooking: item["booking"]["_id"],
+                                onPop: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ),
+                          ).then((value) => _callGetData());
+                        },
                       ),
                     )
                   : Container();

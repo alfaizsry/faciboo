@@ -253,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                           idFacility: searchResult[index]["_id"],
                         ),
                       ),
-                    );
+                    ).then((value) => _callGetData());
                   },
                 ),
               );
@@ -510,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                                   idFacility: facility["_id"],
                                 ),
                               ),
-                            );
+                            ).then((value) => _callGetData());
                           },
                         ),
                       );
@@ -613,7 +613,7 @@ class _HomePageState extends State<HomePage> {
                                         facilitiesByCategory[i]["id"],
                                   ),
                                 ),
-                              );
+                              ).then((value) => _callGetData());
                             },
                           ),
                           const SizedBox(
