@@ -189,6 +189,44 @@ class _EditFacilitiesState extends State<EditFacilities>
     });
   }
 
+  _postDeleteFacility() async {
+    Map body = {"id": detailFacility["_id"]};
+    print("============BODY$body");
+    await http.post('facility/delete-facility', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          Navigator.pop(context);
+          Flushbar(
+            margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+            flushbarPosition: FlushbarPosition.TOP,
+            // borderRadius: BorderRadius.circular(8),
+            backgroundColor: Colors.green[600],
+            message: res["msg"] ?? "Success Delete Facility",
+            duration: const Duration(seconds: 3),
+          ).show(context);
+        });
+        print("================CATEGORY $categories");
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.red,
+          message: res["msg"] ?? "Failed Delete Facility",
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR delete-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
   _postEditFacility() async {
     setState(() {
       _isLoading = true;
@@ -262,18 +300,28 @@ class _EditFacilitiesState extends State<EditFacilities>
             SizedBox(
               height: 48,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Container(
-                  margin: EdgeInsets.only(left: 24),
-                  child: CustomArrowBack(
+            Container(
+              margin: EdgeInsets.only(left: 24, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomArrowBack(
                     onClick: () {
                       Navigator.of(context).pop();
                     },
                   ),
-                ),
-              ],
+                  IconButton(
+                    onPressed: () {
+                      _postDeleteFacility();
+                    },
+                    icon: Icon(
+                      Icons.delete_forever_rounded,
+                      size: 32,
+                      color: Colors.red,
+                    ),
+                  )
+                ],
+              ),
             ),
             SizedBox(
               height: 24,
