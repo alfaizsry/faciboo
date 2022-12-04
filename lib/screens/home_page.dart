@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:faciboo/components/empty_facilities.dart';
@@ -415,9 +413,9 @@ class _HomePageState extends State<HomePage> {
         //   onTap();
         // },
         onChanged: (value) {
-          if (_filter.text != "")
+          if (_filter.text != "") {
             _getSearchResult();
-          else {
+          } else {
             setState(() {
               searchResult = [];
             });

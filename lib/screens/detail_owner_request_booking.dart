@@ -145,7 +145,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
     return BottomAppBar(
       child: Container(
         height: 98,
-        padding: EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: 24,
           right: 24,
           top: 16,
@@ -179,11 +179,11 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
           title: "Account Number",
           value: detailRequestBooking["proofPayment"]["nomorRekening"],
         ),
-        SizedBox(
+        const SizedBox(
           height: 8,
         ),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 24),
+          margin: const EdgeInsets.symmetric(horizontal: 24),
           child: CachedNetworkImage(
             imageUrl: detailRequestBooking["proofPayment"]["imageUrl"] ??
                 "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
@@ -191,7 +191,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(20)),
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
                 image: DecorationImage(
                   image: imageProvider,
                   fit: BoxFit.cover,
@@ -210,7 +210,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
                     color: Colors.red,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.error_outline_rounded,
                   color: Colors.red,
                 ),
@@ -228,7 +228,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
       children: [
         _buildSubtitle(title: "Booked Facility"),
         Container(
-          margin: EdgeInsets.symmetric(horizontal: 24),
+          margin: const EdgeInsets.symmetric(horizontal: 24),
           height: 175,
           child: FacilityBanner(
             detailFacility: detailRequestBooking["facility"],
@@ -244,7 +244,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
             },
           ),
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],
@@ -282,7 +282,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
         _buildDetail(
             title: "Total Price",
             value: "Rp${detailRequestBooking["booking"]["total"].toString()}"),
-        SizedBox(
+        const SizedBox(
           height: 12,
         ),
       ],
@@ -291,7 +291,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
 
   Widget _buildDetail({@required String title, @required value}) {
     return Container(
-      margin: EdgeInsets.only(left: 24, right: 24, bottom: 8),
+      margin: const EdgeInsets.only(left: 24, right: 24, bottom: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -312,7 +312,7 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
 
   Widget _buildSubtitle({@required String title}) {
     return Container(
-      margin: EdgeInsets.only(left: 24, right: 24, bottom: 8),
+      margin: const EdgeInsets.only(left: 24, right: 24, bottom: 8),
       child: Text(
         title,
         style: const TextStyle(
@@ -337,10 +337,10 @@ class _DetailOwnerRequestBookingState extends State<DetailOwnerRequestBooking> {
               Navigator.of(context).pop();
             },
           ),
-          SizedBox(
+          const SizedBox(
             width: 24,
           ),
-          Flexible(
+          const Flexible(
             child: Text(
               "Detail Request Booking",
               overflow: TextOverflow.ellipsis,

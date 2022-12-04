@@ -15,7 +15,7 @@ class EmptyFacilities extends StatefulWidget {
 class _EmptyFacilitiesState extends State<EmptyFacilities> {
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 175,
       child: Center(
@@ -27,7 +27,7 @@ class _EmptyFacilitiesState extends State<EmptyFacilities> {
               color: Colors.grey.shade400,
               size: 50,
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             Text(

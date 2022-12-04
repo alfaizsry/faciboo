@@ -11,8 +11,7 @@ import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:http/http.dart' as httpDart;
+import 'package:http/http.dart' as http_dart;
 
 class EditFacilities extends StatefulWidget {
   const EditFacilities({
@@ -58,11 +57,11 @@ class _EditFacilitiesState extends State<EditFacilities>
     // TODO: implement initState
     _callGetData();
 
-    _controller = new AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    imagePicker = new ImagePickerHandler(this, _controller);
+    imagePicker = ImagePickerHandler(this, _controller);
     imagePicker.init();
 
     super.initState();
@@ -82,7 +81,7 @@ class _EditFacilitiesState extends State<EditFacilities>
         String base64Image =
             _image != null ? base64Encode(_image.readAsBytesSync()) : '';
         String fileName = _image != null ? _image.path.split("/").last : '';
-        Uint8List byestsImg = Base64Decoder().convert(base64Image);
+        Uint8List byestsImg = const Base64Decoder().convert(base64Image);
 
         // arrBase64.add(base64Image);
         // arrFileName.add(fileName);
@@ -103,7 +102,7 @@ class _EditFacilitiesState extends State<EditFacilities>
   }
 
   Future<String> networkImageToBase64(String imageUrl) async {
-    httpDart.Response response = await httpDart.get(Uri.parse(imageUrl));
+    http_dart.Response response = await http_dart.get(Uri.parse(imageUrl));
     final bytes = response?.bodyBytes;
     return (bytes != null ? base64Encode(bytes) : null);
   }
@@ -297,11 +296,11 @@ class _EditFacilitiesState extends State<EditFacilities>
         isLoading: _isLoading,
         child: ListView(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 48,
             ),
             Container(
-              margin: EdgeInsets.only(left: 24, right: 16),
+              margin: const EdgeInsets.only(left: 24, right: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -314,7 +313,7 @@ class _EditFacilitiesState extends State<EditFacilities>
                     onPressed: () {
                       _postDeleteFacility();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.delete_forever_rounded,
                       size: 32,
                       color: Colors.red,
@@ -323,23 +322,23 @@ class _EditFacilitiesState extends State<EditFacilities>
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 24,
             ),
             _buildHeader(),
-            SizedBox(
+            const SizedBox(
               height: 32,
             ),
             _buildCategoryPicker(),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             _buildFacilityForm(),
-            SizedBox(
+            const SizedBox(
               height: 32,
             ),
             Container(
-              margin: EdgeInsets.symmetric(
+              margin: const EdgeInsets.symmetric(
                 horizontal: 24,
               ),
               child: CustomButton(
@@ -349,7 +348,7 @@ class _EditFacilitiesState extends State<EditFacilities>
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 48,
             ),
           ],
@@ -360,13 +359,13 @@ class _EditFacilitiesState extends State<EditFacilities>
 
   Widget _buildBottomBar() {
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         left: 24,
         right: 24,
         top: 24,
         bottom: 32,
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           top: BorderSide(
             width: 0.8,
@@ -398,7 +397,7 @@ class _EditFacilitiesState extends State<EditFacilities>
     ];
 
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         left: 24,
         right: 24,
       ),
@@ -407,7 +406,7 @@ class _EditFacilitiesState extends State<EditFacilities>
         children: [
           for (var i = 0; i < formTitle.length; i++)
             Container(
-              margin: EdgeInsets.only(
+              margin: const EdgeInsets.only(
                 bottom: 16,
               ),
               child: _customTextInput(
@@ -420,10 +419,10 @@ class _EditFacilitiesState extends State<EditFacilities>
             controller: _bookingHours,
           ),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
             ),
-            child: Text(
+            child: const Text(
               "Notes : separate booking time with commas",
               style: TextStyle(
                 fontSize: 12,
@@ -431,11 +430,11 @@ class _EditFacilitiesState extends State<EditFacilities>
               ),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildEmptyImageList(),
-          SizedBox(
+          const SizedBox(
             height: 16,
           ),
           if (imageLoadLinkList.isNotEmpty || imageItemList.isNotEmpty)
@@ -466,11 +465,11 @@ class _EditFacilitiesState extends State<EditFacilities>
     //type uint8list & url
   }) {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 12,
       ),
       alignment: Alignment.topRight,
-      padding: EdgeInsets.all(6),
+      padding: const EdgeInsets.all(6),
       height: 120,
       width: 120,
       decoration: BoxDecoration(
@@ -492,7 +491,7 @@ class _EditFacilitiesState extends State<EditFacilities>
             }
           });
         },
-        child: Icon(
+        child: const Icon(
           Icons.cancel,
           color: Colors.red,
         ),
@@ -510,26 +509,26 @@ class _EditFacilitiesState extends State<EditFacilities>
         // margin: EdgeInsets.fromLTRB(24, 16, 24, 0),
         decoration: BoxDecoration(
           color: Colors.lightGreen.shade50,
-          borderRadius: BorderRadius.all(Radius.circular(10)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
         ),
         child: DottedBorder(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 20,
             horizontal: 24,
           ),
           color: Colors.blue,
           borderType: BorderType.RRect,
-          radius: Radius.circular(10),
+          radius: const Radius.circular(10),
           child: Container(
             alignment: Alignment.center,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.add_a_photo_rounded),
-                SizedBox(
+                const Icon(Icons.add_a_photo_rounded),
+                const SizedBox(
                   height: 8,
                 ),
-                Text(
+                const Text(
                   "Facility Photos",
                   style: TextStyle(
                     color: Colors.black,
@@ -537,7 +536,7 @@ class _EditFacilitiesState extends State<EditFacilities>
                     fontWeight: FontWeight.w400,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 2,
                 ),
                 Text(
@@ -557,28 +556,28 @@ class _EditFacilitiesState extends State<EditFacilities>
 
   Widget _buildCategoryPicker() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 24),
+      margin: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Select Category",
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 8,
           ),
           SingleChildScrollView(
-            physics: ScrollPhysics(),
+            physics: const ScrollPhysics(),
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
                 for (var i = 0; i < categories.length; i++)
                   Container(
-                    margin: EdgeInsets.only(
+                    margin: const EdgeInsets.only(
                       right: 12,
                     ),
                     child: InkWell(
@@ -588,19 +587,19 @@ class _EditFacilitiesState extends State<EditFacilities>
                         });
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(
+                        padding: const EdgeInsets.symmetric(
                           horizontal: 8,
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          borderRadius: const BorderRadius.all(Radius.circular(10)),
                           color: categories[i]["_id"] == selectedCategory
                               ? Colors.green
                               : Colors.grey[350],
                         ),
                         child: Text(
                           categories[i]["name"] ?? "",
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Colors.white,
                             fontSize: 14,
                           ),
@@ -618,10 +617,10 @@ class _EditFacilitiesState extends State<EditFacilities>
 
   Widget _buildHeader() {
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 24,
       ),
-      child: Text(
+      child: const Text(
         "Edit Facilty",
         style: TextStyle(
           fontSize: 20,
@@ -651,7 +650,7 @@ class _EditFacilitiesState extends State<EditFacilities>
         color: (isEnable) ? Colors.black : Colors.black54,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 24,
         ),
         // isDense: true, //remove default padding
@@ -664,24 +663,24 @@ class _EditFacilitiesState extends State<EditFacilities>
           color: isEnable ? Colors.black : Colors.black54,
         ),
         prefix: prefixIcon,
-        prefixIconConstraints: BoxConstraints(maxWidth: 100),
+        prefixIconConstraints: const BoxConstraints(maxWidth: 100),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.yellow,
             width: 0.5,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.blue,
             width: 0.8,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.grey,
             width: 0.5,
           ),

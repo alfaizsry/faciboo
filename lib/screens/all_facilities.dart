@@ -151,7 +151,7 @@ class _AllFacilitiesState extends State<AllFacilities> {
                     color: Colors.red,
                   ),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.error_outline_rounded,
                   color: Colors.red,
                 ),
@@ -195,17 +195,17 @@ class _AllFacilitiesState extends State<AllFacilities> {
             ],
           ),
           Row(
-            children: [
-              const Text(
+            children: const [
+              Text(
                 "Sort By",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 width: 8,
               ),
-              const Icon(
+              Icon(
                 Icons.filter_list_rounded,
               )
             ],
@@ -229,7 +229,7 @@ class _AllFacilitiesState extends State<AllFacilities> {
             itemBuilder: (context, index) {
               return Column(
                 children: [
-                  Container(
+                  SizedBox(
                     height: 175,
                     child: FacilityBanner(
                       detailFacility: facilities[index],

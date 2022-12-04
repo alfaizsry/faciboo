@@ -237,7 +237,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                   height: MediaQuery.of(context).size.width / 3,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(
-                      const Radius.circular(10),
+                      Radius.circular(10),
                     ),
                     image: DecorationImage(
                       image: NetworkImage(

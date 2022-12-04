@@ -1,14 +1,9 @@
-import 'dart:math';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:faciboo/components/facility_banner.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/home_page.dart';
 import 'package:faciboo/screens/my_booked_page.dart';
 import 'package:faciboo/screens/my_facilities_page.dart';
 import 'package:faciboo/screens/profile_page.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key key}) : super(key: key);

@@ -168,7 +168,7 @@ class _SignInPageState extends State<SignInPage> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
               );
             },
             child: const Text(
@@ -194,8 +194,7 @@ class _SignInPageState extends State<SignInPage> {
                     color: const Color(0xFF24AB70),
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 89, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 89, vertical: 10),
                   child: const Text(
                     "SIGN IN",
                     style: TextStyle(
@@ -232,25 +231,23 @@ class _SignInPageState extends State<SignInPage> {
             children: [
               InkWell(
                 onTap: () {},
-                child: Container(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/images/googleLogo.png',
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/images/googleLogo.png',
+                    ),
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    const Text(
+                      "Login With Google",
+                      style: TextStyle(
+                        fontSize: 14,
                       ),
-                      const SizedBox(
-                        width: 24,
-                      ),
-                      const Text(
-                        "Login With Google",
-                        style: const TextStyle(
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               )
             ],
@@ -264,7 +261,7 @@ class _SignInPageState extends State<SignInPage> {
             children: [
               const Text(
                 "Don't have an account?",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF9C9C9C),
                   fontSize: 14,
                 ),
@@ -276,15 +273,13 @@ class _SignInPageState extends State<SignInPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignUpPage()),
+                    MaterialPageRoute(builder: (context) => const SignUpPage()),
                   );
                 },
                 child: const Text(
                   "Sign Up",
-                  style: const TextStyle(
-                      color: Color(0xFF004D34),
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: Color(0xFF004D34), fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               )
             ],
@@ -320,7 +315,7 @@ class _SignInPageState extends State<SignInPage> {
         hintText: hintText,
         hintStyle: const TextStyle(
           fontSize: 14.0,
-          color: const Color(0xFFB4B4B4),
+          color: Color(0xFFB4B4B4),
         ),
         prefix: prefixIcon,
         prefixIconConstraints: const BoxConstraints(maxWidth: 100),
@@ -334,7 +329,7 @@ class _SignInPageState extends State<SignInPage> {
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(
-            color: const Color(0xFF004D34),
+            color: Color(0xFF004D34),
             width: 1,
           ),
         ),
@@ -384,7 +379,7 @@ class _SignInPageState extends State<SignInPage> {
         hintText: hintText,
         hintStyle: const TextStyle(
           fontSize: 14.0,
-          color: const Color(0xFFB4B4B4),
+          color: Color(0xFFB4B4B4),
         ),
         prefix: prefixIcon,
         prefixIconConstraints: const BoxConstraints(maxWidth: 100),
@@ -398,7 +393,7 @@ class _SignInPageState extends State<SignInPage> {
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(
-            color: const Color(0xFF004D34),
+            color: Color(0xFF004D34),
             width: 1,
           ),
         ),
@@ -419,7 +414,7 @@ class _SignInPageState extends State<SignInPage> {
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(
-            color: const Color(0xFF004D34),
+            color: Color(0xFF004D34),
             width: 0.8,
           ),
         ),
