@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_new
+
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -27,7 +29,7 @@ class ImagePickerHandler {
     XFile images = (await ImagePicker()
         .pickImage(source: ImageSource.camera, maxWidth: 600));
     final File image = File(images.path);
-    _listener.userImage(image, this.type);
+    _listener.userImage(image, type);
   }
 
   openGallery() async {
@@ -42,7 +44,7 @@ class ImagePickerHandler {
     XFile images = (await ImagePicker()
         .pickImage(source: ImageSource.gallery, maxWidth: 600));
     final File image = File(images.path);
-    _listener.userImage(image, this.type);
+    _listener.userImage(image, type);
   }
 
   void init() {
@@ -60,30 +62,30 @@ class ImagePickerHandler {
         CropAspectRatioPreset.ratio4x3,
         CropAspectRatioPreset.ratio16x9
       ],
-      androidUiSettings: AndroidUiSettings(
+      androidUiSettings: const AndroidUiSettings(
         toolbarTitle: 'Crop',
         toolbarColor: Colors.green,
         toolbarWidgetColor: Colors.white,
         initAspectRatio: CropAspectRatioPreset.original,
         lockAspectRatio: false,
       ),
-      iosUiSettings: IOSUiSettings(
+      iosUiSettings: const IOSUiSettings(
         minimumAspectRatio: 1.0,
       ),
       maxWidth: 512,
       maxHeight: 512,
     );
 
-    _listener.userImage(croppedFile, this.type);
+    _listener.userImage(croppedFile, type);
   }
 
   showDialog(BuildContext context, {int tipe = 1}) {
-    this.type = tipe;
+    type = tipe;
     imagePicker.getImage(context);
   }
 
   showDialog2(BuildContext context, {int tipe = 1}) {
-    this.type = tipe;
+    type = tipe;
     imagePicker.getImage2(context);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/http_service.dart';
@@ -71,7 +70,7 @@ class _OwnerRequestBookingState extends State<OwnerRequestBooking> {
             ),
             (requestBookingList.isNotEmpty)
                 ? _buildRequestBookingList()
-                : EmptyFacilities(
+                : const EmptyFacilities(
                     message: "There are no booking request",
                   ),
           ],
@@ -82,14 +81,14 @@ class _OwnerRequestBookingState extends State<OwnerRequestBooking> {
 
   Widget _buildRequestBookingList() {
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: requestBookingList.length,
       shrinkWrap: true,
       itemBuilder: (context, index) {
         Map item = requestBookingList[index];
         return (item != null)
             ? Container(
-                margin: EdgeInsets.only(left: 24, right: 24, bottom: 12),
+                margin: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
                 child: RequestBookingCard(
                     facilityName: item["facility"]["name"],
                     facilityImage: item["facility"]["image"][0],

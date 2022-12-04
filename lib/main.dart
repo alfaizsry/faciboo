@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
     // '/selesaiforgotPage': (BuildContext context) => new SelesaiforgotPage(),
     // '/onboarding': (BuildContext context) => const OnBoardingScreen(),
     '/home': (BuildContext context) => const Home(),
-    '/onSplash': (BuildContext context) => SplashScreenPage(),
+    '/onSplash': (BuildContext context) => const SplashScreenPage(),
   };
 
   @override

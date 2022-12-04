@@ -128,7 +128,7 @@ class _FacilityCardState extends State<FacilityCard> {
       alignment: Alignment.topRight,
       child: InkWell(
         onTap: widget.onClickEdit,
-        customBorder: CircleBorder(),
+        customBorder: const CircleBorder(),
         splashFactory: NoSplash.splashFactory,
         child: Container(
           decoration: BoxDecoration(

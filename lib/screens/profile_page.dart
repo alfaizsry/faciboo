@@ -48,11 +48,11 @@ class _ProfilePageState extends State<ProfilePage>
   void initState() {
     _callGetData();
     // TODO: implement initState
-    _controller = new AnimationController(
+    _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    imagePicker = new ImagePickerHandler(this, _controller);
+    imagePicker = ImagePickerHandler(this, _controller);
     imagePicker.init();
     super.initState();
   }
@@ -71,7 +71,7 @@ class _ProfilePageState extends State<ProfilePage>
         String base64Image =
             _image != null ? base64Encode(_image.readAsBytesSync()) : '';
         String fileName = _image != null ? _image.path.split("/").last : '';
-        Uint8List byestsImg = Base64Decoder().convert(base64Image);
+        Uint8List byestsImg = const Base64Decoder().convert(base64Image);
 
         newPhotoProfile = ImageItem(
           file: _image,
@@ -184,47 +184,45 @@ class _ProfilePageState extends State<ProfilePage>
   Widget build(BuildContext context) {
     return LoadingFallback(
       isLoading: _isLoading,
-      child: Container(
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 48,
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 48,
+          ),
+          _buildHeaderProfile(),
+          const SizedBox(
+            height: 24,
+          ),
+          _buildUserDetailForm(),
+          if (_isEditing)
+            Column(
+              children: [
+                _buildButton(),
+                const SizedBox(
+                  height: 32,
+                ),
+              ],
             ),
-            _buildHeaderProfile(),
-            SizedBox(
-              height: 24,
+          const SizedBox(
+            height: 48,
+          ),
+          Container(
+            margin: const EdgeInsets.only(
+              left: 24,
+              right: 24,
             ),
-            _buildUserDetailForm(),
-            if (_isEditing)
-              Column(
-                children: [
-                  _buildButton(),
-                  SizedBox(
-                    height: 32,
-                  ),
-                ],
-              ),
-            SizedBox(
-              height: 48,
+            child: CustomButton(
+              textButton: "Sign Out",
+              onClick: () {
+                Navigator.pushReplacementNamed(context, '/loginPage');
+              },
+              colorButton: Colors.red[900],
             ),
-            Container(
-              margin: EdgeInsets.only(
-                left: 24,
-                right: 24,
-              ),
-              child: CustomButton(
-                textButton: "Sign Out",
-                onClick: () {
-                  Navigator.pushReplacementNamed(context, '/loginPage');
-                },
-                colorButton: Colors.red[900],
-              ),
-            ),
-            SizedBox(
-              height: 48,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(
+            height: 48,
+          ),
+        ],
       ),
     );
   }
@@ -310,15 +308,16 @@ class _ProfilePageState extends State<ProfilePage>
                     imagePicker.showDialog(context);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       border: Border.all(width: 1, color: Colors.white),
-                      borderRadius: BorderRadius.all(
+                      borderRadius: const BorderRadius.all(
                         Radius.circular(20),
                       ),
                       // color: Colors.blue.withOpacity(0.4),
                     ),
-                    child: Text(
+                    child: const Text(
                       "Change Photo",
                       style: TextStyle(
                         fontSize: 13,
@@ -332,7 +331,7 @@ class _ProfilePageState extends State<ProfilePage>
           ],
         ),
         Container(
-          margin: EdgeInsets.only(
+          margin: const EdgeInsets.only(
             top: 16,
           ),
           child: Row(
@@ -340,12 +339,12 @@ class _ProfilePageState extends State<ProfilePage>
             children: [
               Text(
                 "${userDetail["name"]}",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
               if (!_isEditing)
@@ -370,16 +369,18 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildSubtitle({@required String subtitle}) {
     return Text(
-      "$subtitle",
-      style: TextStyle(
+      subtitle,
+      style: const TextStyle(
         fontWeight: FontWeight.w600,
       ),
     );
   }
 
   Widget _buildUserDetailForm() {
+    EdgeInsets marginPrefixIcon =
+        const EdgeInsets.only(right: 12, left: 16, bottom: 2);
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 24,
       ),
       child: Column(
@@ -387,7 +388,7 @@ class _ProfilePageState extends State<ProfilePage>
         children: [
           _buildSubtitle(subtitle: "Name"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -396,10 +397,8 @@ class _ProfilePageState extends State<ProfilePage>
               controller: _name,
               isEnable: _isEditing,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.person,
                   size: 18,
                   color: Colors.black,
@@ -409,7 +408,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Email"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -419,10 +418,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.emailAddress,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.email,
                   size: 18,
                   color: Colors.black,
@@ -432,7 +429,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Phone"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -442,10 +439,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: false,
               keyboardType: TextInputType.number,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.phone,
                   size: 18,
                   color: Colors.black,
@@ -455,7 +450,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "New Password"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -466,7 +461,7 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.text,
               suffixIcon: Container(
-                margin: EdgeInsets.only(right: 8),
+                margin: const EdgeInsets.only(right: 8),
                 child: IconButton(
                     onPressed: () {
                       setState(() {
@@ -480,10 +475,8 @@ class _ProfilePageState extends State<ProfilePage>
                     )),
               ),
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.password_rounded,
                   size: 18,
                   color: Colors.black,
@@ -493,7 +486,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Location"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -503,10 +496,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.multiline,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.share_location_rounded,
                   size: 18,
                   color: Colors.black,
@@ -516,7 +507,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Bank Name"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -526,10 +517,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.text,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.money,
                   size: 18,
                   color: Colors.black,
@@ -539,7 +528,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Bank Account Name"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -549,10 +538,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.text,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.attach_money_rounded,
                   size: 18,
                   color: Colors.black,
@@ -562,7 +549,7 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           _buildSubtitle(subtitle: "Bank Account Number"),
           Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 4,
               bottom: 16,
             ),
@@ -572,10 +559,8 @@ class _ProfilePageState extends State<ProfilePage>
               isEnable: _isEditing,
               keyboardType: TextInputType.text,
               prefixIcon: Container(
-                margin: EdgeInsets.only(
-                  right: 10,
-                ),
-                child: Icon(
+                margin: marginPrefixIcon,
+                child: const Icon(
                   Icons.attach_money_rounded,
                   size: 18,
                   color: Colors.black,
@@ -590,7 +575,7 @@ class _ProfilePageState extends State<ProfilePage>
 
   Widget _buildButton() {
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 24,
       ),
       child: Row(
@@ -601,7 +586,7 @@ class _ProfilePageState extends State<ProfilePage>
               _editProfile();
             },
           ),
-          SizedBox(
+          const SizedBox(
             width: 12,
           ),
           CustomButton(
@@ -640,7 +625,7 @@ class _ProfilePageState extends State<ProfilePage>
         color: (isEnable) ? Colors.black : Colors.black54,
       ),
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 24,
         ),
         // isDense: true, //remove default padding
@@ -652,25 +637,25 @@ class _ProfilePageState extends State<ProfilePage>
           fontSize: 14.0,
           color: isEnable ? Colors.blue : Colors.black54,
         ),
-        prefix: prefixIcon,
-        prefixIconConstraints: BoxConstraints(maxWidth: 100),
+        prefixIcon: prefixIcon,
+        prefixIconConstraints: const BoxConstraints(maxWidth: 100),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.yellow,
             width: 0.5,
           ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.blue,
             width: 0.8,
           ),
         ),
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: Colors.grey,
             width: 0.5,
           ),

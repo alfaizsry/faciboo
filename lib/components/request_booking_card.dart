@@ -23,16 +23,16 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      customBorder: RoundedRectangleBorder(
+      customBorder: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
       onTap: widget.onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.green.shade50,
-          borderRadius: BorderRadius.all(Radius.circular(20)),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
           // border: Border.all(width: 1, color: Colors.grey.shade200),
         ),
         child: Row(
@@ -44,7 +44,7 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                 width: 100.0,
                 height: 100.0,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
                   image: DecorationImage(
                     image: imageProvider,
                     fit: BoxFit.cover,
@@ -63,14 +63,14 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                       color: Colors.red,
                     ),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.error_outline_rounded,
                     color: Colors.red,
                   ),
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               width: 12,
             ),
             Expanded(
@@ -79,13 +79,13 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                 children: [
                   Text(
                     widget.facilityName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       // color: Colors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Text(
@@ -98,7 +98,7 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                     ),
                   ),
                   Text(
-                    "${widget.date}",
+                    widget.date,
                     style: TextStyle(
                       // color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -116,7 +116,7 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                     ),
                   ),
                   Text(
-                    "${widget.invoice}",
+                    widget.invoice,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

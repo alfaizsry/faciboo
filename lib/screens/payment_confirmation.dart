@@ -1,7 +1,6 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class PaymentConfirmationScreen extends StatefulWidget {
   const PaymentConfirmationScreen(this.data, {Key key}) : super(key: key);

@@ -141,18 +141,18 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
         _buildTitle(title: "All My Facility"),
         (myFacilities.isNotEmpty)
             ? Container(
-                margin: EdgeInsets.symmetric(horizontal: 16),
+                margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
                     // primary: false,
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: myFacilities.length,
                     itemBuilder: (context, index) {
                       return Container(
-                        margin: EdgeInsets.all(8),
+                        margin: const EdgeInsets.all(8),
                         child: FacilityCard(
                           detailFacility: myFacilities[index],
                           onClick: () {
@@ -180,14 +180,14 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                       );
                     }),
               )
-            : EmptyFacilities(),
+            : const EmptyFacilities(),
       ],
     );
   }
 
   Widget _buildTitle({@required String title}) {
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 24,
       ),
       child: Text(
@@ -201,6 +201,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   }
 
   Widget _buildCardProfile() {
+    final double width = MediaQuery.of(context).size.width;
     return InkWell(
       splashFactory: NoSplash.splashFactory,
       borderRadius: BorderRadius.circular(25),
@@ -247,7 +248,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                       color: Colors.red,
                     ),
                   ),
-                  child: Icon(
+                  child: const Icon(
                     Icons.error_outline_rounded,
                     color: Colors.red,
                   ),
@@ -268,11 +269,16 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            userDetail["name"] ?? "",
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
+                          SizedBox(
+                            width: width * 0.4,
+                            child: Text(
+                              userDetail["name"] ?? "",
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
                           ),
                           Text(
@@ -303,7 +309,7 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CreateFacilities(),
+                          builder: (context) => const CreateFacilities(),
                         ),
                       ).then((value) => _callGetData());
                     },
@@ -319,12 +325,12 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
 
   Widget buttonRequestBooking() {
     return InkWell(
-      customBorder: CircleBorder(),
+      customBorder: const CircleBorder(),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => OwnerRequestBooking(),
+            builder: (context) => const OwnerRequestBooking(),
           ),
         ).then((value) => _callGetData());
       },
@@ -338,14 +344,14 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           ),
           if (requestBookingList.isNotEmpty)
             Container(
-              padding: EdgeInsets.all(6),
-              decoration: BoxDecoration(
+              padding: const EdgeInsets.all(6),
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.red,
               ),
               child: Text(
                 "${requestBookingList.length}",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.white,
@@ -394,23 +400,19 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                 width: 24,
               ),
               for (var i = 0;
-                  i <
-                      myFacilitiesByCategory[selectedCategory]["facilities"]
-                          .length;
+                  i < myFacilitiesByCategory[selectedCategory]["facilities"].length;
                   i++)
                 Row(
                   children: [
                     FacilityCard(
-                      detailFacility: myFacilitiesByCategory[selectedCategory]
-                          ["facilities"][i],
+                      detailFacility: myFacilitiesByCategory[selectedCategory]["facilities"][i],
                       onClick: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailFacility(
-                              idFacility:
-                                  myFacilitiesByCategory[selectedCategory]
-                                      ["facilities"][i]["_id"],
+                              idFacility: myFacilitiesByCategory[selectedCategory]["facilities"][i]
+                                  ["_id"],
                             ),
                           ),
                         );
@@ -446,13 +448,9 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                     Text(
                       myFacilitiesByCategory[i]["category"],
                       style: TextStyle(
-                        fontWeight: (selectedCategory == i)
-                            ? FontWeight.w700
-                            : FontWeight.normal,
+                        fontWeight: (selectedCategory == i) ? FontWeight.w700 : FontWeight.normal,
                         fontSize: 18,
-                        color: (selectedCategory == i)
-                            ? Colors.black
-                            : Colors.grey,
+                        color: (selectedCategory == i) ? Colors.black : Colors.grey,
                       ),
                     ),
                     if (selectedCategory == i)

@@ -3,7 +3,6 @@ import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/components/request_booking_card.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/detail_facility.dart';
 import 'package:faciboo/screens/detail_request_booking.dart';
 import 'package:flutter/material.dart';
@@ -34,16 +33,16 @@ class _MyBookedPageState extends State<MyBookedPage>
   TabController _tabController;
 
   List<Tab> tabs = <Tab>[
-    Tab(
+    const Tab(
       text: 'All',
     ),
-    Tab(
+    const Tab(
       text: 'On Pay',
     ),
-    Tab(
+    const Tab(
       text: 'On Booking',
     ),
-    Tab(
+    const Tab(
       text: 'History',
     ),
   ];
@@ -110,32 +109,30 @@ class _MyBookedPageState extends State<MyBookedPage>
   Widget build(BuildContext context) {
     return LoadingFallback(
       isLoading: _isLoading,
-      child: Container(
-        child: Column(
-          children: [
-            SizedBox(
-              height: 64,
-            ),
-            _buildHeader(),
-            SizedBox(
-              height: 20,
-            ),
-            _buildTabBar(),
-            _buildTabView(),
-          ],
-        ),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 64,
+          ),
+          _buildHeader(),
+          const SizedBox(
+            height: 20,
+          ),
+          _buildTabBar(),
+          _buildTabView(),
+        ],
       ),
     );
   }
 
   Widget _buildHeader() {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 24,
         left: 24,
       ),
       alignment: Alignment.topLeft,
-      child: Text(
+      child: const Text(
         "My Booking",
         style: TextStyle(
           fontSize: 20,
@@ -147,7 +144,7 @@ class _MyBookedPageState extends State<MyBookedPage>
 
   Widget _buildTabBar() {
     return Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         horizontal: 24,
       ),
       decoration: BoxDecoration(
@@ -161,10 +158,10 @@ class _MyBookedPageState extends State<MyBookedPage>
           borderRadius: BorderRadius.circular(25.0),
           border: Border.all(width: 5, color: Colors.green[50]),
         ),
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
           fontWeight: FontWeight.w700,
         ),
-        unselectedLabelStyle: TextStyle(
+        unselectedLabelStyle: const TextStyle(
           fontWeight: FontWeight.w500,
         ),
         labelColor: Colors.white,
@@ -202,7 +199,8 @@ class _MyBookedPageState extends State<MyBookedPage>
               Map item = userBookingList[index];
               return (item != null)
                   ? Container(
-                      margin: EdgeInsets.only(left: 24, right: 24, bottom: 12),
+                      margin: const EdgeInsets.only(
+                          left: 24, right: 24, bottom: 12),
                       child: RequestBookingCard(
                         facilityName: item["facility"]["name"],
                         facilityImage: item["facility"]["image"][0],
@@ -230,7 +228,7 @@ class _MyBookedPageState extends State<MyBookedPage>
                   : Container();
             },
           )
-        : EmptyFacilities(
+        : const EmptyFacilities(
             message: "There are no facility at this status",
           );
   }
@@ -291,14 +289,14 @@ class _MyBookedPageState extends State<MyBookedPage>
     @required List<dynamic> facilities,
   }) {
     return Container(
-      margin: EdgeInsets.only(
+      margin: const EdgeInsets.only(
         right: 24,
         left: 24,
       ),
       child: SingleChildScrollView(
         child: ListView.builder(
             shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             itemCount: facilities.length,
             itemBuilder: (context, index) {
               return Column(
@@ -316,7 +314,7 @@ class _MyBookedPageState extends State<MyBookedPage>
                       );
                     },
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 12,
                   ),
                 ],
