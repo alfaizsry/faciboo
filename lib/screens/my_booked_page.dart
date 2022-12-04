@@ -1,6 +1,11 @@
+import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/facility_banner.dart';
+import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/components/loading_fallback.dart';
+import 'package:faciboo/components/request_booking_card.dart';
 import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/detail_facility.dart';
+import 'package:faciboo/screens/detail_owner_request_booking.dart';
 import 'package:flutter/material.dart';
 
 class MyBookedPage extends StatefulWidget {
@@ -12,7 +17,9 @@ class MyBookedPage extends StatefulWidget {
 
 class _MyBookedPageState extends State<MyBookedPage>
     with SingleTickerProviderStateMixin {
-  var dummyApi = DummyApi();
+  HttpService http = HttpService();
+  bool _isLoading = false;
+  // var dummyApi = DummyApi();
   dynamic userDetail;
 
   List<dynamic> allMyBook = [];
@@ -20,9 +27,16 @@ class _MyBookedPageState extends State<MyBookedPage>
   List<dynamic> onBookingMyBook = [];
   List<dynamic> historyMyBook = [];
 
+  List<dynamic> userBookingList = [];
+
+  int _currentIndex = 0;
+
   TabController _tabController;
 
   List<Tab> tabs = <Tab>[
+    Tab(
+      text: 'All',
+    ),
     Tab(
       text: 'On Pay',
     ),
@@ -39,34 +53,77 @@ class _MyBookedPageState extends State<MyBookedPage>
     _callGetData();
     // TODO: implement initState
     _tabController = TabController(vsync: this, length: tabs.length);
+    _tabController.addListener(_handleTabSelection);
     super.initState();
   }
 
-  _callGetData() async {
+  _handleTabSelection() {
     setState(() {
-      userDetail = dummyApi.getuserdetail["data"];
-      allMyBook = dummyApi.getAllMyBooking["data"];
-      onPayMyBook = dummyApi.getOnPayMyBook["data"];
-      onBookingMyBook = dummyApi.getOnBookingMyBook["data"];
-      historyMyBook = dummyApi.getHistoryMyBook["data"];
+      _currentIndex = _tabController.index;
+    });
+    _getUserBooking();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  _callGetData() async {
+    // setState(() {
+    //   userDetail = dummyApi.getuserdetail["data"];
+    //   allMyBook = dummyApi.getAllMyBooking["data"];
+    //   onPayMyBook = dummyApi.getOnPayMyBook["data"];
+    //   onBookingMyBook = dummyApi.getOnBookingMyBook["data"];
+    //   historyMyBook = dummyApi.getHistoryMyBook["data"];
+    // });
+    _getUserBooking();
+  }
+
+  _getUserBooking() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "status": (_currentIndex != 0) ? _currentIndex - 1 : null,
+    };
+    await http.post('booking/get-user-booking', body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          userBookingList = res["data"];
+        });
+        print("================USERBOOKINGLIST $userBookingList");
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-user-booking $err");
+      setState(() {
+        _isLoading = false;
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 64,
-          ),
-          _buildHeader(),
-          SizedBox(
-            height: 20,
-          ),
-          _buildTabBar(),
-          _buildTabView(),
-        ],
+    return LoadingFallback(
+      isLoading: _isLoading,
+      child: Container(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 64,
+            ),
+            _buildHeader(),
+            SizedBox(
+              height: 20,
+            ),
+            _buildTabBar(),
+            _buildTabView(),
+          ],
+        ),
       ),
     );
   }
@@ -122,12 +179,48 @@ class _MyBookedPageState extends State<MyBookedPage>
       child: TabBarView(
         controller: _tabController,
         children: [
-          _buildListFacilities(facilities: onPayMyBook),
-          _buildListFacilities(facilities: onBookingMyBook),
-          _buildListFacilities(facilities: historyMyBook),
+          _buildBookingList(),
+          _buildBookingList(),
+          _buildBookingList(),
+          _buildBookingList(),
+          // _buildListFacilities(facilities: onPayMyBook),
+          // _buildListFacilities(facilities: onPayMyBook),
+          // _buildListFacilities(facilities: onBookingMyBook),
+          // _buildListFacilities(facilities: historyMyBook),
         ],
       ),
     );
+  }
+
+  Widget _buildBookingList() {
+    return (userBookingList.isNotEmpty)
+        ? ListView.builder(
+            // physics: NeverScrollableScrollPhysics(),
+            itemCount: userBookingList.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              Map item = userBookingList[index];
+              return (item != null)
+                  ? Container(
+                      margin: EdgeInsets.only(left: 24, right: 24, bottom: 12),
+                      child: RequestBookingCard(
+                        facilityName: item["facility"]["name"],
+                        facilityImage: item["facility"]["image"][0],
+                        invoice: item["booking"]["invoice"],
+                        date: (item["booking"]["bookingDate"].toString()) +
+                            "/" +
+                            (item["booking"]["bookingMonth"].toString()) +
+                            "/" +
+                            (item["booking"]["bookingYear"].toString()),
+                        onTap: () {},
+                      ),
+                    )
+                  : Container();
+            },
+          )
+        : EmptyFacilities(
+            message: "There are no facility at this status",
+          );
   }
 
   // Widget _buildHeader() {
