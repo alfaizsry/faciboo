@@ -326,14 +326,14 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
           MaterialPageRoute(
             builder: (context) => OwnerRequestBooking(),
           ),
-        );
+        ).then((value) => _callGetData());
       },
       child: Stack(
         alignment: Alignment.topRight,
         children: [
           Icon(
             Icons.move_to_inbox_rounded,
-            size: 42,
+            size: 36,
             color: Colors.green.shade900,
           ),
           if (requestBookingList.isNotEmpty)

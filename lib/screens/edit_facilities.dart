@@ -12,6 +12,7 @@ import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:http/http.dart' as httpDart;
 
 class EditFacilities extends StatefulWidget {
   const EditFacilities({
@@ -101,6 +102,12 @@ class _EditFacilitiesState extends State<EditFacilities>
     );
   }
 
+  Future<String> networkImageToBase64(String imageUrl) async {
+    httpDart.Response response = await httpDart.get(Uri.parse(imageUrl));
+    final bytes = response?.bodyBytes;
+    return (bytes != null ? base64Encode(bytes) : null);
+  }
+
   _callGetData() async {
     // setState(() {
     //   categories = dummyApi.getCategoryList["data"];
@@ -186,9 +193,17 @@ class _EditFacilitiesState extends State<EditFacilities>
     setState(() {
       _isLoading = true;
     });
+
+    // for (var i = 0; i < detailFacility["image"].length; i++) {
+    //   imageArrBase64List
+    //       .add(networkImageToBase64(detailFacility["image"][i]).toString());
+    // }
+
     List<String> bookingHoursList = _bookingHours.text.split(",");
-    print("============IMAGEFILELIST$imageFileList");
+    print(
+        "============IMAGEBASE64LIST${imageArrBase64List.length} $imageArrBase64List");
     print("============BOOKINGHOURSLIST$bookingHoursList");
+
     Map body = {
       "name": _name.text,
       "address": _address.text,
@@ -209,7 +224,7 @@ class _EditFacilitiesState extends State<EditFacilities>
             flushbarPosition: FlushbarPosition.TOP,
             // borderRadius: BorderRadius.circular(8),
             backgroundColor: Colors.green[600],
-            message: res["msg"],
+            message: res["msg"] ?? "Success Edit Facility",
             duration: const Duration(seconds: 3),
           ).show(context);
         });
@@ -220,7 +235,7 @@ class _EditFacilitiesState extends State<EditFacilities>
           flushbarPosition: FlushbarPosition.TOP,
           // borderRadius: BorderRadius.circular(8),
           backgroundColor: Colors.red,
-          message: res["msg"],
+          message: res["msg"] ?? "Failed Edit Facility",
           duration: const Duration(seconds: 3),
         ).show(context);
       }

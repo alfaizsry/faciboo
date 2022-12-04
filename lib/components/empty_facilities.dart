@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class EmptyFacilities extends StatefulWidget {
-  const EmptyFacilities({Key key}) : super(key: key);
+  const EmptyFacilities({
+    Key key,
+    this.message = "There are no facilities",
+  }) : super(key: key);
+
+  final String message;
 
   @override
   State<EmptyFacilities> createState() => _EmptyFacilitiesState();
@@ -26,7 +31,7 @@ class _EmptyFacilitiesState extends State<EmptyFacilities> {
               height: 8,
             ),
             Text(
-              "There are no facilities",
+              widget.message,
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w600,
