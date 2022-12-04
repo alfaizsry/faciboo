@@ -106,7 +106,7 @@ class _OwnerRequestBookingState extends State<OwnerRequestBooking> {
                             idBooking: item["booking"]["_id"],
                           ),
                         ),
-                      );
+                      ).then((value) => _callGetData());
                     }),
               )
             : Container();

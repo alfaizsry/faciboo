@@ -33,12 +33,11 @@ class _CustomButtonState extends State<CustomButton> {
         borderRadius: BorderRadius.circular(36),
       ),
       child: Container(
-        padding: (widget.padding != null)
-            ? widget.padding
-            : const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+        padding: widget.padding ??
+            const EdgeInsets.symmetric(
+              horizontal: 24,
+              vertical: 12,
+            ),
         alignment: Alignment.center,
         // width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
