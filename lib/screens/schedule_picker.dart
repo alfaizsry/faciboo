@@ -15,7 +15,7 @@ class SchedulePickerPage extends StatefulWidget {
 
 class _SchedulePickerPageState extends State<SchedulePickerPage> {
   HttpService http = HttpService();
-  
+
   bool isLoading = false;
   bool isLoadingDatePicker = true;
 
@@ -77,12 +77,28 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
     });
   }
 
+  void onTapContinue() {
+    Map data = {
+      'id': widget.dataFacility["_id"],
+      'date_time': selectedDate,
+      'year': selectedDate.year,
+      'month': selectedDate.month,
+      'date': selectedDate.day,
+      'hour': listSelectedHour,
+      'base_price': widget.dataFacility['price']
+    };
+
+    if (!isLoading && listSelectedHour.isNotEmpty) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ConfirmationScreen(data)));
+    }
+  }
+
   void getCallData() {
     setState(() {
       isLoading = true;
     });
     Map body = {"id": widget.dataFacility["_id"]};
-    // print("BODY REQUEST AVAILABLE DATE ====> $body");
+    print("BODY REQUEST AVAILABLE DATE ====> $body");
     http.post('facility/get-available-date', body: body).then((res) async {
       if (res['success']) {
         setState(() {
@@ -259,10 +275,7 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
         width: MediaQuery.of(context).size.width,
         child: InkWell(
           onTap: () {
-            //TODO
-            Navigator.of(context)
-                .push(MaterialPageRoute(builder: (context) => ConfirmationScreen()));
-            // if (!isLoading && _listTimePicker.length > 0) bookAction();
+            onTapContinue();
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),

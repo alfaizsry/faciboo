@@ -1,41 +1,70 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
+import 'package:faciboo/components/http_service.dart';
+import 'package:faciboo/screens/payment_confirmation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ConfirmationScreen extends StatefulWidget {
-  const ConfirmationScreen({Key key}) : super(key: key);
+  const ConfirmationScreen(this.data, {Key key}) : super(key: key);
 
+  final dynamic data;
   @override
   State<ConfirmationScreen> createState() => _ConfirmationScreenState();
 }
 
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
-  List _listTimePicker = [
-    {
-      'date': '2022-11-12',
-      'time': '08.00 - 09.30',
-      'schedule_id': 1,
-    },
-    {
-      'date': '2022-11-12',
-      'time': '11.00 - 12.30',
-      'schedule_id': 2,
-    },
-    {
-      'date': '2022-11-12',
-      'time': '13.00 - 14.30',
-      'schedule_id': 3,
-    },
-    {
-      'date': '2022-11-12',
-      'time': '15.00 - 16.30',
-      'schedule_id': 4,
-    },
-    {
-      'date': '2022-11-12',
-      'time': '17.00 - 18.30',
-      'schedule_id': 5,
-    },
-  ];
+  HttpService http = HttpService();
+
+  String basePrice = '';
+  String totalPrice = '';
+  String showDateTime = '';
+
+  bool isLoading = false;
+
+  String priceParser(dynamic initial) {
+    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
+    return 'Rp. $result';
+  }
+
+  String dateTimeToString(DateTime initial) {
+    String formatted = DateFormat('d MMMM yyyy').format(initial);
+    return formatted;
+  }
+
+  void confirmBooking() {
+    Map body = {
+      "bookingDate": widget.data['date'],
+      "bookingMonth": widget.data['month'],
+      "bookingYear": widget.data['year'],
+      "bookingHour": widget.data['hour'],
+      "total": widget.data['base_price'] * widget.data['hour'].length,
+      "facilityId": widget.data['id']
+    };
+    print("BODY REQUEST CONFIRMATION BOOKING ====> $body");
+    http.post('booking/booking', body: body).then((res) {
+      print(res);
+      if (res['success']) {
+        Map data = {
+          'showDate': showDateTime,
+          'showPrice': totalPrice,
+        };
+        data.addAll(res['data']);
+        //TODO
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => PaymentConfirmationScreen(data)));
+      }
+    }).catchError((onError) {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    basePrice = priceParser(widget.data['base_price']);
+    totalPrice = priceParser(widget.data['base_price'] * widget.data['hour'].length);
+    showDateTime = dateTimeToString(widget.data['date_time']);
+    // print(widget.data);
+  }
+
   Widget _buildHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -89,8 +118,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   'Date',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
-                const Text(
-                  '12 November 2022',
+                Text(
+                  showDateTime,
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
@@ -111,7 +140,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _listTimePicker.length,
+                      itemCount: widget.data['hour'].length,
                       itemBuilder: (BuildContext context, int i) {
                         return SizedBox(
                           width: double.infinity,
@@ -124,7 +153,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                             ),
                             child: Center(
                               child: Text(
-                                _listTimePicker[i]['time'],
+                                widget.data['hour'][i],
                                 style: const TextStyle(
                                   fontSize: 12,
                                   color: Colors.black,
@@ -146,12 +175,12 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'x${_listTimePicker.length}',
+                  'x${widget.data['hour'].length}',
                   style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
-                const Text(
-                  'Rp. 250.000',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                Text(
+                  basePrice,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -169,11 +198,11 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               children: [
                 const Text(
                   'Total Price',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                ),
-                const Text(
-                  'Rp. 250.000',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                ),
+                Text(
+                  totalPrice,
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -192,7 +221,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         width: MediaQuery.of(context).size.width,
         child: InkWell(
           onTap: () {
-            //TODO
+            confirmBooking();
           },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -219,11 +248,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView(
-        children: [
-          _buildHeader(),
-          _buildBodyDetailsConfirmation(),
-          _continueButton()
-        ],
+        children: [_buildHeader(), _buildBodyDetailsConfirmation(), _continueButton()],
       ),
     );
   }
