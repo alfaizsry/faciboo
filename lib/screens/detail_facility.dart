@@ -6,6 +6,7 @@ import 'package:faciboo/components/view_photo.dart';
 import 'package:faciboo/screens/schedule_picker.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class DetailFacility extends StatefulWidget {
@@ -26,10 +27,17 @@ class _DetailFacilityState extends State<DetailFacility> {
 
   dynamic detailFacility = {};
 
+  String showPrice = '';
+
+  String priceParser(dynamic initial) {
+    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
+    return 'Rp. $result';
+  }
+
   @override
   void initState() {
-    _callGetData();
     super.initState();
+    _callGetData();
   }
 
   _callGetData() async {
@@ -47,6 +55,7 @@ class _DetailFacilityState extends State<DetailFacility> {
       if (res["success"]) {
         setState(() {
           detailFacility = res["data"];
+          showPrice = priceParser(detailFacility["price"]);
         });
         print("================DETAIL FACILITY $detailFacility");
       }
@@ -64,9 +73,9 @@ class _DetailFacilityState extends State<DetailFacility> {
   }
 
   Future<void> _launchUrl(String url) async {
-    // if (!await launchUrl(Uri.parse(url))) {
-    //   throw 'Could not launch $url';
-    // }
+    if (!await launchUrl(Uri.parse(url))) {
+      throw 'Could not launch $url';
+    }
     await launchUrl(Uri.parse(url));
     // await launch(url);
   }
@@ -144,27 +153,21 @@ class _DetailFacilityState extends State<DetailFacility> {
               color: Colors.grey[400],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              CustomButton(
-                textButton: "Check Availability",
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                onClick: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => SchedulePickerPage(detailFacility),
-                    ),
-                  );
-                  // .then((value) => _callGetData());
-                },
-              )
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.end,
+          //   children: [
+          //     CustomButton(
+          //       textButton: "Check Availability",
+          //       padding: const EdgeInsets.symmetric(
+          //         horizontal: 16,
+          //         vertical: 8,
+          //       ),
+          //       onClick: () {
+          //         // .then((value) => _callGetData());
+          //       },
+          //     )
+          //   ],
+          // ),
         ],
       ),
     );
@@ -209,10 +212,10 @@ class _DetailFacilityState extends State<DetailFacility> {
           const SizedBox(
             height: 20,
           ),
-          _buildTitleContent(title: "Price"),
-          const SizedBox(
-            height: 12,
-          ),
+          // _buildTitleContent(title: "Price"),
+          // const SizedBox(
+          //   height: 12,
+          // ),
           _buildPriceCard(),
           const SizedBox(
             height: 36,
@@ -252,7 +255,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                     height: MediaQuery.of(context).size.width / 3,
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(
-                        const Radius.circular(10),
+                        Radius.circular(10),
                       ),
                       image: DecorationImage(
                         image: NetworkImage(
@@ -344,7 +347,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                 height: 4,
               ),
               Text(
-                "${detailFacility["price"]}/time",
+                "$showPrice/time",
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 14,
@@ -355,7 +358,14 @@ class _DetailFacilityState extends State<DetailFacility> {
           ),
           CustomButton(
             textButton: "Book Now",
-            onClick: () {},
+            onClick: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SchedulePickerPage(detailFacility),
+                ),
+              );
+            },
             padding: const EdgeInsets.symmetric(
               horizontal: 16,
               vertical: 8,
@@ -413,14 +423,6 @@ class _DetailFacilityState extends State<DetailFacility> {
               Navigator.pop(context);
             },
           ),
-        )
-        // Container(
-        //   decoration: BoxDecoration(
-        //     shape: BoxShape.circle,
-        //     color: Colors.white,
-        //   ),
-        //   child: Icon(Icons.arrow_back_ios_new_rounded),
-        // ),
-        );
+        ));
   }
 }
