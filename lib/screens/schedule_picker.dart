@@ -1,5 +1,6 @@
 import 'package:faciboo/components/custom_calender/event.dart';
 import 'package:faciboo/components/daypicker_custom.dart';
+import 'package:faciboo/components/helper.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/screens/confirmation.dart';
 import 'package:flutter/material.dart';
@@ -27,34 +28,6 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
   DateTime selectedDate;
   String selectTimeMsg = 'Please select your desired date first!';
   final DateFormat formatter = DateFormat('yyyy-MM-dd');
-
-  String dateParser(int date) {
-    if (date < 10) {
-      return '0$date';
-    } else {
-      return '$date';
-    }
-  }
-
-  List dateAndTimeListParser(List data) {
-    List parsingResult = [];
-    for (var item in data) {
-      String tempDate = dateParser(item['date']);
-      parsingResult.add({
-        'date': '${item['year']}-${item['month']}-$tempDate',
-        'available_hour': item['availableHour']
-      });
-    }
-    return parsingResult;
-  }
-
-  List<DateTime> dateListParser(List data) {
-    List<DateTime> parsingResult = [];
-    for (var item in data) {
-      parsingResult.add(DateTime.parse(item['date']));
-    }
-    return parsingResult;
-  }
 
   void onSelectDatePicker(DateTime selected) {
     int idxOf = listDate.indexOf(selected);
@@ -102,8 +75,8 @@ class _SchedulePickerPageState extends State<SchedulePickerPage> {
     http.post('facility/get-available-date', body: body).then((res) async {
       if (res['success']) {
         setState(() {
-          listDatePicker = dateAndTimeListParser(res['data']);
-          listDate = dateListParser(listDatePicker);
+          listDatePicker = Helper().dateAndTimeListParser(res['data']);
+          listDate = Helper().dateListParser(listDatePicker);
           selectedDate = listDate[0];
           isLoading = false;
           listTimePicker = listDatePicker[0]['available_hour'];

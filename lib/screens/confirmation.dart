@@ -1,5 +1,6 @@
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
+import 'package:faciboo/components/helper.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/screens/detail_request_booking.dart';
 import 'package:faciboo/screens/payment_confirmation.dart';
@@ -24,16 +25,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   String showDateTime = '';
 
   bool isLoading = false;
-
-  String priceParser(dynamic initial) {
-    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
-    return 'Rp. $result';
-  }
-
-  String dateTimeToString(DateTime initial) {
-    String formatted = DateFormat('d MMMM yyyy').format(initial);
-    return formatted;
-  }
 
   void confirmBooking() {
     Map body = {
@@ -129,9 +120,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   @override
   void initState() {
     super.initState();
-    basePrice = priceParser(widget.data['base_price']);
-    totalPrice = priceParser(widget.data['base_price'] * widget.data['hour'].length);
-    showDateTime = dateTimeToString(widget.data['date_time']);
+    basePrice = Helper().priceParser(widget.data['base_price']);
+    totalPrice = Helper().priceParser(widget.data['base_price'] * widget.data['hour'].length);
+    showDateTime = Helper().dateTimeToString(widget.data['date_time']);
   }
 
   Widget _buildHeader() {
