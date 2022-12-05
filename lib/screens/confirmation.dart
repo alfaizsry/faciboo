@@ -26,6 +26,17 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   bool isLoading = false;
 
+  String priceParser(dynamic initial) {
+    String result =
+        NumberFormat().format(initial).toString().replaceAll(',', '.');
+    return 'Rp. $result';
+  }
+
+  String dateTimeToString(DateTime initial) {
+    String formatted = DateFormat('d MMMM yyyy').format(initial);
+    return formatted;
+  }
+
   void confirmBooking() {
     Map body = {
       "bookingDate": widget.data['date'],
@@ -120,9 +131,10 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   @override
   void initState() {
     super.initState();
-    basePrice = Helper().priceParser(widget.data['base_price']);
-    totalPrice = Helper().priceParser(widget.data['base_price'] * widget.data['hour'].length);
-    showDateTime = Helper().dateTimeToString(widget.data['date_time']);
+    basePrice = priceParser(widget.data['base_price']);
+    totalPrice =
+        priceParser(widget.data['base_price'] * widget.data['hour'].length);
+    showDateTime = dateTimeToString(widget.data['date_time']);
   }
 
   Widget _buildHeader() {
@@ -180,7 +192,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   showDateTime,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -236,11 +249,13 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               children: [
                 Text(
                   'x${widget.data['hour'].length}',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 Text(
                   basePrice,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -262,7 +277,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   totalPrice,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(
+                      fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -287,6 +303,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               onClick: () {
                 confirmBooking();
               },
+              colorButton: Colors.green,
             ),
           )
         ],
