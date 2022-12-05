@@ -29,7 +29,8 @@ class _DetailFacilityState extends State<DetailFacility> {
   String showPrice = '';
 
   String priceParser(dynamic initial) {
-    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
+    String result =
+        NumberFormat().format(initial).toString().replaceAll(',', '.');
     return 'Rp. $result';
   }
 

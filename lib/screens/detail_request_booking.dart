@@ -225,7 +225,14 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
     };
     await http.post('bank/add-bank', body: body).then((res) {
       if (res["success"]) {
-        widget.onPop();
+        if (widget.isFromConfirmPage) {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        } else {
+          widget.onPop();
+        }
         Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           flushbarPosition: FlushbarPosition.TOP,
@@ -334,42 +341,50 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
   //   });
   // }
 
+  Future<bool> _onWillPop() async {
+    return widget.onPop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: (widget.isOwner) ? _buildConfirmBooking() : null,
-      body: LoadingFallback(
-        isLoading: _isLoading,
-        child: ListView(
-          children: [
-            _buildAppbar(),
-            const SizedBox(
-              height: 30,
-            ),
-            // _buildHeader(),
-            // const SizedBox(
-            //   height: 16,
-            // ),
-            // (requestBookingList.isNotEmpty)
-            //     ? _buildRequestBookingList()
-            //     : EmptyFacilities(
-            //         message: "There are no booking request",
-            //       ),
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        bottomNavigationBar: (widget.isOwner) ? _buildConfirmBooking() : null,
+        body: LoadingFallback(
+          isLoading: _isLoading,
+          child: ListView(
+            children: [
+              _buildAppbar(),
+              const SizedBox(
+                height: 30,
+              ),
+              // _buildHeader(),
+              // const SizedBox(
+              //   height: 16,
+              // ),
+              // (requestBookingList.isNotEmpty)
+              //     ? _buildRequestBookingList()
+              //     : EmptyFacilities(
+              //         message: "There are no booking request",
+              //       ),
 
-            if (detailRequestBooking["facility"] != null)
-              _buildFacilityBooked(),
-            if (detailRequestBooking["booking"] != null) _buildDetailBooked(),
-            if (widget.isOwner && detailRequestBooking["proofPayment"] != null)
-              _buildProofPayment(),
-            if (!widget.isOwner &&
-                detailRequestBooking["booking"] != null &&
-                detailRequestBooking["booking"]["status"] == 0)
-              _buildUploadProofPayment(),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
+              if (detailRequestBooking["facility"] != null)
+                _buildFacilityBooked(),
+              if (detailRequestBooking["booking"] != null) _buildDetailBooked(),
+              if (widget.isOwner &&
+                  detailRequestBooking["proofPayment"] != null)
+                _buildProofPayment(),
+              if (!widget.isOwner &&
+                  detailRequestBooking["booking"] != null &&
+                  detailRequestBooking["booking"]["status"] == 0)
+                _buildUploadProofPayment(),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
         ),
       ),
     );
