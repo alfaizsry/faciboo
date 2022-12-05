@@ -26,8 +26,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   bool isLoading = false;
 
   String priceParser(dynamic initial) {
-    String result =
-        NumberFormat().format(initial).toString().replaceAll(',', '.');
+    String result = NumberFormat().format(initial).toString().replaceAll(',', '.');
     return 'Rp. $result';
   }
 
@@ -54,21 +53,19 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
           'showPrice': totalPrice,
         };
         data.addAll(res['data']);
-        //TODO
-
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => DetailRequestBooking(
             idBooking: data["_id"],
             onPop: () {
               Alert(
-                style: AlertStyle(
+                style: const AlertStyle(
                   isCloseButton: false,
                 ),
                 context: context,
                 //type: AlertType.,
                 title: "Waiting for Payment!",
                 content: Column(
-                  children: [
+                  children: const [
                     Text(
                       "Are you sure you want to exit the payment page? You can continue payment through the booking page",
                       style: TextStyle(fontSize: 18),
@@ -78,7 +75,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 buttons: [
                   DialogButton(
-                    child: Text(
+                    child: const Text(
                       "Pay Later",
                       style: TextStyle(color: Colors.white),
                     ),
@@ -93,7 +90,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                     color: Colors.green,
                   ),
                   DialogButton(
-                    child: Text(
+                    child: const Text(
                       "Return",
                       style: TextStyle(color: Colors.red),
                     ),
@@ -112,7 +109,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           flushbarPosition: FlushbarPosition.TOP,
-          // borderRadius: BorderRadius.circular(8),
           backgroundColor: Colors.green[600],
           message: res["msg"],
           duration: const Duration(seconds: 3),
@@ -121,7 +117,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           flushbarPosition: FlushbarPosition.TOP,
-          // borderRadius: BorderRadius.circular(8),
           backgroundColor: Colors.red,
           message: res["msg"],
           duration: const Duration(seconds: 3),
@@ -134,10 +129,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   void initState() {
     super.initState();
     basePrice = priceParser(widget.data['base_price']);
-    totalPrice =
-        priceParser(widget.data['base_price'] * widget.data['hour'].length);
+    totalPrice = priceParser(widget.data['base_price'] * widget.data['hour'].length);
     showDateTime = dateTimeToString(widget.data['date_time']);
-    // print(widget.data);
   }
 
   Widget _buildHeader() {
@@ -195,8 +188,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   showDateTime,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -252,13 +244,11 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               children: [
                 Text(
                   'x${widget.data['hour'].length}',
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
                 Text(
                   basePrice,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
@@ -280,45 +270,12 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 ),
                 Text(
                   totalPrice,
-                  style: const TextStyle(
-                      fontSize: 16, fontWeight: FontWeight.w400),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _continueButton() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
-        margin: const EdgeInsets.only(top: 32),
-        padding: const EdgeInsets.all(16),
-        width: MediaQuery.of(context).size.width,
-        child: InkWell(
-          onTap: () {
-            confirmBooking();
-          },
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              color: Colors.green[600],
-              border: Border.all(color: Colors.green[600]),
-            ),
-            child: const Text('Continue',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                )),
-          ),
-        ),
       ),
     );
   }
@@ -331,9 +288,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         children: [
           _buildHeader(),
           _buildBodyDetailsConfirmation(),
-          // _continueButton(),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 32),
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 32),
             child: CustomButton(
               textButton: "Confirm & Continue Payment",
               onClick: () {
