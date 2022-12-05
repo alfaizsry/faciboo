@@ -13,7 +13,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool _isObscure = true;
+  bool _isObscure1 = true;
+  bool _isObscure2 = true;
   HttpService http = HttpService();
   bool isLoading = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
@@ -30,6 +31,21 @@ class _SignUpPageState extends State<SignUpPage> {
       isLoading = true;
     });
 
+    if (password.text != confirmPassword.text) {
+      Flushbar(
+        margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        flushbarPosition: FlushbarPosition.TOP,
+        borderRadius: 8,
+        backgroundColor: Colors.green[600],
+        message: 'Confirmation password does not match, please try again!',
+        duration: const Duration(seconds: 3),
+      ).show(context);
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
     Map body = {
       "name": fullName.text,
       "email": email.text,
@@ -37,10 +53,10 @@ class _SignUpPageState extends State<SignUpPage> {
       "phoneNumber": mobileNumber.text
     };
 
-    http.post('user/register', body: body).then((res) {
+    http.post('user/register', body: body).then((res) async {
       print("BODY $body");
       if (res['success']) {
-        Flushbar(
+        await Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
           flushbarPosition: FlushbarPosition.TOP,
           borderRadius: 8,
@@ -51,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
         setState(() {
           isLoading = false;
         });
-        Navigator.of(context).push(
+        await Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const SignInPage()),
         );
       } else {
@@ -175,8 +191,14 @@ class _SignUpPageState extends State<SignUpPage> {
             child: _customTextInputPassword(
               hintText: "Password",
               controller: password,
+              isObscure: _isObscure1,
               isEnable: true,
               keyboardType: TextInputType.text,
+              onPressSuffix: () {
+                setState(() {
+                  _isObscure1 = !_isObscure1;
+                });
+              },
             ),
           ),
           Container(
@@ -187,8 +209,14 @@ class _SignUpPageState extends State<SignUpPage> {
             child: _customTextInputPassword(
               hintText: "Confirm Password",
               controller: confirmPassword,
+              isObscure: _isObscure2,
               isEnable: true,
               keyboardType: TextInputType.text,
+              onPressSuffix: () {
+                setState(() {
+                  _isObscure2 = !_isObscure2;
+                });
+              },
             ),
           ),
           const SizedBox(
@@ -208,8 +236,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         color: const Color(0xFF24AB70),
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 69, vertical: 10),
+                      padding: const EdgeInsets.symmetric(horizontal: 69, vertical: 10),
                       child: const Text(
                         "Sign Up",
                         style: TextStyle(
@@ -243,16 +270,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignInPage()),
+                            MaterialPageRoute(builder: (context) => const SignInPage()),
                           );
                         },
                         child: const Text(
                           "Login",
                           style: TextStyle(
-                              color: Color(0xFF004D34),
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
+                              color: Color(0xFF004D34), fontSize: 14, fontWeight: FontWeight.bold),
                         ),
                       )
                     ],
@@ -332,14 +356,16 @@ class _SignUpPageState extends State<SignUpPage> {
     @required TextEditingController controller,
     Widget prefixIcon,
     Widget suffixIcon,
+    bool isObscure,
     bool isEnable = true,
+    void Function() onPressSuffix,
     TextInputType keyboardType = TextInputType.text,
   }) {
     return TextFormField(
       keyboardType: keyboardType,
       controller: controller,
       enabled: isEnable,
-      obscureText: _isObscure,
+      obscureText: isObscure,
       style: TextStyle(
         fontSize: 14.0,
         fontWeight: FontWeight.w500,
@@ -359,12 +385,8 @@ class _SignUpPageState extends State<SignUpPage> {
         prefix: prefixIcon,
         prefixIconConstraints: const BoxConstraints(maxWidth: 100),
         suffixIcon: IconButton(
-            icon: Icon(_isObscure ? Icons.visibility : Icons.visibility_off),
-            onPressed: () {
-              setState(() {
-                _isObscure = !_isObscure;
-              });
-            }),
+            icon: Icon(isObscure ? Icons.visibility : Icons.visibility_off),
+            onPressed: onPressSuffix),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: const BorderSide(
