@@ -284,7 +284,8 @@ class _HomePageState extends State<HomePage> {
         image: DecorationImage(
           image: const AssetImage('assets/images/map_unsplash.png'),
           fit: BoxFit.cover,
-          colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
+          colorFilter:
+              ColorFilter.mode(Colors.black.withOpacity(0.2), BlendMode.darken),
         ),
         borderRadius: const BorderRadius.all(
           Radius.circular(25),
@@ -303,7 +304,9 @@ class _HomePageState extends State<HomePage> {
                   SizedBox(
                     width: width * 0.6,
                     child: Text(
-                      userDetail != null ? "Welcome, ${userDetail["name"]}" : "Loading...",
+                      userDetail != null
+                          ? "Welcome, ${userDetail["name"]}"
+                          : "Loading...",
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -345,9 +348,8 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               CachedNetworkImage(
-                imageUrl: userDetail["imageUrl"] != null && userDetail["imageUrl"] != ''
-                    ? userDetail["imageUrl"]
-                    : "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
+                imageUrl: userDetail["imageUrl"] ??
+                    "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
                 imageBuilder: (context, imageProvider) => Container(
                   width: 50.0,
                   height: 50.0,
@@ -365,15 +367,16 @@ class _HomePageState extends State<HomePage> {
                     height: 50.0,
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
+                      image: DecorationImage(
+                        image: NetworkImage(
+                          "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
+                        ),
+                      ),
                       shape: BoxShape.circle,
                       border: Border.all(
                         width: 1,
                         color: Colors.red,
                       ),
-                    ),
-                    child: Image.network(
-                      '"https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a"',
-                      color: Colors.red,
                     ),
                   );
                 },
@@ -607,7 +610,8 @@ class _HomePageState extends State<HomePage> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => DetailFacility(
-                                    idFacility: facilitiesByCategory[i]["_id"] ??
+                                    idFacility: facilitiesByCategory[i]
+                                            ["_id"] ??
                                         facilitiesByCategory[i]["id"],
                                   ),
                                 ),

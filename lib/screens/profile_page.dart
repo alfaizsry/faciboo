@@ -215,7 +215,17 @@ class _ProfilePageState extends State<ProfilePage>
             child: CustomButton(
               textButton: "Sign Out",
               onClick: () {
-                Navigator.pushReplacementNamed(context, '/loginPage');
+                CustomAlert(context: context).alertConfirmation(
+                    titleAlert: "Warning!",
+                    textAlert: "Are you sure you want to Sign Out?",
+                    textFirstButton: "Yes",
+                    textSecondButton: "Cancel",
+                    onTapFirstButton: () {
+                      Navigator.pushReplacementNamed(context, '/loginPage');
+                    },
+                    onTapSecondButton: () {
+                      Navigator.pop(context);
+                    });
               },
               colorButton: Colors.red[900],
             ),
