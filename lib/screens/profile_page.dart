@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:faciboo/components/custom_alert.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/image_item.dart';
@@ -583,7 +584,16 @@ class _ProfilePageState extends State<ProfilePage>
           CustomButton(
             textButton: "Save",
             onClick: () {
-              _editProfile();
+              (_name.text.isNotEmpty &&
+                      _email.text.isNotEmpty &&
+                      _phone.text.isNotEmpty &&
+                      _location.text.isNotEmpty &&
+                      _bankName.text.isNotEmpty &&
+                      _bankAccountName.text.isNotEmpty &&
+                      _bankAccountNumber.text.isNotEmpty)
+                  ? _editProfile()
+                  : CustomAlert(context: context)
+                      .alertDialog(text: "Please fill out all forms");
             },
           ),
           const SizedBox(

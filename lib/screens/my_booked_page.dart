@@ -204,6 +204,8 @@ class _MyBookedPageState extends State<MyBookedPage>
                       child: RequestBookingCard(
                         facilityName: item["facility"]["name"],
                         facilityImage: item["facility"]["image"][0],
+                        totalPrice: item["booking"]["total"],
+                        status: item["booking"]["status"],
                         invoice: item["booking"]["invoice"],
                         date: (item["booking"]["bookingDate"].toString()) +
                             "/" +
@@ -311,7 +313,7 @@ class _MyBookedPageState extends State<MyBookedPage>
                             idFacility: facilities[index]["_id"],
                           ),
                         ),
-                      );
+                      ).then((value) => _callGetData());
                     },
                   ),
                   const SizedBox(

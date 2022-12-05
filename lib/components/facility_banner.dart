@@ -74,6 +74,8 @@ class _FacilityBannerState extends State<FacilityBanner> {
                   statusBooking(),
                 Text(
                   widget.detailFacility["name"] ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
@@ -85,6 +87,8 @@ class _FacilityBannerState extends State<FacilityBanner> {
                 ),
                 Text(
                   widget.detailFacility["address"] ?? "-",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w300,

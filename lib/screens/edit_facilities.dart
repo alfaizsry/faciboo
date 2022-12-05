@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:faciboo/components/custom_alert.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
@@ -242,12 +243,14 @@ class _EditFacilitiesState extends State<EditFacilities>
     print("============BOOKINGHOURSLIST$bookingHoursList");
 
     Map body = {
+      "id": widget.idFacility,
       "name": _name.text,
       "address": _address.text,
       "description": _desc.text,
       "price": int.parse(_price.text),
       "urlMaps": _urlMaps.text,
       "categoryId": selectedCategory,
+      "removedImage": removedImageIdLoad,
       "image": imageArrBase64List,
       "hourAvailable": bookingHoursList,
     };
@@ -344,7 +347,24 @@ class _EditFacilitiesState extends State<EditFacilities>
               child: CustomButton(
                 textButton: "Edit",
                 onClick: () {
-                  _postEditFacility();
+                  print("========arr64 ${imageArrBase64List.length}");
+                  print("========imgload ${imageLoadLinkList.length}");
+                  print("========imgremove ${removedImageIdLoad.length}");
+                  print(
+                      "===============total ${(imageArrBase64List.length + imageLoadLinkList.length)}");
+                  (_name.text.isNotEmpty &&
+                          _address.text.isNotEmpty &&
+                          _desc.text.isNotEmpty &&
+                          _price.text.isNotEmpty &&
+                          _urlMaps.text.isNotEmpty &&
+                          selectedCategory.isNotEmpty &&
+                          _bookingHours.text.isNotEmpty &&
+                          (imageArrBase64List.length +
+                                  imageLoadLinkList.length) >
+                              0)
+                      ? _postEditFacility()
+                      : CustomAlert(context: context)
+                          .alertDialog(text: "Please fill out all forms");
                 },
               ),
             ),
@@ -475,7 +495,8 @@ class _EditFacilitiesState extends State<EditFacilities>
       decoration: BoxDecoration(
         image: (type == "uint8list")
             ? DecorationImage(image: MemoryImage(image), fit: BoxFit.cover)
-            : DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
+            : DecorationImage(
+                image: NetworkImage(image["imageUrl"]), fit: BoxFit.cover),
         borderRadius: BorderRadius.circular(10),
       ),
       child: InkWell(
@@ -487,7 +508,7 @@ class _EditFacilitiesState extends State<EditFacilities>
               imageArrBase64List.removeAt(index);
             } else {
               imageLoadLinkList.removeAt(index);
-              // removedImageIdLoad.add(value);
+              removedImageIdLoad.add(image["id"]);
             }
           });
         },
@@ -592,7 +613,8 @@ class _EditFacilitiesState extends State<EditFacilities>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
                           color: categories[i]["_id"] == selectedCategory
                               ? Colors.green
                               : Colors.grey[350],

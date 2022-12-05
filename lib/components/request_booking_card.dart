@@ -9,7 +9,11 @@ class RequestBookingCard extends StatefulWidget {
     @required this.date,
     @required this.invoice,
     @required this.onTap,
+    @required this.status,
+    @required this.totalPrice,
   }) : super(key: key);
+  final int status;
+  final int totalPrice;
   final String facilityName;
   final String facilityImage;
   final String date;
@@ -20,6 +24,21 @@ class RequestBookingCard extends StatefulWidget {
 }
 
 class _RequestBookingCardState extends State<RequestBookingCard> {
+  List<Map> status = [
+    {
+      "status": "Waiting Payment",
+      "color": Colors.orange,
+    },
+    {
+      "status": "On Booking",
+      "color": Colors.green,
+    },
+    {
+      "status": "Done",
+      "color": Colors.blue,
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -37,38 +56,46 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
         ),
         child: Row(
           children: [
-            CachedNetworkImage(
-              imageUrl: widget.facilityImage ??
-                  "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
-              imageBuilder: (context, imageProvider) => Container(
-                width: 100.0,
-                height: 100.0,
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(20)),
-                  image: DecorationImage(
-                    image: imageProvider,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) {
-                return Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade100,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      width: 1,
-                      color: Colors.red,
+            Column(
+              children: [
+                CachedNetworkImage(
+                  imageUrl: widget.facilityImage ??
+                      "https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1669888811~exp=1669889411~hmac=ab35157190db779880c061298b0fa239e5bc753da4191dd09b0df84726227f4a",
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 100.0,
+                    height: 100.0,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      image: DecorationImage(
+                        image: imageProvider,
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                  child: const Icon(
-                    Icons.error_outline_rounded,
-                    color: Colors.red,
-                  ),
-                );
-              },
+                  errorWidget: (context, url, error) {
+                    return Container(
+                      width: 100.0,
+                      height: 100.0,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          width: 1,
+                          color: Colors.red,
+                        ),
+                      ),
+                      child: const Icon(
+                        Icons.error_outline_rounded,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                _buildStatusCard(),
+              ],
             ),
             const SizedBox(
               width: 12,
@@ -77,8 +104,17 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Align(
+                  //   alignment: Alignment.topLeft,
+                  //   child: _buildStatusCard(),
+                  // ),
+                  // const SizedBox(
+                  //   height: 8,
+                  // ),
                   Text(
                     widget.facilityName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       // color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -92,7 +128,7 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                     "Booked date : ",
                     style: TextStyle(
                       // color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                       color: Colors.grey.shade900,
                     ),
@@ -110,13 +146,33 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
                     "Invoice :",
                     style: TextStyle(
                       // color: Colors.white,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w600,
                       fontSize: 12,
                       color: Colors.grey.shade900,
                     ),
                   ),
                   Text(
                     widget.invoice,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      // color: Colors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                      color: Colors.grey.shade800,
+                    ),
+                  ),
+                  Text(
+                    "Total :",
+                    style: TextStyle(
+                      // color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: Colors.grey.shade900,
+                    ),
+                  ),
+                  Text(
+                    "Rp${widget.totalPrice}",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -134,6 +190,23 @@ class _RequestBookingCardState extends State<RequestBookingCard> {
               color: Colors.green.shade900,
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStatusCard() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        color: status[widget.status]["color"],
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        status[widget.status]["status"],
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 10,
         ),
       ),
     );

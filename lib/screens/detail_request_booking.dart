@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:faciboo/components/custom_alert.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/facility_banner.dart';
@@ -19,12 +20,14 @@ class DetailRequestBooking extends StatefulWidget {
   const DetailRequestBooking({
     Key key,
     @required this.idBooking,
-    this.isOwner = false,
     @required this.onPop,
+    this.isOwner = false,
+    this.isFromConfirmPage = false,
   }) : super(key: key);
 
   final String idBooking;
   final bool isOwner;
+  final bool isFromConfirmPage;
   final Function onPop;
 
   @override
@@ -36,6 +39,8 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
   HttpService http = HttpService();
   bool _isLoading = false;
 
+  dynamic userDetail = {};
+  dynamic detailBankFacility = {};
   dynamic detailRequestBooking = {};
 
   AnimationController _controller;
@@ -84,6 +89,57 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
   _callGetData() async {
     await _getDetailRequestBooking();
     // if (!isOwner) await _getDetailOwnerBank();
+    _getProfile();
+  }
+
+  _getProfile() async {
+    setState(() {
+      _isLoading = true;
+    });
+    await http.post('profile/get-profile').then((res) {
+      if (res["success"]) {
+        setState(() {
+          userDetail = res["data"];
+        });
+        print("================USERDETAIL $userDetail");
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-profile $err");
+
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _getFacilitiyBank() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "facilityId": detailRequestBooking["booking"]["facilityId"],
+    };
+
+    await http.post("facility/get-bank-facility", body: body).then((res) {
+      if (res["success"]) {
+        setState(() {
+          detailBankFacility = res["data"];
+        });
+        print("================DETAILBANKFACILITY $detailRequestBooking");
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR get-bank-facility $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
   }
 
   _getDetailRequestBooking() async {
@@ -103,6 +159,7 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
         setState(() {
           detailRequestBooking = res["data"];
         });
+        if (!widget.isOwner) _getFacilitiyBank();
         print("================DETAILREQUESTBOOKING $detailRequestBooking");
       }
       setState(() {
@@ -149,6 +206,89 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
       });
     }).catchError((err) {
       print("ERROR booking/confirm-booking $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _postProofPayment() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "name": userDetail["name"],
+      "nameBank": userDetail["nameBank"],
+      "nomorRekening": userDetail["nomorRekening"],
+      "idBooking": widget.idBooking,
+      "image": proofPaymentPhoto.base64Image,
+    };
+    await http.post('bank/add-bank', body: body).then((res) {
+      if (res["success"]) {
+        widget.onPop();
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.red,
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR bank/add-bank $err");
+      setState(() {
+        _isLoading = false;
+      });
+    });
+  }
+
+  _cancelBooking() async {
+    setState(() {
+      _isLoading = true;
+    });
+    Map body = {
+      "id": widget.idBooking,
+    };
+    await http.post('booking/cancel-booking', body: body).then((res) {
+      if (res["success"]) {
+        Navigator.pop(context);
+        widget.onPop();
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.green[600],
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      } else {
+        Flushbar(
+          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+          flushbarPosition: FlushbarPosition.TOP,
+          // borderRadius: BorderRadius.circular(8),
+          backgroundColor: Colors.red,
+          message: res["msg"],
+          duration: const Duration(seconds: 3),
+        ).show(context);
+      }
+      setState(() {
+        _isLoading = false;
+      });
+    }).catchError((err) {
+      print("ERROR bank/add-bank $err");
       setState(() {
         _isLoading = false;
       });
@@ -269,15 +409,15 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
         ),
         _buildDetail(
           title: "Bank",
-          value: 'BCA',
+          value: detailBankFacility["nameBank"],
         ),
         _buildDetail(
           title: "Account Name",
-          value: 'SIUUU',
+          value: detailBankFacility["nameAccountBank"],
         ),
         _buildDetail(
           title: "Account Number",
-          value: '666666666666',
+          value: detailBankFacility["nomorRekening"],
         ),
         SizedBox(
           height: 12,
@@ -311,19 +451,40 @@ class _DetailRequestBookingState extends State<DetailRequestBooking>
           Expanded(
             child: CustomButton(
               textButton: "Upload",
-              onClick: () {},
+              onClick: () {
+                (proofPaymentPhoto != null)
+                    ? _postProofPayment()
+                    : CustomAlert(context: context).alertDialog(
+                        text: "Please add proof of payment picture");
+              },
             ),
           ),
-          SizedBox(
-            width: 12,
-          ),
-          Expanded(
-            child: CustomButton(
-              textButton: "Cancel Booking",
-              colorButton: Colors.red[700],
-              onClick: () {},
+          if (!widget.isFromConfirmPage)
+            SizedBox(
+              width: 12,
             ),
-          ),
+          if (!widget.isFromConfirmPage)
+            Expanded(
+              child: CustomButton(
+                textButton: "Cancel Booking",
+                colorButton: Colors.red[700],
+                onClick: () {
+                  CustomAlert(context: context).alertConfirmation(
+                    titleAlert: "Warning!",
+                    textAlert:
+                        "Are you sure you'd like to cancel this booking?",
+                    textFirstButton: "Yes",
+                    textSecondButton: "Return",
+                    onTapFirstButton: () {
+                      _cancelBooking();
+                    },
+                    onTapSecondButton: () {
+                      Navigator.pop(context);
+                    },
+                  );
+                },
+              ),
+            ),
         ],
       ),
     );

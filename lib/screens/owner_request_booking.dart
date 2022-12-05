@@ -90,6 +90,8 @@ class _OwnerRequestBookingState extends State<OwnerRequestBooking> {
             ? Container(
                 margin: const EdgeInsets.only(left: 24, right: 24, bottom: 12),
                 child: RequestBookingCard(
+                    totalPrice: item["booking"]["total"],
+                    status: item["booking"]["status"],
                     facilityName: item["facility"]["name"],
                     facilityImage: item["facility"]["image"][0],
                     invoice: item["booking"]["invoice"],

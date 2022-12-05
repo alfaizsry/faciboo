@@ -242,7 +242,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => ViewPhoto(
-                          url: detailFacility["image"][i],
+                          url: detailFacility["image"][i]["imageUrl"],
                         ),
                       ),
                     );
@@ -256,7 +256,7 @@ class _DetailFacilityState extends State<DetailFacility> {
                       ),
                       image: DecorationImage(
                         image: NetworkImage(
-                          detailFacility["image"][i],
+                          detailFacility["image"][i]["imageUrl"],
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -384,7 +384,7 @@ class _DetailFacilityState extends State<DetailFacility> {
         image: DecorationImage(
           image: NetworkImage(
             detailFacility["image"] != null
-                ? detailFacility["image"][0]
+                ? detailFacility["image"][0]["imageUrl"]
                 : "https://www.bhg.com/thmb/297Jr2SVie5oHqkVlwtkR0t9foo=/1572x1244/filters:fill(auto,1)/home-pool-deck-ETQanX7FqE9Bc4s4W5s13r-4d7f47bf12e34d6aa5291c7ef93a7641.jpg",
           ),
           fit: BoxFit.cover,

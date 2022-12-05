@@ -70,6 +70,8 @@ class _FacilityCardState extends State<FacilityCard> {
                 // if (widget.detailFacility["is_booking"]) statusBooking(),
                 Text(
                   widget.detailFacility["name"] ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,

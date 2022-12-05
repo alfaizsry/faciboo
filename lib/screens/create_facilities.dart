@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:faciboo/components/custom_alert.dart';
 import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/custom_button.dart';
 import 'package:faciboo/components/http_service.dart';
@@ -223,7 +224,17 @@ class _CreateFacilitiesState extends State<CreateFacilities>
               child: CustomButton(
                 textButton: "Create",
                 onClick: () {
-                  _postCreateFacility();
+                  (_name.text.isNotEmpty &&
+                          _address.text.isNotEmpty &&
+                          _desc.text.isNotEmpty &&
+                          _price.text.isNotEmpty &&
+                          _urlMaps.text.isNotEmpty &&
+                          selectedCategory.isNotEmpty &&
+                          imageArrBase64List.isNotEmpty &&
+                          _bookingHours.text.isNotEmpty)
+                      ? _postCreateFacility()
+                      : CustomAlert(context: context)
+                          .alertDialog(text: "Please fill out all forms");
                 },
               ),
             ),
@@ -465,7 +476,8 @@ class _CreateFacilitiesState extends State<CreateFacilities>
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          borderRadius: const BorderRadius.all(Radius.circular(10)),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
                           color: categories[i]["_id"] == selectedCategory
                               ? Colors.green
                               : Colors.grey[350],

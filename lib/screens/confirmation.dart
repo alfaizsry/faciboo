@@ -55,6 +55,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         data.addAll(res['data']);
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => DetailRequestBooking(
+            isFromConfirmPage: true,
             idBooking: data["_id"],
             onPop: () {
               Alert(
