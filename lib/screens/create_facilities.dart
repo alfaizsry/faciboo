@@ -277,6 +277,7 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       "Address",
       "Price/Book",
       "Maps Links",
+      "Booking Hours",
     ];
     List<TextEditingController> controller = [
       _name,
@@ -284,6 +285,51 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       _address,
       _price,
       _urlMaps,
+      _bookingHours
+    ];
+    List<Map> form = [
+      {
+        "title": "Name",
+        "controller": _name,
+        "hint": "ex: Fordy...",
+        "keyboard_type": TextInputType.text,
+        "note": "",
+      },
+      {
+        "title": "Description",
+        "controller": _desc,
+        "hint": "ex : Best facility ever...",
+        "keyboard_type": TextInputType.text,
+        "note": "",
+      },
+      {
+        "title": "Address",
+        "controller": _address,
+        "hint": "ex : Jl bersamanya...",
+        "keyboard_type": TextInputType.text,
+        "note": "",
+      },
+      {
+        "title": "Price/Book",
+        "controller": _price,
+        "hint": "ex : 25000",
+        "keyboard_type": TextInputType.number,
+        "note": "",
+      },
+      {
+        "title": "Maps Links",
+        "controller": _urlMaps,
+        "hint": "ex : https://goo.gl/maps/...",
+        "keyboard_type": TextInputType.text,
+        "note": "",
+      },
+      {
+        "title": "Booking Hours",
+        "controller": _bookingHours,
+        "hint": "ex : 20.00-21.00,21.00-22.00",
+        "keyboard_type": TextInputType.text,
+        "note": "Notes: separate booking time with commas",
+      },
     ];
 
     return Container(
@@ -294,32 +340,19 @@ class _CreateFacilitiesState extends State<CreateFacilities>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          for (var i = 0; i < formTitle.length; i++)
+          for (var i = 0; i < form.length; i++)
             Container(
               margin: const EdgeInsets.only(
                 bottom: 16,
               ),
               child: _customTextInput(
-                hintText: formTitle[i],
-                controller: controller[i],
+                placeHolder: form[i]["title"],
+                hintText: form[i]["hint"],
+                controller: form[i]["controller"],
+                keyboardType: form[i]["keyboard_type"],
+                note: form[i]["note"],
               ),
             ),
-          _customTextInput(
-            hintText: "Booking Hours",
-            controller: _bookingHours,
-          ),
-          Container(
-            margin: const EdgeInsets.only(
-              top: 4,
-            ),
-            child: const Text(
-              "Notes : separate booking time with commas",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
-          ),
           const SizedBox(
             height: 20,
           ),
@@ -518,67 +551,96 @@ class _CreateFacilitiesState extends State<CreateFacilities>
   Widget _customTextInput({
     @required String hintText,
     @required TextEditingController controller,
+    String placeHolder = "",
+    String note = "",
     Widget prefixIcon,
     Widget suffixIcon,
     bool isEnable = true,
     TextInputType keyboardType = TextInputType.text,
   }) {
-    return TextFormField(
-      keyboardType: keyboardType,
-      controller: controller,
-      enabled: isEnable,
-      minLines: 1,
-      maxLines: 5,
-      style: TextStyle(
-        fontSize: 14.0,
-        fontWeight: FontWeight.w500,
-        color: (isEnable) ? Colors.black : Colors.black54,
-      ),
-      decoration: InputDecoration(
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 24,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (placeHolder != "")
+          Text(
+            placeHolder,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        SizedBox(
+          height: 4,
         ),
-        // isDense: true, //remove default padding
-        fillColor: Colors.green[50],
-        filled: true, // activate bg color
-        // hintText: widget.hintText,
-        hintText: hintText,
-        hintStyle: TextStyle(
-          fontSize: 14.0,
-          color: isEnable ? Colors.black : Colors.black54,
-        ),
-        prefix: prefixIcon,
-        prefixIconConstraints: const BoxConstraints(maxWidth: 100),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.yellow,
-            width: 0.5,
+        TextFormField(
+          keyboardType: keyboardType,
+          controller: controller,
+          enabled: isEnable,
+          minLines: 1,
+          maxLines: 5,
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+            color: (isEnable) ? Colors.black : Colors.black54,
+          ),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 24,
+            ),
+            // isDense: true, //remove default padding
+            fillColor: Colors.green[50],
+            filled: true, // activate bg color
+            // hintText: widget.hintText,
+            hintText: hintText,
+            hintStyle: TextStyle(
+              fontSize: 14.0,
+              color: isEnable ? Colors.grey : Colors.black54,
+            ),
+            prefix: prefixIcon,
+            prefixIconConstraints: const BoxConstraints(maxWidth: 100),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(
+                color: Colors.yellow,
+                width: 0.5,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(
+                color: Colors.blue,
+                width: 0.8,
+              ),
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+              borderSide: const BorderSide(
+                color: Colors.grey,
+                width: 0.5,
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(
+                color: Colors.blue[800],
+                width: 0.8,
+              ),
+            ),
+            suffixIcon: suffixIcon,
           ),
         ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.blue,
-            width: 0.8,
+        if (note != null && note.isNotEmpty)
+          Container(
+            margin: EdgeInsets.only(top: 2),
+            child: Text(
+              note,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey,
+              ),
+            ),
           ),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: const BorderSide(
-            color: Colors.grey,
-            width: 0.5,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-          borderSide: BorderSide(
-            color: Colors.blue[800],
-            width: 0.8,
-          ),
-        ),
-        suffixIcon: suffixIcon,
-      ),
+      ],
     );
   }
 }
