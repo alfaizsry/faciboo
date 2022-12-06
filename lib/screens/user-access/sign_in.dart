@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/components/shared_preferences.dart';
@@ -18,6 +20,7 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   HttpService http = HttpService();
   bool isLoading = false;
+  bool statusClose = false;
   final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
   final LocalStorage storage = LocalStorage('faciboo');
 
@@ -82,22 +85,52 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return LoadingFallback(
-      isLoading: isLoading,
-      child: Scaffold(
-        key: _key,
-        backgroundColor: Colors.white,
-        body: ListView(
-          children: [
-            _buildCover(),
-            const SizedBox(
-              height: 25,
+    return WillPopScope(
+      onWillPop: () {
+        if (statusClose == true) {
+          exit(0);
+        }
+        SnackBar snackBar = SnackBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          content: Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.35, vertical: 10),
+            padding: const EdgeInsets.all(2),
+            decoration:
+                BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(4)),
+            child: const Text(
+              "Press again to exit",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
             ),
-            _buildContent(),
-            const SizedBox(
-              height: 30,
-            ),
-          ],
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        statusClose = true;
+        return Future.value(false);
+      },
+      child: LoadingFallback(
+        isLoading: isLoading,
+        child: Scaffold(
+          key: _key,
+          backgroundColor: Colors.white,
+          body: ListView(
+            children: [
+              _buildCover(),
+              const SizedBox(
+                height: 25,
+              ),
+              _buildContent(),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
         ),
       ),
     );
