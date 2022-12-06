@@ -67,9 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
         setState(() {
           isLoading = false;
         });
-        await Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const SignInPage()),
-        );
+        await Navigator.of(context).pushNamed('/loginPage');
       } else {
         Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
@@ -268,10 +266,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const SignInPage()),
-                          );
+                          Navigator.of(context).pushNamed('/loginPage');
                         },
                         child: const Text(
                           "Login",

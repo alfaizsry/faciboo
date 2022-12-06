@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:faciboo/screens/home_page.dart';
 import 'package:faciboo/screens/my_booked_page.dart';
@@ -14,6 +17,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   int _page = 1;
+  bool statusClose = false;
 
   List pages = [
     const MyFacilitiesPage(),
@@ -22,12 +26,49 @@ class _HomeState extends State<Home> {
     const ProfilePage(),
   ];
 
+  void close() {
+    var duration = const Duration(seconds: 2);
+    Timer(duration, () {
+      statusClose = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      bottomNavigationBar: buildBottomNavigationBar(),
-      body: pages[_page],
+    return WillPopScope(
+      onWillPop: () {
+        if (statusClose == true) {
+          exit(0);
+        }
+        SnackBar snackBar = SnackBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          content: Container(
+            margin: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.25, vertical: 10),
+            padding: const EdgeInsets.all(2),
+            decoration:
+                BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(4)),
+            child: const Text(
+              "Press again to exit",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        statusClose = true;
+        return Future.value(false);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        bottomNavigationBar: buildBottomNavigationBar(),
+        body: pages[_page],
+      ),
     );
   }
 

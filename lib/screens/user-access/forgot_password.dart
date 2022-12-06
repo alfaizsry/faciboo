@@ -17,10 +17,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       backgroundColor: Colors.white,
       floatingActionButton: InkWell(
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const SignInPage()),
-          );
+          Navigator.of(context).pushNamed('/loginPage');
         },
         child: Container(
           decoration: const BoxDecoration(color: Color(0xFF24AB70), shape: BoxShape.circle),
@@ -134,10 +131,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           InkWell(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const SignInPage()),
-              );
+              Navigator.of(context).pushNamed('/loginPage');
             },
             child: Container(
               decoration: BoxDecoration(

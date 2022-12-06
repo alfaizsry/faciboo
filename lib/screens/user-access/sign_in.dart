@@ -37,24 +37,21 @@ class _SignInPageState extends State<SignInPage> {
       print("BODY $body");
       if (res['success']) {
         print("RES LOGIN $res");
-        Flushbar(
-          margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-          flushbarPosition: FlushbarPosition.TOP,
-          // borderRadius: BorderRadius.circular(8),
-          backgroundColor: Colors.green[600],
-          message: 'Login Success',
-          duration: const Duration(seconds: 3),
-        ).show(context);
+        // Flushbar(
+        //   margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+        //   flushbarPosition: FlushbarPosition.TOP,
+        //   // borderRadius: BorderRadius.circular(8),
+        //   backgroundColor: Colors.green[600],
+        //   message: 'Login Success',
+        //   duration: const Duration(seconds: 3),
+        // ).show(context);
         String dataAuth = res['token'].toString();
         setState(() {
           isLoading = false;
           storage.setItem("authKey", dataAuth);
           setInstanceString("authKey", dataAuth);
         });
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Home()),
-        );
+        Navigator.of(context).pushReplacementNamed('/home');
       } else {
         Flushbar(
           margin: const EdgeInsets.fromLTRB(20, 10, 20, 10),
