@@ -3,7 +3,6 @@ import 'package:faciboo/components/custom_arrow_back.dart';
 import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/detail_facility.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +20,6 @@ class _AllFacilitiesState extends State<AllFacilities> {
 
   bool _isLoading = false;
 
-  var dummyApi = DummyApi();
   dynamic userDetail = {};
   List<dynamic> facilities = [];
 

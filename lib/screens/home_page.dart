@@ -5,7 +5,6 @@ import 'package:faciboo/components/facility_banner.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/all_facilities.dart';
 import 'package:faciboo/screens/detail_facility.dart';
 import 'package:faciboo/screens/schedule_picker.dart';
@@ -20,7 +19,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   HttpService http = HttpService();
-  var dummyApi = DummyApi();
 
   // int selectedCategory = 0;
   // //categori 1: sports, 2:entertainment, 3:workspace,

@@ -10,7 +10,6 @@ import 'package:faciboo/components/image_item.dart';
 import 'package:faciboo/components/image_picker_handler.dart';
 import 'package:faciboo/components/loading_fallback.dart';
 import 'package:faciboo/components/view_photo.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 
@@ -24,7 +23,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage>
     with TickerProviderStateMixin, ImagePickerListener {
   HttpService http = HttpService();
-  var dummyApi = DummyApi();
+
   dynamic userDetail = {};
 
   bool _isLoading = false;

@@ -9,7 +9,6 @@ import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/image_item.dart';
 import 'package:faciboo/components/image_picker_handler.dart';
 import 'package:faciboo/components/loading_fallback.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http_dart;
@@ -47,7 +46,6 @@ class _EditFacilitiesState extends State<EditFacilities>
   AnimationController _controller;
   ImagePickerHandler imagePicker;
 
-  var dummyApi = DummyApi();
   bool _isLoading = false;
 
   String selectedCategory = "";

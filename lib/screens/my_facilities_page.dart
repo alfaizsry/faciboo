@@ -4,7 +4,6 @@ import 'package:faciboo/components/empty_facilities.dart';
 import 'package:faciboo/components/facility_card.dart';
 import 'package:faciboo/components/http_service.dart';
 import 'package:faciboo/components/loading_fallback.dart';
-import 'package:faciboo/dummy_data/dummy_api.dart';
 import 'package:faciboo/screens/create_facilities.dart';
 import 'package:faciboo/screens/detail_facility.dart';
 import 'package:faciboo/screens/edit_facilities.dart';
@@ -22,7 +21,6 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
   HttpService http = HttpService();
   bool _isLoading = false;
 
-  var dummyApi = DummyApi();
   dynamic userDetail = {};
   List<dynamic> myFacilities = [];
   List<dynamic> myFacilitiesByCategory = [];
@@ -143,7 +141,8 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
             ? Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
                 child: GridView.builder(
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                     ),
                     // primary: false,
@@ -400,19 +399,23 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                 width: 24,
               ),
               for (var i = 0;
-                  i < myFacilitiesByCategory[selectedCategory]["facilities"].length;
+                  i <
+                      myFacilitiesByCategory[selectedCategory]["facilities"]
+                          .length;
                   i++)
                 Row(
                   children: [
                     FacilityCard(
-                      detailFacility: myFacilitiesByCategory[selectedCategory]["facilities"][i],
+                      detailFacility: myFacilitiesByCategory[selectedCategory]
+                          ["facilities"][i],
                       onClick: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => DetailFacility(
-                              idFacility: myFacilitiesByCategory[selectedCategory]["facilities"][i]
-                                  ["_id"],
+                              idFacility:
+                                  myFacilitiesByCategory[selectedCategory]
+                                      ["facilities"][i]["_id"],
                             ),
                           ),
                         );
@@ -448,9 +451,13 @@ class _MyFacilitiesPageState extends State<MyFacilitiesPage> {
                     Text(
                       myFacilitiesByCategory[i]["category"],
                       style: TextStyle(
-                        fontWeight: (selectedCategory == i) ? FontWeight.w700 : FontWeight.normal,
+                        fontWeight: (selectedCategory == i)
+                            ? FontWeight.w700
+                            : FontWeight.normal,
                         fontSize: 18,
-                        color: (selectedCategory == i) ? Colors.black : Colors.grey,
+                        color: (selectedCategory == i)
+                            ? Colors.black
+                            : Colors.grey,
                       ),
                     ),
                     if (selectedCategory == i)
